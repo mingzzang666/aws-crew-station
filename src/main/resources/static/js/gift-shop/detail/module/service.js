@@ -36,22 +36,17 @@ const purchaseDetailService = (() => {
                 'Content-Type': 'application/json'
             }
         });
+        message = await response.json();
         if (response.ok) {
-            result = await response.json();
-            message = result.message;
             console.log(message)
-            isGuest = result.guest;
             console.log("기프트 존재")
         } else if (response.status === 404) {
-            message = await response.text();
             console.log("기프트 없음")
         } else {
-            message = await response.text();
             console.log("에러 발생");
         }
-
         console.log(message)
-        return {isGuest: isGuest,message: message, status: response.status}
+        return {isGuest: message.guest,message: message.message, status: response.status}
     }
     return {report: report, requestToSell: requestToSell}
 })();

@@ -6,6 +6,7 @@ import com.example.crewstation.common.exception.PostNotActiveException;
 import com.example.crewstation.domain.guest.GuestVO;
 import com.example.crewstation.dto.member.MemberDTO;
 import com.example.crewstation.dto.payment.PaymentDTO;
+import com.example.crewstation.dto.payment.PaymentResponseDTO;
 import com.example.crewstation.dto.payment.status.PaymentCriteriaDTO;
 import com.example.crewstation.dto.payment.status.PaymentStatusDTO;
 import com.example.crewstation.repository.alarm.AlarmDAO;
@@ -42,8 +43,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @LogReturnStatus
-    public Map<String, Object> requestPayment(PaymentStatusDTO paymentStatusDTO) {
+    public PaymentResponseDTO requestPayment(PaymentStatusDTO paymentStatusDTO) {
         String code = null;
+        PaymentResponseDTO paymentResponseDTO = new PaymentResponseDTO();
         String message = null;
         boolean isExist = postDAO.isActivePost(paymentStatusDTO.getPurchaseId());
         log.info("isExist={}", isExist);
@@ -68,12 +70,15 @@ public class PaymentServiceImpl implements PaymentService {
 
         } else if (paymentStatusDTO.getMemberId() == null) {
             message = "비회원입니다.";
-            return Map.of("guest", true, "message", message);
+            paymentResponseDTO.setMessage(message);
+            paymentResponseDTO.setGuest(true);
+            return paymentResponseDTO;
         }
         paymentStatusDAO.save(paymentStatusDTO);
         alarmDAO.savePaymentAlarm(paymentStatusDTO.getId());
         message = "판매요청 완료되었습니다.";
-        return Map.of("message", message);
+        paymentResponseDTO.setMessage(message);
+        return paymentResponseDTO;
     }
 
     @Transactional
