@@ -39,6 +39,12 @@ public interface DiaryMapper {
     public void deleteLike(@Param("memberId") Long memberId,
                            @Param("diaryId") Long diaryId);
 
+    // 추가: like_id 조회
+    Long findLikeId(@Param("memberId") Long memberId, @Param("diaryId") Long diaryId);
+
+    // 추가: 알림 삭제
+    void deleteLikeAlarmByLikeId(@Param("likeId") Long likeId);
+
     // 내가 댓글 단 다이어리 조회
     public List<ReplyDiaryDTO> selectReplyDiariesByMemberId(@Param("memberId") Long memberId,
                                                      @Param("criteria") ScrollCriteria criteria);

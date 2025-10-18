@@ -1,5 +1,6 @@
 package com.example.crewstation.service.member;
 
+import aj.org.objectweb.asm.TypeReference;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.common.exception.MemberLoginFailException;
 import com.example.crewstation.common.exception.MemberNotFoundException;
@@ -18,9 +19,11 @@ import com.example.crewstation.repository.member.MemberFileDAO;
 import com.example.crewstation.service.s3.S3Service;
 import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.Search;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -192,8 +195,19 @@ public class MemberServiceImpl implements MemberService {
 
     }
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Optional<MemberProfileDTO> getMemberProfile (Long memberId) {
-        return memberDAO.selectProfileById(memberId);
+        MemberProfileDTO profiles = new MemberProfileDTO();
+        Optional<MemberProfileDTO> result = memberDAO.selectProfileById(memberId);
+
+        result.ifPresent(profile -> {
+           if (profile.getProfileImage() != null) {
+               String filePath = profile.getProfileImage();
+               profile.setProfileImage(s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5)));
+           }
+        });
+
+        return result;
     }
 
     @Override

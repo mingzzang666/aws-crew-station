@@ -41,7 +41,7 @@ VALUES ('pending', 1, 4, NOW(), NOW()),
        ('request', 2, 5, NOW(), NOW()),
        ('refund', 3, 6, NOW(), NOW()),
        ('received', 4, 7, NOW(), NOW()),
-       ('success', 5, 4, NOW(), NOW());
+       ('success', 5, 8, NOW(), NOW());
 
 -- 7. 파일 (file)
 INSERT INTO tbl_file (file_origin_name, file_path, file_name, file_size)

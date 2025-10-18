@@ -31,7 +31,7 @@
             g.address_detail                AS guest_address_detail,
             g.guest_order_number            AS guest_order_number,
 
-            ps.payment_phase                AS payment_phase,
+            ps.payment_phase                AS payment_status,
             ps.created_datetime             AS created_datetime,
             ps.updated_datetime             AS updated_datetime,
 
@@ -48,8 +48,9 @@
             seller.member_phone             AS seller_phone,
             guest.id                        AS buyer_member_id,
 
+            -- 대표 이미지 (경로 중복 제거)
             (
-                SELECT f2.file_path || '/' || f2.file_name
+                SELECT f2.file_path
                 FROM tbl_post_section s2
                          JOIN tbl_post_section_file sf2 ON s2.id = sf2.post_section_id
                          JOIN tbl_file f2 ON sf2.file_id = f2.id

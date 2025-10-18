@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
 @Slf4j
-public class AdminRestController {
+public class AdminRestController implements AdminRestControllerDocs{
 
     private final MemberService memberService;
     private final NoticeService noticeService;
@@ -103,7 +103,7 @@ public class AdminRestController {
 
     //    다이어리 신고 목록
     @GetMapping("/diaries")
-    public ResponseEntity<?> getReportDiaryList(@RequestParam(defaultValue = "1") int page) {
+    public ResponseEntity<List<ReportPostDTO>> getReportDiaryList(@RequestParam(defaultValue = "1") int page) {
         int safePage = Math.max(1, page);
         List<ReportPostDTO> reports = reportService.getReportDiaries(safePage);
         return ResponseEntity.ok(reports);
@@ -111,7 +111,7 @@ public class AdminRestController {
 
     //    다이어리 신고 처리
     @PostMapping("/diary/{reportId}/process")
-    public ResponseEntity<?> processDiaryReport(@PathVariable Long reportId, @RequestParam(required = false) Long postId, @RequestParam(defaultValue = "false") boolean hidePost) {
+    public ResponseEntity<ReportPostDTO> processDiaryReport(@PathVariable Long reportId, @RequestParam(required = false) Long postId, @RequestParam(defaultValue = "false") boolean hidePost) {
 
         log.info("다이어리 신고 reportId={}, postId={}, hidePost={}", reportId, postId, hidePost);
 
@@ -126,7 +126,7 @@ public class AdminRestController {
 
     //    기프트 신고 목록
     @GetMapping("/gifts")
-    public ResponseEntity<?> getReportGiftList(@RequestParam(defaultValue = "1") int page) {
+    public ResponseEntity<List<ReportPostDTO>> getReportGiftList(@RequestParam(defaultValue = "1") int page) {
         int safePage = Math.max(1, page);
         List<ReportPostDTO> reports = giftService.getReportGifts(safePage);
         return ResponseEntity.ok(reports);
@@ -134,7 +134,7 @@ public class AdminRestController {
 
     //    기프트 신고 처리
     @PostMapping("/gift/{reportId}/process")
-    public ResponseEntity<?> processGiftReport(@PathVariable Long reportId, @RequestParam(required = false) Long postId, @RequestParam(defaultValue = "false") boolean hidePost) {
+    public ResponseEntity<ReportPostDTO> processGiftReport(@PathVariable Long reportId, @RequestParam(required = false) Long postId, @RequestParam(defaultValue = "false") boolean hidePost) {
 
         log.info("기프트 신고 reportId={}, postId={}, hidePost={}", reportId, postId, hidePost);
 

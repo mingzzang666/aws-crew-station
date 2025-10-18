@@ -1,6 +1,8 @@
 package com.example.crewstation.mapper.purchase;
 
+import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.domain.purchase.PurchaseVO;
+import com.example.crewstation.dto.member.MyPurchaseDetailDTO;
 import com.example.crewstation.dto.purchase.PurchaseDTO;
 import com.example.crewstation.dto.purchase.PurchaseDetailDTO;
 import com.example.crewstation.dto.purchase.PurchaseListDTO;
@@ -36,9 +38,14 @@ public interface PurchaseMapper {
 // 구매 상세 조회
     public Optional<PurchaseDetailDTO> selectPurchaseDetailByPostId(Long postId);
 
-    // 구매내역 목록 조회
+    // 나의 구매내역 목록 조회
     public List<PurchaseListDTO> selectPurchaseList(@Param("memberId") Long memberId, @Param("criteria") ScrollCriteria scrollcriteria, @Param("search") Search search);
+
 
     // 전체 개수 조회 (페이징)
     public int selectTotalCount(@Param("memberId") Long memberId, @Param("search") Search search);
+
+    // 회원 주문 상세 조회
+    public MyPurchaseDetailDTO selectMemberOrderDetails(@Param("memberId") Long memberId, @Param("postId") Long postId);
+
 }

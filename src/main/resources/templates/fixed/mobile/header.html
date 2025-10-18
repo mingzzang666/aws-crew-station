@@ -155,10 +155,10 @@
                 </div>
                 <!-- 로그인 시 -->
                 <!-- 비 로그인 -->
-                <!-- <div class="login-logout-container">
-                    <a class="login-btn-wrap">로그인</a>
-                    <a class="join-btn-wrap">회원가입</a>
-                </div> -->
+                <div class="login-logout-container">
+                    <a href="/mobile/login" class="login-btn-wrap">로그인</a>
+                    <a href="/mobile/join" class="join-btn-wrap">회원가입</a>
+                </div>
                 <!-- 비 로그인 -->
                 <hr class="menu-hr">
 
@@ -233,7 +233,7 @@
                         </div>
                     </li>
                     <li class="menu-item-wrap">
-                        <button type="button" class="menu-item-btn gift" style="background-color: rgb(247,249,250);">
+                        <button type="button" class="menu-item-btn gift" style="background-color: rgb(247,249,250);"  onclick="location.href=/gifts">
                             <div class="button-text-wrap">
                                 <span class="btn-icon">
                                     <span class="img-icon">
@@ -247,7 +247,7 @@
                         
                     </li>
                     <li class="menu-item-wrap">
-                        <button type="button" class="menu-item-btn notice">
+                        <button type="button" class="menu-item-btn notice" onclick="location.href=/notice">
                             <div class="button-text-wrap">
                                 <span class="btn-icon">
                                     <span class="img-icon">
@@ -299,7 +299,7 @@
                         </a>
                     </li>
                     <li class="sub-menu-item">
-                        <a class="sub-menu-link">
+                        <a href="/gifts/write" class="sub-menu-link">
                             <div class="sub-menu-text">
                                 기프트 등록
                             </div>
@@ -309,7 +309,7 @@
                 </ul>
                 <hr class="menu-hr">
                 <ul class="footer">
-                    <li><a class="logout-menu-footer">로그아웃</a></li>
+                    <li><a href="/member/login" class="logout-menu-footer">로그아웃</a></li>
                 </ul>
             </div>
         </div>

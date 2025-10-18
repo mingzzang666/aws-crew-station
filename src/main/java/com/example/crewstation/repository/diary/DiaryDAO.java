@@ -45,6 +45,15 @@ public class DiaryDAO {
         diaryMapper.deleteLike(memberId, diaryId);
     }
 
+    //  좋아요 한 아이디 찾기
+    public Long findLikeId(Long memberId, Long diaryId) {
+        return diaryMapper.findLikeId(memberId, diaryId);
+    }
+    //  좋아요 알람 삭제
+    public void deleteLikeAlarmByLikeId(Long likeId) {
+        diaryMapper.deleteLikeAlarmByLikeId(likeId);
+    }
+
     // 내가 댓글 단 일기 조회
     public List<ReplyDiaryDTO> findReplyDiariesByMemberId(Long memberId, ScrollCriteria criteria) {
         return diaryMapper.selectReplyDiariesByMemberId(memberId, criteria);

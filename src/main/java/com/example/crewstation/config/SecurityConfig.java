@@ -106,6 +106,7 @@ public class SecurityConfig {
                                 "/gifts/{postId:\\d+}")
                         .authenticated()
                         .requestMatchers(HttpMethod.GET,
+                                "/mypage/my-activities",
                                 "/diaries/write",
                                 "/gifts/write",
                                 "/diaries/delete/{postId:\\d+}",

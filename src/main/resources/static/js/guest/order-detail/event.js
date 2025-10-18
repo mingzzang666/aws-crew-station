@@ -1,5 +1,5 @@
 // ===================== Order Event =====================
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async() => {
     const container = document.getElementById("order-detail");
 
     // 주문 상세 조회
@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // === 주문 취소 ===
             if (cancelBtn && cancelBtn.classList.contains("active")) {
-                cancelBtn.addEventListener("click", () => {
+                cancelBtn.addEventListener("click", async () => {
                     if (confirm("정말 주문을 취소하시겠습니까?")) {
-                        orderService.cancelOrder()
+                        await orderService.cancelOrder()
                             .then(() => {
                                 orderLayout.updateOrderStatus("주문 취소");
                                 orderLayout.showToast("주문이 취소되었습니다.", true);

@@ -1260,3 +1260,8 @@ values (1),(2),(3),(4),(5);
 
 insert into tbl_banner_file(file_id, banner_id)
 values (98,1),(99,2),(100,3),(101,4),(102,5);
+
+
+select * from tbl_banner_file;
+
+select * from tbl_file;

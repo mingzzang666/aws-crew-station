@@ -54,9 +54,27 @@ const memberService = (() => {
         }
     }
 
+    const profile = async () => {
+        const response = await fetch('/api/member/profile', {
+            method: 'GET',
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Fetch error");
+        }
+
+        const member = await response.json();
+
+        if (callback) {
+            callback(member);
+        }
+    }
 
 
-    return {login: login, refresh: refresh, logout: logout, info: info};
+
+
+    return {login: login, refresh: refresh, logout: logout, info: info, profile:profile};
 })();
 
 
@@ -72,7 +90,6 @@ if (userSection) userSection.classList.add('hidden');
 
 // 로그인 정보 불러오기
 memberService.info(async (member) => {
-    console.log(member)
     if (!member) {
         // 비로그인 상태 유지
         if (loginSection) loginSection.classList.remove('hidden');
@@ -84,12 +101,13 @@ memberService.info(async (member) => {
     if (loginSection) loginSection.classList.add('hidden');
     if (userSection) userSection.classList.remove('hidden');
 
-    // 프로필 이미지 세팅
     if (profileImg) {
-        profileImg.src =
-            member.filePath && member.filePath.trim() !== ''
-                ? member.filePath
-                : 'https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c';
+        const imgUrl =
+            (member.filePath && member.filePath.trim() !== '') ? member.filePath :
+                (member.socialImgUrl && member.socialImgUrl.trim() !== '') ? member.socialImgUrl :
+                    'https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c';
+
+        profileImg.src = imgUrl;
     }
 
     // 이름 or 이메일 표시
@@ -98,13 +116,9 @@ memberService.info(async (member) => {
     }
 
     // 알림 개수 가져오기
-    try {
         const res = await fetch('/api/alarms/count');
         if (res.ok) {
             const { count } = await res.json();
             if (alarmCount) alarmCount.textContent = count;
         }
-    } catch (e) {
-        console.error('알림 개수 요청 오류:', e);
-    }
 });

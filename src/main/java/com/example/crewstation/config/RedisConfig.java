@@ -5,6 +5,7 @@ import com.example.crewstation.dto.banner.BannerDTO;
 import com.example.crewstation.dto.crew.CrewDTO;
 import com.example.crewstation.dto.diary.DiaryDTO;
 import com.example.crewstation.dto.gift.GiftDTO;
+import com.example.crewstation.dto.member.MemberProfileDTO;
 import com.example.crewstation.dto.purchase.PurchaseDTO;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;

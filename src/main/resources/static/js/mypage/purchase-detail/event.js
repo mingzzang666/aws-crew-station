@@ -1,13 +1,18 @@
-// ===================== Order Event =====================
+// ===================== Member Order Event =====================
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("order-detail");
+    const postId = document.body.dataset.postId;
 
-    const guestOrderNumber = "2025093022321855389"; // TODO: 토큰에서 가져오기
+    if (!postId) {
+        console.error("postId가 없습니다. <body th:data-post-id>가 비어있습니다.");
+        container.innerHTML = "<p>주문 정보를 불러올 수 없습니다.</p>";
+        return;
+    }
 
     // 주문 상세 조회
-    orderService.getOrderDetail(guestOrderNumber)
+    orderService.getOrderDetail(postId)
         .then(order => {
-            console.log("주문 상세:", order);
+            console.log("회원 주문 상세:", order);
             if (!order) {
                 container.innerHTML = "<p>주문 내역이 없습니다.</p>";
                 return;
@@ -16,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // UI 렌더링
             orderLayout.renderOrderDetail(container, order);
 
-            // 버튼들
+            // 버튼
             const cancelBtn = container.querySelector(".cancel-btn");
             const paymentBtn = container.querySelector(".payment-btn");
             const receiveBtn = container.querySelector(".receive-btn");
@@ -26,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (cancelBtn && cancelBtn.classList.contains("active")) {
                 cancelBtn.addEventListener("click", () => {
                     if (confirm("정말 주문을 취소하시겠습니까?")) {
-                        orderService.cancelOrder(guestOrderNumber)
+                        orderService.cancelOrder(order.purchaseId)
                             .then(() => {
                                 orderLayout.updateOrderStatus("주문 취소");
                                 orderLayout.showToast("주문이 취소되었습니다.", true);
@@ -40,70 +45,55 @@ document.addEventListener("DOMContentLoaded", () => {
             if (paymentBtn && paymentBtn.classList.contains("active")) {
                 paymentBtn.addEventListener("click", async () => {
                     try {
-                        const itemName = order.postTitle || "기프트샵 결제";   // 게시글 제목
-                        const amount = order.purchaseProductPrice || 1000;     // 결제 금액
+                        const itemName = order.postTitle || "기프트샵 결제";
+                        const amount = order.purchaseProductPrice || 1000;
 
-                        // 부트페이 결제창 호출
+                        // Bootpay 결제 요청
                         const response = await Bootpay.requestPayment({
                             application_id: "68de1c1f00d008657455bbbf",
                             price: amount,
                             order_name: "기프트샵 - " + itemName,
-                            order_id: "ORDER_" + order.guestOrderNumber,
+                            order_id: "ORDER_" + order.postId,
                             pg: "토스",
                             user: {
-                                id: order.guestOrderNumber,          // 주문번호 기반
-                                username: order.guestName || "손님",
-                                phone: order.guestPhone || "01000000000",
-                                email: order.guestEmail || "test@test.com",
+                                id: order.buyerMemberId,
+                                username: order.memberName,
+                                phone: order.memberPhone,
+                                email: order.memberEmail || "member@test.com"
                             },
                             items: [
                                 {
                                     id: "trade_" + order.postId,
                                     name: itemName,
                                     qty: 1,
-                                    price: amount,
-                                },
+                                    price: amount
+                                }
                             ],
                             extra: { open_type: "iframe" }
                         });
 
                         switch (response.event) {
                             case "done":
-                                console.log("Bootpay done 응답:", response);
-                                try {
-                                    const res = await fetch("/api/payment/complete", {
-                                        method: "POST",
-                                        headers: { "Content-Type": "application/json" },
-                                        body: JSON.stringify({
-                                            purchaseId: order.purchaseId,
-                                            guestOrderNumber: order.guestOrderNumber,
-                                            receiptId: response.data.receipt_id,
-                                            amount: response.data.price,
-                                            method: response.data.method,
-                                            status: "success",
-                                            memberId: order.buyerMemberId
-                                        })
-                                    });
-                                    console.log("서버 응답 상태:", res.status);
-                                    const responseText = await res.text();
-                                    console.log("서버 응답 전문:", responseText);
+                                console.log("Bootpay done:", response);
 
-                                    if (!res.ok) {
-                                        throw new Error("서버 응답 오류: " + responseText);
-                                    }
+                                try {
+                                    await orderService.completePayment({
+                                        purchaseId: order.purchaseId,
+                                        memberId: order.buyerMemberId,
+                                        receiptId: response.data.receipt_id,
+                                        paymentAmount: response.data.price,
+                                        method: response.data.method,
+                                        status: "success"
+                                    });
 
                                     orderLayout.updateOrderStatus("결제 완료");
                                     orderLayout.showToast("결제가 완료되었습니다.", true);
-
                                 } catch (err) {
-                                    console.error("결제 완료 처리 실패:", err);
-                                    orderLayout.showToast("결제 처리 중 서버 오류가 발생했습니다.");
+                                    orderLayout.showToast("결제 처리 중 오류가 발생했습니다.");
                                 }
                                 break;
 
-
                             case "confirm":
-                                // 최종 승인 (재고, 상태 검증 등)
                                 await Bootpay.confirm();
                                 break;
 
@@ -112,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 break;
                         }
                     } catch (e) {
-                        console.error("결제 오류 발생:", e, JSON.stringify(e));
+                        console.error("결제 오류:", e);
                         if (e.event === "cancel") {
                             orderLayout.showToast("결제가 취소되었습니다.");
                         } else {
@@ -126,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (receiveBtn && receiveBtn.classList.contains("active")) {
                 receiveBtn.addEventListener("click", () => {
                     if (confirm("상품을 수령 완료 처리하시겠습니까?")) {
-                        orderService.completeReceive(guestOrderNumber)
+                        orderService.completeReceive(order.purchaseId)
                             .then(() => {
                                 orderLayout.updateOrderStatus("수령 완료");
                                 orderLayout.showToast("수령 확인이 완료되었습니다.", true);
@@ -182,5 +172,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     };
                 });
             }
+        })
+        .catch(err => {
+            console.error("❌ 주문 상세 조회 중 오류:", err);
+            container.innerHTML = "<p>주문 정보를 불러오지 못했습니다.</p>";
         });
 });

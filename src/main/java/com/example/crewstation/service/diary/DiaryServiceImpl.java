@@ -121,9 +121,9 @@ public class DiaryServiceImpl implements DiaryService {
             if (diary.getMainImage() != null) {
                 diary.setMainImage(s3Service.getPreSignedUrl(diary.getMainImage(), Duration.ofMinutes(5)));
             }
-            if (diary.getMemberProfileImage() != null) {
-                diary.setMemberProfileImage(s3Service.getPreSignedUrl(diary.getMemberProfileImage(), Duration.ofMinutes(5)));
-            }
+//            if (diary.getMemberProfileImage() != null) {
+//                diary.setMemberProfileImage(s3Service.getPreSignedUrl(diary.getMemberProfileImage(), Duration.ofMinutes(5)));
+//            }
         });
 
         // 전체 개수 (hasMore 계산용)
@@ -148,8 +148,19 @@ public class DiaryServiceImpl implements DiaryService {
 
     //  좋아요 취소
     @Override
+    @Transactional
     public void cancelLike(CustomUserDetails customUserDetails, Long diaryId) {
         Long memberId = customUserDetails.getId();
+
+        // likeId 조회
+        Long likeId = diaryDAO.findLikeId(memberId, diaryId);
+
+        // 알림 먼저 삭제
+        if (likeId != null) {
+            diaryDAO.deleteLikeAlarmByLikeId(likeId);
+        }
+
+        // 좋아요 삭제
         diaryDAO.deleteLike(memberId, diaryId);
     }
 

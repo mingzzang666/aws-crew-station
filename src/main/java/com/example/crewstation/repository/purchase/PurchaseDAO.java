@@ -1,6 +1,8 @@
 package com.example.crewstation.repository.purchase;
 
+import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.domain.purchase.PurchaseVO;
+import com.example.crewstation.dto.member.MyPurchaseDetailDTO;
 import com.example.crewstation.dto.purchase.PurchaseDTO;
 import com.example.crewstation.dto.purchase.PurchaseDetailDTO;
 import com.example.crewstation.dto.purchase.PurchaseListDTO;
@@ -52,14 +54,18 @@ public class PurchaseDAO {
         return purchaseMapper.selectPurchaseDetailByPostId(postId);
     }
 
-//  구매 내역 조회
+    //  구매 내역 목록 조회
     public List<PurchaseListDTO> selectPurchaseList(Long memberId, ScrollCriteria scrollcriteria, Search search) {
         return purchaseMapper.selectPurchaseList(memberId, scrollcriteria, search);
     }
 
-//  전체 개수 조회
+    //  전체 개수 조회
     public int selectTotalCount(Long memberId, Search search) {
         return purchaseMapper.selectTotalCount(memberId, search);
+    }
+    // 나의 구매 내역 상세 조회
+    public MyPurchaseDetailDTO selectMemberOrderDetails(Long memberId, Long postId) {
+        return purchaseMapper.selectMemberOrderDetails(memberId, postId);
     }
 
 }

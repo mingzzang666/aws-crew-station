@@ -1,6 +1,7 @@
 package com.example.crewstation.dto.member;
 
 import com.example.crewstation.common.enumeration.DeliveryMethod;
+import com.example.crewstation.common.enumeration.PaymentPhase;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class MyPurchaseDetailDTO {
     private String AddressDetail;
 
     // 결제
-    private String paymentStatus;
+    private PaymentPhase paymentPhase;
 
     // 구매(상품)
     private Long postId;

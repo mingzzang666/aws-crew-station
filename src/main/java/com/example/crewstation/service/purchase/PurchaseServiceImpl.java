@@ -3,6 +3,7 @@ package com.example.crewstation.service.purchase;
 import com.example.crewstation.aop.aspect.annotation.LogReturnStatus;
 import com.example.crewstation.aop.aspect.annotation.LogStatus;
 import com.example.crewstation.auth.CustomUserDetails;
+import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.common.enumeration.Type;
 import com.example.crewstation.common.exception.PurchaseNotFoundException;
 import com.example.crewstation.domain.file.section.FilePostSectionVO;
@@ -10,12 +11,14 @@ import com.example.crewstation.domain.post.PostVO;
 import com.example.crewstation.domain.purchase.PurchaseVO;
 import com.example.crewstation.dto.file.FileDTO;
 import com.example.crewstation.dto.file.section.FilePostSectionDTO;
+import com.example.crewstation.dto.member.MyPurchaseDetailDTO;
 import com.example.crewstation.dto.payment.status.PaymentCriteriaDTO;
 import com.example.crewstation.dto.post.PostDTO;
 import com.example.crewstation.dto.post.section.SectionDTO;
 import com.example.crewstation.dto.purchase.*;
 import com.example.crewstation.repository.file.FileDAO;
 import com.example.crewstation.repository.file.section.FilePostSectionDAO;
+import com.example.crewstation.repository.payment.status.PaymentStatusDAO;
 import com.example.crewstation.repository.post.PostDAO;
 import com.example.crewstation.repository.purchase.PurchaseDAO;
 import com.example.crewstation.repository.section.SectionDAO;
@@ -47,6 +50,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final PostDAO postDAO;
     private final FileDAO fileDAO;
     private final FilePostSectionDAO filePostSectionDAO;
+    private final PaymentStatusDAO paymentStatusDAO;
 
     private final PurchaseTransactionService purchaseTransactionService;
     private final RedisTemplate<String, PurchaseDTO> purchaseRedisTemplate;
@@ -259,39 +263,83 @@ public class PurchaseServiceImpl implements PurchaseService {
         return today.format(formatter);
     }
 
-    @Override
-    public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, ScrollCriteria scrollcriteria, Search search) {
+//  구매내역 목록 조회
+//  구매내역 목록 조회
+@Override
+public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, ScrollCriteria scrollcriteria, Search search) {
 
-        List<PurchaseListDTO> list = purchaseDAO.selectPurchaseList(memberId, scrollcriteria, search);
-        int total = purchaseDAO.selectTotalCount(memberId, search);
-        scrollcriteria.setTotal(total);
+    List<PurchaseListDTO> list = purchaseDAO.selectPurchaseList(memberId, scrollcriteria, search);
+    int total = purchaseDAO.selectTotalCount(memberId, search);
+    scrollcriteria.setTotal(total);
 
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
-        list.forEach(dto -> {
-            try {
-                if (dto.getCreatedDatetime() != null && !dto.getCreatedDatetime().isEmpty()) {
-                    dto.setCreatedDatetime(
-                            LocalDate.parse(dto.getCreatedDatetime(), inputFormatter).format(outputFormatter)
-                    );
-                }
-                if (dto.getUpdatedDatetime() != null && !dto.getUpdatedDatetime().isEmpty()) {
-                    dto.setUpdatedDatetime(
-                            LocalDate.parse(dto.getUpdatedDatetime(), inputFormatter).format(outputFormatter)
-                    );
-                }
-            } catch (Exception e) {
-                log.warn("Date format error: {}", e.getMessage());
+    list.forEach(dto -> {
+        try {
+            //
+            if (dto.getCreatedDatetime() != null && !dto.getCreatedDatetime().isEmpty()) {
+                String created = dto.getCreatedDatetime().split("\\.")[0];
+                dto.setCreatedDatetime(
+                        LocalDate.parse(created, inputFormatter).format(outputFormatter)
+                );
             }
-        });
+            if (dto.getUpdatedDatetime() != null && !dto.getUpdatedDatetime().isEmpty()) {
+                String updated = dto.getUpdatedDatetime().split("\\.")[0];
+                dto.setUpdatedDatetime(
+                        LocalDate.parse(updated, inputFormatter).format(outputFormatter)
+                );
+            }
 
-        PurchaseListCriteriaDTO result = new PurchaseListCriteriaDTO();
-        result.setPurchaseListDTOs(list);
-        result.setScrollcriteria(scrollcriteria);
-        result.setSearch(search);
+            //
+            log.info("Before S3 convert filePath={}", dto.getFilePath());
 
-        return result;
+            //
+            if (dto.getFilePath() != null && !dto.getFilePath().isBlank()) {
+                String preSignedUrl = s3Service.getPreSignedUrl(dto.getFilePath(), Duration.ofMinutes(5));
+                log.info("After S3 convert preSignedUrl={}", preSignedUrl); // 변환 결과 확인
+                dto.setFilePath(preSignedUrl);
+            }
+
+        } catch (Exception e) {
+            log.warn("Date format error: {}", e.getMessage());
+        }
+    });
+
+    PurchaseListCriteriaDTO result = new PurchaseListCriteriaDTO();
+    result.setPurchaseListDTOs(list);
+    result.setScrollcriteria(scrollcriteria);
+    result.setSearch(search);
+
+    log.info("result.getPurchaseListDTOs() = {}", result.getPurchaseListDTOs());
+    return result;
+}
+
+
+    //  나의 구매내역 상세 조회
+    @Override
+    public MyPurchaseDetailDTO getMemberOrderDetails(Long memberId, Long postId) {
+        MyPurchaseDetailDTO detail = purchaseDAO.selectMemberOrderDetails(memberId, postId);
+
+        if (detail == null) {
+            throw new RuntimeException("회원 구매내역을 찾을 수 없습니다. memberId=" + memberId + ", postId=" + postId);
+        }
+
+        // S3 프리사인 URL 변환
+        if (detail.getMainImage() != null && !detail.getMainImage().isBlank()) {
+            String preSignedUrl = s3Service.getPreSignedUrl(detail.getMainImage(), Duration.ofMinutes(5));
+            detail.setMainImage(preSignedUrl);
+        }
+
+        return detail;
+    }
+
+    //  결제 상태 업데이트 추가
+    @Override
+    @Transactional
+    public void updatePaymentStatus(Long purchaseId, PaymentPhase paymentPhase) {
+        paymentStatusDAO.updatePaymentStatus(purchaseId, paymentPhase);
+        log.info("결제 상태 업데이트 완료 → purchaseId={}, phase={}", purchaseId, paymentPhase);
     }
 
 }

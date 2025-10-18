@@ -58,3 +58,10 @@ const memberService = (() => {
 
     return {login: login, refresh: refresh, logout: logout, info: info};
 })();
+
+
+// 로그인 시
+const loginSection = document.querySelector("login-profile-wrap");
+// 비 로그인 시
+const userSection= document.querySelector("login-logout-container");
+const profileImg

@@ -3,14 +3,11 @@ const popups = document.querySelectorAll("div.btn-click-slide-container");
 const profilePopups = document.querySelectorAll("div.profile-popup-btn");
 
 document.body.addEventListener("click", (e) => {
-    // 드롭다운 내부 클릭이면 닫지 않음
     if (e.target.closest(".btn-click-slide-container, .profile-popup-btn")) return;
 
-    // 1) 전부 닫기
     popups.forEach((el) => el.classList.remove("active"));
     profilePopups.forEach((el) => el.classList.remove("active"));
 
-    // 2) 글쓰기 버튼 → 해당 버튼의 짝 메뉴만 열기
     const postBtn = e.target.closest("button.post-reg-btn");
     if (postBtn) {
         const scope = postBtn.closest(
@@ -20,21 +17,20 @@ document.body.addEventListener("click", (e) => {
         return;
     }
 
-    // 3) 프로필 버튼 → 해당 프로필의 짝 메뉴만 열기
-    const profileBtn = e.target.closest("button.mebmer-profile-btn"); // HTML 클래스 철자 그대로
+    //  프로필 버튼
+    const profileBtn = e.target.closest("button.mebmer-profile-btn");
     if (profileBtn) {
         profileBtn
             .closest(".member-profile-wrap")
-            ?.querySelector(".profile-popup-btn")
-            ?.classList.add("active");
+            .querySelector(".profile-popup-btn")
+            .classList.add("active");
         return;
     }
 
-    // 그 외 영역 클릭 → 닫힘 유지(이미 위에서 닫음)
 });
 
 // ===================== 헤더 버튼에 따른 서브 헤더 =====================
-let currentPage = "home"; // 추후 서버 값으로 치환 예정
+let currentPage = "home";
 const stickyBtns = document.querySelectorAll("a.sticky-btn");
 stickyBtns.forEach((stickyBtn) => {
     // 헤더 버튼 글씨 색깔 바꿔주기
@@ -203,5 +199,3 @@ logoutLink.addEventListener("click", async (e) => {
     location.href = "/member/login";
 });
 
-// getComputedStyle(document.querySelector('.btn-click-slide-container')).zIndex
-// getComputedStyle(document.querySelector('.banner-wrap')).zIndex

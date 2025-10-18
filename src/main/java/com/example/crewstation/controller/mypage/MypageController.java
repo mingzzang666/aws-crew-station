@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -61,10 +62,10 @@ public class MypageController {
         return "mypage/purchase-list";
     }
 
-    // 마이페이지 - 내 구매 상세
-    @GetMapping("/purchase-detail")
-    public String loadMyPurchasesDetailPage() {
-        log.info("마이페이지 - 구매 상세");
+    // 마이페이지 - 구매 상세 페이지
+    @GetMapping("/purchase-detail/{postId}")
+    public String loadMyPurchaseDetailPage(@PathVariable("postId") Long postId, Model model) {
+        model.addAttribute("postId", postId);
         return "mypage/purchase-detail";
     }
 

@@ -118,31 +118,90 @@
         WHERE vpp.post_status = 'active'
     </select>
 
-    <!-- 멤버아이디로 구매내역 조회  -->
+    <!-- 멤버아이디로 구매내역 목록 조회  -->
     <select id="selectPurchaseList">
         SELECT
         vpp.id AS post_id,
         vpp.post_title,
-        vpp.purchase_product_price AS purchase_product_price,
-        vpp.created_datetime,
-        vpp.updated_datetime,
-        tps.payment_phase AS status,
-        tm.id AS member_id,
-        vfps.file_id,
-        vfps.file_name,
-        vfps.file_origin_name,
+        vpp.purchase_product_price,
+        latest_tps.payment_phase AS status,
+        latest_tps.member_id AS member_id,
+        latest_tps.created_datetime,
         vfps.file_path
-        FROM tbl_member tm
-        JOIN view_post_purchase vpp ON tm.id = vpp.member_id
-        LEFT JOIN tbl_post_section tsec ON vpp.id = tsec.post_id
-        LEFT JOIN view_file_post_section_file vfps ON tsec.id = vfps.post_section_id
-        LEFT JOIN tbl_payment_status tps ON vpp.id = tps.purchase_id
-        WHERE tm.id = #{memberId}
-        AND vpp.post_status = 'active'
+        FROM (
+        SELECT t1.*
+        FROM tbl_payment_status t1
+        INNER JOIN (
+        SELECT purchase_id, MAX(created_datetime) AS max_created
+        FROM tbl_payment_status
+        WHERE member_id = #{memberId}
+        GROUP BY purchase_id
+        ) t2
+        ON t1.purchase_id = t2.purchase_id AND t1.created_datetime = t2.max_created
+        WHERE t1.member_id = #{memberId}
+        ) latest_tps
+        JOIN view_post_purchase vpp
+        ON latest_tps.purchase_id = vpp.id
+        LEFT JOIN (
+        SELECT tps.post_id, MIN(vf.file_path) AS file_path
+        FROM tbl_post_section tps
+        JOIN view_file_post_section_file vf
+        ON tps.id = vf.post_section_id
+        GROUP BY tps.post_id
+        ) vfps ON vpp.id = vfps.post_id
+        WHERE vpp.post_status = 'active'
         <include refid="purchaseSearch"/>
-        ORDER BY vpp.created_datetime DESC
+        ORDER BY latest_tps.created_datetime DESC
         LIMIT #{criteria.size}
         OFFSET #{criteria.offset}
+    </select>
+
+
+    <!-- 회원 주문 상세 조회 -->
+    <select id="selectMemberOrderDetails">
+        SELECT
+            buyer.id                          AS buyer_member_id,
+            buyer.member_name                 AS member_name,
+            buyer.member_phone                AS member_phone,
+            addr.address_zip_code             AS address_zip_code,
+            addr.address                      AS address,
+            addr.address_detail               AS address_detail,
+            ps.payment_phase                  AS payment_phase,
+            ps.created_datetime               AS created_datetime,
+            ps.updated_datetime               AS updated_datetime,
+            p.id                              AS post_id,
+            p.post_title                      AS post_title,
+            pu.post_id                        AS purchase_id,
+            pu.purchase_product_price         AS purchase_product_price,
+            pu.purchase_country               AS purchase_country,
+            pu.purchase_delivery_method       AS purchase_delivery_method,
+            seller.id                         AS seller_id,
+            seller.member_name                AS seller_name,
+            seller.member_phone               AS seller_phone,
+            (
+                SELECT f2.file_path
+                FROM tbl_post_section s2
+                         JOIN tbl_post_section_file sf2 ON s2.id = sf2.post_section_id
+                         JOIN tbl_file f2 ON sf2.file_id = f2.id
+                WHERE s2.post_id = p.id
+                  AND sf2.image_type = 'main'
+                LIMIT 1
+            ) AS main_image
+        FROM tbl_purchase pu
+                 JOIN (
+            SELECT ps1.*
+            FROM tbl_payment_status ps1
+            WHERE ps1.purchase_id = #{postId}
+              AND ps1.member_id = #{memberId}
+            ORDER BY ps1.updated_datetime DESC
+            LIMIT 1
+        ) ps ON ps.purchase_id = pu.post_id
+                 JOIN tbl_member buyer ON ps.member_id = buyer.id
+                 LEFT JOIN tbl_address addr ON buyer.id = addr.member_id
+                 JOIN tbl_post p ON pu.post_id = p.id
+                 JOIN tbl_member seller ON p.member_id = seller.id
+        WHERE buyer.id = #{memberId}
+          AND p.id = #{postId}
     </select>
 
 
