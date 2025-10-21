@@ -164,7 +164,7 @@
         vpd.diary_reply_count,
         vfps.file_path as diary_file_path,
         tm.member_name,
-        
+
         tm.id as member_id,
         tm.member_description,
         tm.social_img_url,

@@ -25,10 +25,10 @@ public class MembersApiController implements MembersApiControllerDocs {
     private final JoinSmsService joinSmsService;
 
     @PostMapping("email-check")
-    @LogStatus
+//    @LogStatus
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         boolean check = memberService.checkEmail(email);
-
+        log.info("Check email {} ", check);
         return ResponseEntity.ok(check);
 
     }
