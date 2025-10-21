@@ -18,6 +18,7 @@ public class JwtAuthorizationHandler implements AccessDeniedHandler {
         log.error("AccessDeniedException: {}", accessDeniedException.getMessage());
 
         if(request.getRequestURI().startsWith("/api/")){
+            log.error("accessDeniedException Exception: {}", accessDeniedException.getMessage());
 //            REST 요청인 경우
 //            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Unauthorized: Access Denied");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
