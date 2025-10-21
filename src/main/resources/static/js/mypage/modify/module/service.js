@@ -1,10 +1,8 @@
-const memberService = {
+const mypageService = {
     async getMemberInfo() {
-        const response = await fetch("/api/member/info", {
+        const response = await fetch("/api/mypage/modify/info", {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
         });
 
         if (!response.ok) {

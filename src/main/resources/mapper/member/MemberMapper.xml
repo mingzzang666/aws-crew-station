@@ -290,7 +290,6 @@
     <!-- 내 정보 수정 정보 조회-->
     <select id="selectMyInfo">
     SELECT
-    SELECT
         m.id                    AS memberId,
         m.member_name           AS memberName,
         m.member_email          AS memberEmail,
