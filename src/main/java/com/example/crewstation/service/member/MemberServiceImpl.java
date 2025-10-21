@@ -1,6 +1,7 @@
 package com.example.crewstation.service.member;
 
 import aj.org.objectweb.asm.TypeReference;
+import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.common.exception.MemberLoginFailException;
 import com.example.crewstation.common.exception.MemberNotFoundException;
@@ -345,6 +346,30 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId) {
         return memberDAO.selectSellerOrderDetails(sellerId, paymentStatusId);
+    }
+
+    @Override
+    public ModifyDTO getMemberInfo(CustomUserDetails customUserDetails) {
+        Long memberId = customUserDetails.getId();
+        ModifyDTO dto = memberDAO.selectMemberInfo(memberId);
+
+        String imageUrl = null;
+
+        // S3 이미지 존재 여부
+        if (dto.getFilePath() != null && dto.getFileName() != null) {
+            imageUrl = dto.getFilePath() + dto.getFileName();
+        }
+        // 소셜 이미지 존재 여부
+        else if (dto.getProfileImageUrl() != null && !dto.getProfileImageUrl().isEmpty()) {
+            imageUrl = dto.getProfileImageUrl();
+        }
+        // 기본 이미지
+        else {
+            imageUrl = "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
+        }
+
+        dto.setProfileImageUrl(imageUrl);
+        return dto;
     }
 
 
