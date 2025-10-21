@@ -45,16 +45,13 @@ const paymentService = (() => {
         if (keyword) qs.set("keyword", keyword);
 
         const url = `/api/admin/payment/summary?${qs.toString()}`;
-        console.log('[summary] url =', url);      // ← 이 줄이 콘솔에 꼭 찍혀야 함
 
         const res = await fetchWithRefresh(url, { method: "GET", credentials: "include" });
         if (!res.ok) {
-            console.error('[summary] http error:', res.status);
             throw new Error("결제 요약 불러오기 실패");
         }
 
         const data = await res.json();
-        console.log('[summary] resp =', data);    // ← 응답 확인
         return data;
     };
 

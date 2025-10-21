@@ -1,7 +1,5 @@
 package com.example.crewstation.service.banner;
 
-import com.example.crewstation.dto.accompany.AccompanyDTO;
-import com.example.crewstation.dto.accompany.AccompanyPathDTO;
 import com.example.crewstation.dto.banner.BannerDTO;
 import com.example.crewstation.repository.banner.BannerDAO;
 import com.example.crewstation.service.s3.S3Service;
@@ -24,6 +22,7 @@ public class BannerTransactionService {
 
     @Transactional(rollbackFor = Exception.class)
     public List<BannerDTO> getBanners(int limit) {
+        log.info("getBanners={}", limit);
         List<BannerDTO> banners = bannerDAO.getBanners(limit);
         banners.forEach(banner -> {
             String filePath = banner.getFilePath();
@@ -34,7 +33,6 @@ public class BannerTransactionService {
             banner.setFilePath(s3Service.getPreSignedUrl(banner.getFilePath(),
                     Duration.ofMinutes(5)));
         });
-        redisTemplate.opsForValue().set("banners", banners, Duration.ofMinutes(5));
         return banners;
     }
 }

@@ -21,7 +21,7 @@
     limit 5;
 </select>
 
-    <insert id="insertBanner" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="insertBanner" keyProperty="bannerId" useGeneratedKeys="true">
         insert into tbl_banner (banner_order)
         values (#{bannerOrder})
     </insert>
@@ -30,6 +30,7 @@
         insert into tbl_banner_file (file_id, banner_id)
         values (#{fileId}, #{bannerId})
     </insert>
+
 
     <update id="updateBannerFile">
         update tbl_banner

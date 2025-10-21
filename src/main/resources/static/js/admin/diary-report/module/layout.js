@@ -5,10 +5,8 @@ const diaryReport = diarySection
 
 const diaryReportLayout = (() => {
     const showReportDiaryList = (reportDiary) => {
-        if (!diaryReport) return;            // 섹션 DOM이 없으면 안전 탈출
-        // 첫 페이지면 비우고 시작(원하면 유지)
+        if (!diaryReport) return;
         if (diaryReport.children.length === 0 && Array.isArray(reportDiary) && reportDiary.length > 0) {
-            // 필요 시 초기화 로직 추가
         }
 
         reportDiary.forEach((diary) => {

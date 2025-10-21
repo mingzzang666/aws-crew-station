@@ -6,23 +6,19 @@ function showSection(name) {
     const sections = Array.from(container.querySelectorAll('[id^="section-"]'));
     let target = container.querySelector(`#${CSS.escape(targetId)}`);
 
-    // 타깃이 없으면 화면 비우지 말고 반환
     if (!target) {
         console.warn('[showSection] target not found:', targetId);
         return;
     }
 
-    //  모든 섹션 숨김
     sections.forEach(sec => {
         sec.style.setProperty('display', 'none', 'important');
     });
 
-    // 2) 타깃 섹션/내부 래퍼를 확실히 표시
     target.style.setProperty('display', 'block', 'important');
     target.style.setProperty('visibility', 'visible', 'important');
     target.style.setProperty('opacity', '1', 'important');
 
-    // 내부 래퍼가 접혀있는 케이스를 위해 펼침
     target.querySelectorAll('.tab-view-body, .tab-wrapper, .tab-body')
         .forEach(el => {
             el.style.setProperty('display', 'block', 'important');
@@ -38,7 +34,6 @@ function showSection(name) {
         a.classList.toggle('active', a.dataset.section === name);
     });
 
-    // init 1회 실행
     if (!showSection.inited) showSection.inited = {};
     const initMap = {
         'home'        : window.mainInit,
@@ -59,9 +54,7 @@ function showSection(name) {
 
 
 
-/* =========================
-   사이드바
-========================= */
+   // 사이드바
 (() => {
     const side = document.querySelector("#bootpay-side");
     if (!side) return;
@@ -92,7 +85,6 @@ function showSection(name) {
         side.querySelectorAll(".menu-list > li").forEach((li) => li.classList.remove("open"));
     };
 
-    // 해시/active 상태에 맞춰 초기 동기화
     const syncFromDOM = () => {
         subLists.forEach((ul) => {
             const hasActiveChild = !!ul.querySelector(".boot-link.active");
@@ -107,41 +99,34 @@ function showSection(name) {
             }
         });
     };
-
-    // 초기 동작
     syncFromDOM();
 
-    // 클릭 위임
     side.addEventListener("click", (e) => {
         if (e.target.closest('#filter-status, .bt-pop-menu-context')) return;
-        // 하위 링크(다이어리/기프트)
+
         const subLink = e.target.closest(".menu-sub-list .boot-link");
         if (subLink && side.contains(subLink)) {
             e.preventDefault();
             if (subLink.dataset.section) showSection(subLink.dataset.section); // 라우팅
-            // 하위 active 토글
+
             const ul = subLink.closest(".menu-sub-list");
             ul.querySelectorAll(".boot-link.active").forEach((a) => a.classList.remove("active"));
             subLink.classList.add("active");
-            // 부모 패널은 열린 상태 유지
+
             const btn = ul.previousElementSibling;
             openPanel(btn, ul);
             return;
         }
 
-        // 최상위 버튼(신고/회원관리/문의 등)
         const btnTop = e.target.closest(".menu-item > .menu-btn");
         if (!btnTop || !side.contains(btnTop)) return;
 
-        // data-section이 있으면 바로 라우팅
         if (btnTop.dataset.section) {
             e.preventDefault();
             showSection(btnTop.dataset.section);
             return;
         }
 
-        // data-section이 없는 상위(= 신고) → 패널 열고 첫 하위로 자동 라우팅
-        // data-section이 없는 상위(= 신고) → 패널 토글 + 첫 하위로 강제 라우팅
         e.preventDefault();
         const panel = btnTop.nextElementSibling;
         const hasPane = panel && panel.classList.contains("menu-sub-list");
@@ -151,12 +136,10 @@ function showSection(name) {
         closeAllMenus();
 
         if (willOpen) {
-            // 패널 열기
             openPanel(btnTop, panel);
 
             const first = panel.querySelector('.boot-link[data-section]');
             if (first) {
-                // 다른 리스너/리플로우 이후에도 라우팅 보장
                 setTimeout(() => {
                     panel.querySelectorAll('.boot-link.active').forEach(a => a.classList.remove('active'));
                     first.classList.add('active');
@@ -165,7 +148,6 @@ function showSection(name) {
                 }, 0);
             }
         } else {
-            // 이미 열려있는 패널 다시 클릭: 하위 active 없으면 첫 하위로 라우팅
             openPanel(btnTop, panel);
             const activeChild = panel.querySelector('.boot-link.active');
             const first = panel.querySelector('.boot-link[data-section]');
@@ -179,15 +161,11 @@ function showSection(name) {
         }
 
     });
-
-    // 해시 변경 시 부모 패널 자동 오픈
     window.addEventListener("popstate", syncFromDOM);
 })();
 
 
-/* =========================
-   우측 상단 유저 메뉴
-========================= */
+   // 우측 상단 유저 메뉴
 (() => {
     const initUserMenu = () => {
         const btn  = document.getElementById("userMenuBtn");
@@ -230,9 +208,7 @@ function showSection(name) {
     }
 })();
 
-/* =========================
-   회원 모달(기존 그대로)
-========================= */
+   // 회원 모달(기존 그대로)
 (() => {
     const modal = document.querySelector(".member-modal");
     if (!modal) return;
@@ -289,9 +265,7 @@ function showSection(name) {
     });
 })();
 
-/* =========================
-   회원 목록/검색/페이징 (기존 그대로)
-========================= */
+   // 회원 목록/검색/페이징
 const memberMenuBtn       = document.getElementById("memberMenu");
 const paginationMember    = document.querySelector(".pagination.bootpay-pagination.member-pagination");
 const memberKeywordInput  = document.getElementById("memberKeyword");
@@ -381,9 +355,7 @@ function drawPie(staticsData) {
     chart.draw(data, options);
 }
 
-/* =========================
-   로그인 정보/로그아웃 (기존 그대로)
-========================= */
+  // 로그인 정보/로그아웃
 async function fetchWithRefresh(url, opts = {}) {
     let res = await fetch(url, { credentials: 'include'});
     if (res.status === 401) {
@@ -424,9 +396,6 @@ async function fetchWithRefresh(url, opts = {}) {
 })();
 
 
-/* =========================
-   초기 진입/뒤로가기
-========================= */
 window.addEventListener('DOMContentLoaded', () => {
     const initial = (location.hash || '#home').slice(1);
     showSection(initial);

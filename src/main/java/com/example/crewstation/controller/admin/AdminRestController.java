@@ -208,8 +208,6 @@ public class AdminRestController implements AdminRestControllerDocs{
             else search.setCategories(cats);
         }
 
-        log.info("summary search={}", search);
-
         return ResponseEntity.ok(paymentService.getPaymentSummary(search));
     }
 
@@ -255,7 +253,8 @@ public class AdminRestController implements AdminRestControllerDocs{
 
     @GetMapping("/banner")
     public ResponseEntity<List<BannerDTO>> getBanners(@RequestParam(defaultValue = "5") int limit) {
-        return ResponseEntity.ok(bannerTransactionService.getBanners(limit));
+        log.info("getBanners ={}", limit);
+        return ResponseEntity.ok(bannerService.getBanners(limit));
     }
 
     @PostMapping("/banner")
@@ -265,7 +264,6 @@ public class AdminRestController implements AdminRestControllerDocs{
         if (bannerDTO.getBannerOrder() == 0 && admin != null) {
             bannerDTO.setBannerOrder(Math.toIntExact(admin.getId()));
         }
-        bannerService.insertBanner(bannerDTO);
         bannerService.insertBannerFile(bannerDTO, files);
         return ResponseEntity.ok().build();
     }

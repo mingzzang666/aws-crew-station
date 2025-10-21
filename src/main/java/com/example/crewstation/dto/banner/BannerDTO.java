@@ -20,5 +20,6 @@ public class BannerDTO {
     private String fileName;
     private String filePath;
     private String fileOriginName;
+    private String url;
 
 }
