@@ -30,7 +30,7 @@ body:
   - type: input
     attributes:
       label: 🔗 벤치마킹 사이트 URL (Reference URL)
-      description: 참고한 사이트나 클론 대상 웹사이트가 있다면 입력해 주세요. 없다면 생략해도 됩니다.
+      description: 참고한 사이트나 클론 대상 웹사이트가 있다면 입력해 주세요. 없다면 생략 가능합니다.
       placeholder: https://www.example.com/login
     validations:
       required: false
