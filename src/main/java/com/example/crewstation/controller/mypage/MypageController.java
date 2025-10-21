@@ -1,6 +1,7 @@
 package com.example.crewstation.controller.mypage;
 
 import com.example.crewstation.auth.CustomUserDetails;
+import com.example.crewstation.dto.member.MySaleDetailDTO;
 import com.example.crewstation.dto.member.MySaleListCriteriaDTO;
 import com.example.crewstation.dto.member.MySaleListDTO;
 import com.example.crewstation.dto.purchase.PurchaseListCriteriaDTO;
@@ -97,6 +98,13 @@ public class MypageController {
         log.info("total={}, hasMore={}", criteria.getTotal(), criteria.isHasMore());
 
         return "mypage/sale-list";
+    }
+
+    // 마이페이지 - 판매 상세 페이지
+    @GetMapping("/sale-detail/{paymentStatusId}")
+    public String loadMySaleDetailPage(@PathVariable("paymentStatusId") Long paymentStatusId, Model model) {
+        model.addAttribute("paymentStatusId", paymentStatusId);
+        return "mypage/sale-detail";
     }
 
 }

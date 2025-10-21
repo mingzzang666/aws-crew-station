@@ -59,6 +59,12 @@ public interface MemberMapper {
                                             @Param("criteria") Criteria criteria,
                                             @Param("search") Search search);
 
+//  나의 판매내역 상세 조회
+    public MySaleDetailDTO selectSellerOrderDetails(
+            @Param("sellerId") Long sellerId,
+            @Param("paymentStatusId") Long paymentStatusId
+    );
+
     // 전체 개수 조회 (페이징)
     public int selectSaleTotalCount(@Param("memberId") Long memberId,
                                     @Param("search") Search search);
