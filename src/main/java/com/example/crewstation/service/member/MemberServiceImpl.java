@@ -342,6 +342,10 @@ public class MemberServiceImpl implements MemberService {
         log.info(" 판매 상태가 {} 로 변경되었습니다.", paymentPhase);
     }
 
+    @Override
+    public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId) {
+        return memberDAO.selectSellerOrderDetails(sellerId, paymentStatusId);
+    }
 
 
 }

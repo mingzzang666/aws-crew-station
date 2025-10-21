@@ -1,9 +1,3 @@
-/* =========================
-   섹션 라우터 (수정 본)
-   - 모든 .page / section-* 숨김
-   - 타깃 섹션의 .page 래퍼까지 표시
-   - init 1회 실행
-========================= */
 function showSection(name) {
     const container = document.getElementById('page-container');
     if (!container) return;
@@ -12,18 +6,18 @@ function showSection(name) {
     const sections = Array.from(container.querySelectorAll('[id^="section-"]'));
     let target = container.querySelector(`#${CSS.escape(targetId)}`);
 
-    // ❗ 타깃이 없으면 화면 비우지 말고 반환 (또는 home 폴백)
+    // 타깃이 없으면 화면 비우지 말고 반환
     if (!target) {
         console.warn('[showSection] target not found:', targetId);
         return;
     }
 
-    // 1) 모든 섹션 숨김 (important)
+    //  모든 섹션 숨김
     sections.forEach(sec => {
         sec.style.setProperty('display', 'none', 'important');
     });
 
-    // 2) 타깃 섹션/내부 래퍼를 확실히 표시 (important)
+    // 2) 타깃 섹션/내부 래퍼를 확실히 표시
     target.style.setProperty('display', 'block', 'important');
     target.style.setProperty('visibility', 'visible', 'important');
     target.style.setProperty('opacity', '1', 'important');
@@ -54,6 +48,7 @@ function showSection(name) {
         'gift-report' : window.giftReportInit,
         'payment'     : window.paymentInit,
         'inquiry'     : window.inquiryInit,
+        'banner'      : window.bannerInit,
     };
     const init = initMap[name];
     if (typeof init === 'function' && !showSection.inited[name]) {

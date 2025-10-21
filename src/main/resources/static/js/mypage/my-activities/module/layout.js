@@ -93,24 +93,26 @@ const replyLayout = (() => {
 
     const renderReplyCard = (diary) => {
         return `
-        <div class="reply-wrap" data-id="${diary.postId}">
-          <img src="${diary.mainImage || '/static/images/diary-list-ex2.jpg'}" alt="">
-          <article class="inquiry">
-            <h1 class="inquiry-content">
-              <div class="inquiry-title-text">${diary.postTitle || "제목 없음"}</div>
-            </h1>
-            <div class="inquiry-content-text">
-              ${diary.content || ""}
+        <a href="/diaries/detail/${diary.postId}">
+            <div class="reply-wrap" data-id="${diary.postId}">
+              <img src="${diary.mainImage || '/static/images/diary-list-ex2.jpg'}" alt="">
+              <article class="inquiry">
+                <h1 class="inquiry-content">
+                  <div class="inquiry-title-text">${diary.postTitle || "제목 없음"}</div>
+                </h1>
+                <div class="inquiry-content-text">
+                  ${diary.content || ""}
+                </div>
+                <div class="reply-content active">
+                  <div class="answer">
+                    <div class="reply-icon"></div>
+                    <div class="answer-container">${diary.replyContent ? `${diary.replyContent}` : "댓글 없음"}</div>
+                    <span class="writer">${diary.relativeDatetime || ""}</span>
+                  </div>
+                </div>
+              </article>
             </div>
-            <div class="reply-content active">
-              <div class="answer">
-                <div class="reply-icon"></div>
-                <div class="answer-container">${diary.replyContent ? `${diary.replyContent}` : "댓글 없음"}</div>
-                <span class="writer">${diary.relativeDatetime || ""}</span>
-              </div>
-            </div>
-          </article>
-        </div>
+        </a>
         `;
 };
 

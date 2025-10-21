@@ -3,6 +3,7 @@ package com.example.crewstation.controller.mypage;
 import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.dto.member.MyPurchaseDetailDTO;
+import com.example.crewstation.dto.member.MySaleDetailDTO;
 import com.example.crewstation.dto.member.MySaleListDTO;
 import com.example.crewstation.service.guest.GuestService;
 import com.example.crewstation.service.member.MemberService;
@@ -80,6 +81,17 @@ public class MypageRestController {
         memberService.updateSaleStatus(memberId, paymentStatusId, PaymentPhase.valueOf(paymentPhase));
 
         return ResponseEntity.ok().build();
+    }
+
+//  마이페이지 - 판매 상세 조회
+    @GetMapping("/sale-detail/{paymentStatusId}")
+    public MySaleDetailDTO getMySaleDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                           @PathVariable("paymentStatusId") Long paymentStatusId) {
+
+        Long sellerId = customUserDetails.getId();
+        log.info("판매 상세 요청 - sellerId={}, paymentStatusId={}", sellerId, paymentStatusId);
+
+        return memberService.getSellerOrderDetails(sellerId, paymentStatusId);
     }
 
 

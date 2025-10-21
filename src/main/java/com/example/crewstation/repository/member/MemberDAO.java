@@ -2,10 +2,7 @@ package com.example.crewstation.repository.member;
 
 import com.example.crewstation.common.enumeration.MemberRole;
 import com.example.crewstation.domain.member.MemberVO;
-import com.example.crewstation.dto.member.MemberDTO;
-import com.example.crewstation.dto.member.MemberProfileDTO;
-import com.example.crewstation.dto.member.MySaleListDTO;
-import com.example.crewstation.dto.member.MemberStatics;
+import com.example.crewstation.dto.member.*;
 import com.example.crewstation.dto.purchase.PurchaseListDTO;
 import com.example.crewstation.mapper.member.MemberMapper;
 import com.example.crewstation.util.Criteria;
@@ -96,6 +93,11 @@ public class MemberDAO {
     //  판매 내역 목록 조회
     public List<MySaleListDTO> selectSaleList(Long memberId, Criteria criteria, Search search) {
         return memberMapper.selectSaleList(memberId, criteria, search);
+    }
+
+    // 판매 내역 상세 조회
+    public MySaleDetailDTO selectSellerOrderDetails(Long sellerId, Long paymentStatusId) {
+        return memberMapper.selectSellerOrderDetails(sellerId, paymentStatusId);
     }
 
     //  전체 개수 조회

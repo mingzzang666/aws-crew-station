@@ -207,6 +207,51 @@
         <include refid="purchaseSearch"/>
     </select>
 
+    <!-- 판매 주문 상세 조회 -->
+    <select id="selectSellerOrderDetails">
+        SELECT
+            buyer.id                    AS buyer_member_id,
+            buyer.member_name           AS member_name,
+            buyer.member_phone          AS member_phone,
+            addr.address_zip_code       AS address_zip_code,
+            addr.address                AS address,
+            addr.address_detail         AS address_detail,
+
+            ps.id                       AS payment_status_id,
+            ps.payment_phase            AS payment_phase,
+            ps.created_datetime         AS created_datetime,
+            ps.updated_datetime         AS updated_datetime,
+
+            p.id                        AS post_id,
+            p.post_title                AS post_title,
+            pu.purchase_product_price   AS purchase_product_price,
+
+            (
+                SELECT f2.file_path
+                FROM tbl_post_section s2
+                         JOIN tbl_post_section_file sf2 ON s2.id = sf2.post_section_id
+                         JOIN tbl_file f2 ON sf2.file_id = f2.id
+                WHERE s2.post_id = p.id
+                  AND sf2.image_type = 'main'
+                LIMIT 1
+            ) AS main_image,
+
+            seller.id                   AS seller_id
+        FROM tbl_purchase pu
+                 JOIN tbl_payment_status ps
+                      ON ps.purchase_id = pu.post_id
+                 JOIN tbl_member buyer
+                      ON ps.member_id = buyer.id
+                 LEFT JOIN tbl_address addr
+                           ON buyer.id = addr.member_id
+                 JOIN tbl_post p
+                      ON pu.post_id = p.id
+                 JOIN tbl_member seller
+                      ON p.member_id = seller.id
+        WHERE p.member_id = #{sellerId}
+          AND ps.id = #{paymentStatusId}
+    </select>
+
     <select id="selectMonthlyJoin">
         select
             TO_CHAR(
