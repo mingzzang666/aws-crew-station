@@ -1,165 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CrewStation</title>
-    <link rel="stylesheet" href="/css/admin/banner.css">
-    <link rel="stylesheet" href="/css/admin/font.css">
-    <link rel="shortcut icon" href="/images/crew-station-favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/css/admin/sidebar.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
-
-</head>
-<body>
-    <div id="bootpay">
-        <div class="popup-manager" style="width: 0px;"></div>
-        <aside id="bootpay-side">
-            <div class="d-flex flex-column" id="side-wrapper">
-                <div class="side-header">
-                    <div class="app-wrapper">
-                        <div class="provider-name hover-spin">
-                            <span class="comp-provider-name">
-                                <span class="pn-name">CrewStation</span>
-                            </span>
-                        </div>
-                        <a class="app-name d-flex justify-content-between align-items-center">
-                            <span>CrewStation</span>
-                            <i class="mdi mdi-apps">
-                            </i>
-                        </a>
-                    </div>
-                </div>
-                <div class="menu-wrapper flex-grow-1">
-                    <ul class="menu-list">
-                        <li class="menu menu-item d-flex flex-column">
-                            <a class="menu-btn d-flex w-100 " data-toggle="collapse" >
-                                <span class="menu-name">HOME</span>
-                                <div class="icon-wrapper flex-grow-1 text-right">
-                                </div>
-                            </a>
-                        </li>
-                        <li class="menu menu-item d-flex flex-column">
-                            <a class="menu-btn d-flex w-100 " data-toggle="collapse" >
-                                <span class="menu-name">회원관리</span>
-                                <div class="icon-wrapper flex-grow-1 text-right">
-                                </div>
-                            </a>
-                        </li>
-                        <li class="menu menu-item d-flex flex-column">
-                            <a class="menu-btn d-flex w-100 " data-toggle="collapse" >
-                                <span class="menu-name">크루관리</span>
-                                <div class="icon-wrapper flex-grow-1 text-right">
-                                </div>
-                            </a>
-                        </li>
-                        <li class="menu menu-item d-flex flex-column">
-                            <!-- 클릭 이벤트 -->
-                            <!-- 회원 목록 클릭 시 collipse 열고 닫기 이벤트 -->
-                            <a class="menu-btn d-flex w-100 " data-toggle="collapse" >
-                                <span class="menu-name">신고</span>
-                                <div class="icon-wrapper flex-grow-1 text-right">
-                                </div>
-                            </a>
-                            <ul class="menu-sub-list collapse" >
-                                <li class="submenu menu-item ">
-                                    <a class="boot-link" data-param="0">
-
-                                        다이어리
-                                    </a>
-                                </li>
-                                <li class="submenu menu-item ">
-                                    <a class="boot-link" data-param="0">
-
-                                        기프트
-                                    </a>
-                                </li>
-                                <li class="submenu menu-item ">
-                                    <a class="boot-link" data-param="0">
-
-                                        크루
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu menu-item d-flex flex-column">
-                            <a class="boot-link menu-btn">
-                                <span class="menu-name">결제관리</span>
-                            </a>
-                            <ul class="menu-sub-list collapse " id="menu-60934308367997007c4c3d2c"></ul>
-                        </li>
-
-                        <li class="menu menu-item d-flex flex-column">
-                            <a class="menu-btn d-flex w-100"data-toggle="collapse">
-                                <span class="menu-name">문의</span>
-                                <div class="icon-wrapper flex-grow-1 text-right"></div>
-                            </a>
-                        </li>
-                        <li class="menu menu-item d-flex flex-column">
-                            <a class="menu-btn d-flex w-100 active "data-toggle="collapse">
-                                <span class="menu-name">배너관리</span>
-                                <div class="icon-wrapper flex-grow-1 text-right"></div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </aside>
-        <div id="bootpay-main"class="has-menu">
-            <div id="header-wrapper">
-                <div id="bootpay-header" class="d-flex trial-mode">
-                    <div class="flex-grow-1"></div>
-                    <div>
-                        <div class="header-menu-group d-flex">
-                            <a class="boot-link mr-3" href="">
-                                <div class="header-menu-btn " data-for="8598bfd3-1b35-4de3-a48f-9d6654dc0268" data-toggle="tooltip" data-custom-class title="공지사항">
-                                    <i class="mdi mdi-bullhorn-variant-outline">
-
-                                    </i>
-
-                                </div>
-                            </a>
-                            <div class="user-menu">
-                                <!-- 주석 아래에 show 유무로 메뉴가보임 -->
-                                <div id="usermenubtn"class="user-menu-wrapper d-flex align-items-center cursor-pointer" data-toggle="dropdown">
-                                    <div class="user-avatar">T</div>
-                                    <div class="user-menu-email">test@gamil.com</div>
-                                </div>
-                                <div id="usermenu" class="user-menu-content dropdown-menu dropdown-menu-right">
-                                    <ul class="menu-body list-unstyled">
-                                        <li>
-                                            <a class="boot-link d-block text-dark"href="">
-                                                <i class="mdi mdi-bell-outline mr-2 mdi-18px"></i>
-                                                회원가입
-
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="d-block text-dark"href="">
-                                                <i class="mdi mdi-logout-variant mr-2 mdi-18px"></i>
-                                                로그아웃
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-            <div class="page third-party-index payment-setting-layout">
+<div th:fragment="banner-page">
+    <div id="section-banner" class="page wide-page receipt-index" style="display:none;">
                 <div class="page-header">
                     <div class="page-title">메인 배너 등록</div>
-                    <div class="page-subtitle">실시간 메인 배너 등록</div>
+<!--                    <div class="page-subtitle">실시간 메인 배너 등록</div>-->
                 </div>
                 <div class="page-body temp-page">
                     <div class="pg-box">
                         <div class="title">
-                            메인페이지 배너등록
+<!--                            메인페이지 배너등록-->
                         </div>
                         <!-- 아래 Li수만큼 Img -->
                         <div class="dropdown">
@@ -200,6 +48,3 @@
 
         </div>
     </div>
-</body>
-<script src="/js/admin/banner/event.js"></script>
-</html>

@@ -3,6 +3,7 @@ package com.example.crewstation.mapper.file;
 import com.example.crewstation.domain.file.FileVO;
 import com.example.crewstation.dto.file.FileDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface FileMapper {
@@ -14,4 +15,9 @@ public interface FileMapper {
 
 //  파일 삭제
     public void delete(Long id);
+
+//  파일 조회
+    FileDTO selectOne(@Param("id") Long id);
+
+
 }

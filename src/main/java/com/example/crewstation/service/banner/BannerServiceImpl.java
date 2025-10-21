@@ -1,14 +1,8 @@
 package com.example.crewstation.service.banner;
 
 import com.example.crewstation.aop.aspect.annotation.LogReturnStatus;
-import com.example.crewstation.aop.aspect.annotation.LogStatus;
-import com.example.crewstation.common.enumeration.Type;
-import com.example.crewstation.common.exception.PurchaseNotFoundException;
-import com.example.crewstation.dto.accompany.AccompanyDTO;
 import com.example.crewstation.dto.banner.BannerDTO;
-import com.example.crewstation.dto.diary.DiaryDTO;
 import com.example.crewstation.dto.file.FileDTO;
-import com.example.crewstation.dto.file.section.FilePostSectionDTO;
 import com.example.crewstation.repository.banner.BannerDAO;
 import com.example.crewstation.repository.file.FileDAO;
 import com.example.crewstation.service.s3.S3Service;
@@ -16,19 +10,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.Banner;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
+
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +30,6 @@ public class BannerServiceImpl implements BannerService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final BannerTransactionService bannerTransactionService;
     private final FileDAO fileDAO;
-    private final FileDTO fileDTO;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -51,7 +41,8 @@ public class BannerServiceImpl implements BannerService {
             ObjectMapper mapper = new ObjectMapper();
             banners = mapper.convertValue(
                     obj,
-                    new TypeReference<List<BannerDTO>>() {}
+                    new TypeReference<List<BannerDTO>>() {
+                    }
             );
         }
 
@@ -79,53 +70,135 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @LogReturnStatus
     public void insertBannerFile(BannerDTO bannerDTO, List<MultipartFile> files) {
-        FileDTO fileDTO = new FileDTO();
-        bannerDAO.insertBannerFile(bannerDTO);
+        if (bannerDTO.getBannerId() == null) {
+            bannerDAO.insertBanner(bannerDTO);
+        }
+        if (files == null || files.isEmpty()) {
+            return;
+        }
+
         IntStream.range(0, files.size()).forEach(i -> {
             MultipartFile file = files.get(i);
-            if (file.getOriginalFilename().equals("")) {
+            if (file == null || file.isEmpty()) {
                 return;
             }
             try {
-                String s3Key = s3Service.uploadPostFile(file, fileDTO.getFilePath());
                 String originalFilename = file.getOriginalFilename();
-                String extension = "";
+                if (originalFilename == null) originalFilename = "";
 
-                if (originalFilename != null && originalFilename.contains(".")) {
-                    extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String extension = "";
+                int dot = originalFilename.lastIndexOf('.');
+                if (dot >= 0 && dot < originalFilename.length() - 1) {
+                    extension = originalFilename.substring(dot + 1).trim().toLowerCase();
                 }
 
-                fileDTO.setFileName(UUID.randomUUID() + extension);
+                String fileName = UUID.randomUUID().toString() + (extension.isEmpty() ? "" : "." + extension);
+                String s3Key = s3Service.uploadPostFile(file, fileName);
+
+                FileDTO fileDTO = new FileDTO();
+                fileDTO.setFileName(fileName);
                 fileDTO.setFilePath(s3Key);
                 fileDTO.setFileSize(String.valueOf(file.getSize()));
                 fileDTO.setFileOriginName(originalFilename);
                 fileDAO.saveFile(fileDTO);
 
+                bannerDAO.insertBannerFile(bannerDTO.getBannerId(), fileDTO.getId());
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
-
     }
 
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    @LogReturnStatus
     public void updateBanner(BannerDTO bannerDTO, Long[] deleteFiles, List<MultipartFile> multipartFiles) {
-        FileDTO fileDTO = new FileDTO();
+
         bannerDAO.updateBannerFile(bannerDTO);
 
         if (deleteFiles != null && deleteFiles.length > 0) {
-            s3Service.deleteFile(fileDTO.getFilePath());
-            fileDAO.delete(fileDTO.getId());
+            Arrays.stream(deleteFiles).forEach(fileId -> {
+                if (fileId == null) return;
 
+                bannerDAO.deleteBannerFileLink(bannerDTO.getBannerId(), fileId);
+
+                FileDTO found = fileDAO.findById(fileId);
+                if (found != null && found.getFilePath() != null) {
+                    try {
+                        s3Service.deleteFile(found.getFilePath());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                fileDAO.delete(fileId);
+            });
+        }
+
+        // 신규 파일 추가
+        if (multipartFiles != null && !multipartFiles.isEmpty()) {
+            IntStream.range(0, multipartFiles.size()).forEach(i -> {
+                MultipartFile file = multipartFiles.get(i);
+                if (file == null || file.isEmpty()) {
+                    return;
+                }
+                try {
+                    String originalFilename = file.getOriginalFilename();
+                    if (originalFilename == null) originalFilename = "";
+
+                    String extension = "";
+                    int dot = originalFilename.lastIndexOf('.');
+                    if (dot >= 0 && dot < originalFilename.length() - 1) {
+                        extension = originalFilename.substring(dot + 1).trim().toLowerCase();
+                    }
+
+                    String fileName = UUID.randomUUID().toString() + (extension.isEmpty() ? "" : "." + extension);
+                    String s3Key = s3Service.uploadPostFile(file, fileName);
+
+                    FileDTO fileDTO = new FileDTO();
+                    fileDTO.setFileName(fileName);
+                    fileDTO.setFilePath(s3Key);
+                    fileDTO.setFileSize(String.valueOf(file.getSize()));
+                    fileDTO.setFileOriginName(originalFilename);
+                    fileDAO.saveFile(fileDTO);
+
+                    bannerDAO.insertBannerFile(bannerDTO.getBannerId(), fileDTO.getId());
+
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
     @Override
     public void deleteBanner(Long id) {
+        if (id == null) return;
 
+        List<FileDTO> files = bannerDAO.findFilesByBannerId(id);
+        bannerDAO.deleteAllBannerFiles(id);
+
+        if (files != null) {
+            for (FileDTO fileDTO : files) {
+                if (fileDTO == null || fileDTO.getId() == null) continue;
+                try {
+                    if (fileDTO.getFilePath() != null) {
+                        s3Service.deleteFile(fileDTO.getFilePath());
+                    }
+                } catch (Exception e) {
+                }
+                fileDAO.delete(fileDTO.getId());
+            }
+        }
+        bannerDAO.deleteBanner(id);
     }
 }
+
+
 
 
 

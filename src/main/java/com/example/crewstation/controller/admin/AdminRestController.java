@@ -2,8 +2,8 @@ package com.example.crewstation.controller.admin;
 
 import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.domain.notice.NoticeDetailVO;
-import com.example.crewstation.domain.payment.PaymentVO;
 import com.example.crewstation.dto.ask.AskDTO;
+import com.example.crewstation.dto.banner.BannerDTO;
 import com.example.crewstation.dto.member.MemberAdminStatics;
 import com.example.crewstation.dto.member.MemberCriteriaDTO;
 import com.example.crewstation.dto.member.MemberDTO;
@@ -15,13 +15,13 @@ import com.example.crewstation.repository.payment.PaymentDAO;
 import com.example.crewstation.repository.payment.status.PaymentStatusDAO;
 import com.example.crewstation.service.ask.adminAsk.AdminAskService;
 import com.example.crewstation.service.banner.BannerService;
+import com.example.crewstation.service.banner.BannerTransactionService;
 import com.example.crewstation.service.member.MemberService;
 import com.example.crewstation.service.notice.NoticeDetailService;
 import com.example.crewstation.service.notice.NoticeService;
 import com.example.crewstation.service.payment.PaymentService;
 import com.example.crewstation.service.gift.GiftService;
 import com.example.crewstation.service.report.ReportService;
-import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.Search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,6 +57,8 @@ public class AdminRestController implements AdminRestControllerDocs{
             "PAY_SUCCESS",  "SUCCESS",
             "PAY_CANCEL",   "REFUND"
     );
+    private final BannerTransactionService bannerTransactionService;
+    private final BannerService bannerService;
 
     //    관리자 회원 목록
     @PostMapping("/members")
@@ -247,6 +250,39 @@ public class AdminRestController implements AdminRestControllerDocs{
         dto.setReplyContent(replyContent);
 
         adminAskService.registerReply(dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/banner")
+    public ResponseEntity<List<BannerDTO>> getBanners(@RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok(bannerTransactionService.getBanners(limit));
+    }
+
+    @PostMapping("/banner")
+    public ResponseEntity<?> insertBanner(@AuthenticationPrincipal CustomUserDetails admin,
+                                             @ModelAttribute BannerDTO bannerDTO,
+                                             @RequestParam(value = "files", required = false) List<MultipartFile> files) {
+        if (bannerDTO.getBannerOrder() == 0 && admin != null) {
+            bannerDTO.setBannerOrder(Math.toIntExact(admin.getId()));
+        }
+        bannerService.insertBanner(bannerDTO);
+        bannerService.insertBannerFile(bannerDTO, files);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/banner/{bannerId}")
+    public ResponseEntity<Void> updateBanner(@PathVariable Long bannerId,
+                                             @ModelAttribute BannerDTO bannerDTO,
+                                             @RequestParam(value = "deleteFiles", required = false) Long[] deleteFiles,
+                                             @RequestParam(value = "files", required = false) List<MultipartFile> multipartFiles) {
+        bannerDTO.setBannerId(bannerId);
+        bannerService.updateBanner(bannerDTO, deleteFiles, multipartFiles);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/banner/{bannerId}")
+    public ResponseEntity<Void> deleteBanner(@PathVariable Long bannerId) {
+        bannerService.deleteBanner(bannerId);
         return ResponseEntity.ok().build();
     }
 

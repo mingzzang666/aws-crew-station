@@ -38,7 +38,7 @@ public class MapperTests {
         Long testFileId = 52L;
         Long testBannerId = 1L;
 
-        bannerMapper.insertBannerFile(bannerDTO);
+        bannerMapper.insertBannerFile(testFileId, testBannerId);
 
         log.info("fileId: {}, bannerId: {}", testFileId, testBannerId);
     }

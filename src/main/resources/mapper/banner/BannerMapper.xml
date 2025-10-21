@@ -41,6 +41,29 @@
         delete from tbl_banner where id = #{bannerId}
     </delete>
 
+    <delete id="deleteBannerFileLink">
+        delete from tbl_banner_file
+        where banner_id = #{bannerId}
+          and file_id   = #{fileId}
+    </delete>
+
+    <delete id="deleteAllBannerFiles">
+        delete from tbl_banner_file
+        where banner_id = #{bannerId}
+    </delete>
+
+    <select id="findFilesByBannerId">
+        select f.id,
+               f.file_path       as filePath,
+               f.file_name       as fileName,
+               f.file_origin_name as fileOriginName,
+               f.file_size       as fileSize
+        from tbl_banner_file bf
+                 join tbl_file f on f.id = bf.file_id
+        where bf.banner_id = #{bannerId}
+    </select>
+
+
 
 
 

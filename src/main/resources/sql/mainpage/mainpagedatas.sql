@@ -1304,4 +1304,6 @@ ON CONFLICT (id) DO NOTHING;
 select * from tbl_banner;
 select * from tbl_banner_file;
 
+select * from view_file_banner_file;
+
 

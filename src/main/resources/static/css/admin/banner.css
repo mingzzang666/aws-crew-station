@@ -698,3 +698,13 @@ address, dl, ol, ul {
 .reg-btn { background:#fff; border:1px solid #e2e2e2; border-radius:6px; cursor:pointer; }
 .reg-btn.primary { border-color:#507cf3; color:#507cf3; }
 .banner-list-title { margin: 20px 0 8px; font-size:16px; }
+
+.registered-banner-list .registered-item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 120px 1fr max-content;
+}
+
+.registered-banner-list .registered-item .reg-actions {
+    justify-self: end;
+}
