@@ -590,6 +590,15 @@ public class DiaryServiceImpl implements DiaryService {
         return message;
     }
 
+    @Override
+    public List<DiaryDTO> findDiaryById(Long diaryId) {
+        List<DiaryDTO>  diaryDTOs = diaryDAO.findDiaryAllByMemberId(diaryId);
+        diaryDTOs.forEach( diaryDTO -> {
+            diaryDTO.setDiaryFilePath(s3Service.getPreSignedUrl(diaryDTO.getDiaryFilePath(), Duration.ofMinutes(10)));
+        });
+        return diaryDTOs;
+    }
+
     public void deleteDiary(Long postId) {
         postDAO.updatePostStatus(postId);
     }

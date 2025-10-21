@@ -61,6 +61,8 @@ public interface DiaryService {
 
 //    다이어리 공개 비공개 변경
     public String changeSecret(DiaryDTO diaryDTO);
+//    memberId로 다이어리  조회
+    public List<DiaryDTO> findDiaryById(Long diaryId);
 
 
     public void deleteDiary(Long postId);

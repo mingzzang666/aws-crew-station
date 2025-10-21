@@ -61,11 +61,16 @@ public interface MemberService {
 //    관리자 등록
     public void joinAdmin(MemberDTO memberDTO);
 
+<<<<<<< HEAD
 //  판매 상태 업데이트
     public void updateSaleStatus(Long memberId, Long paymentStatusId, PaymentPhase paymentPhase);
 
 //  내 정보 수정 정보조회
     public ModifyDTO getMemberInfo(CustomUserDetails customUserDetails);
+=======
+//    id로 멤버 조회
+    public MemberDTO getProfileMember(Long memberId);
+>>>>>>> profile
 
     default MemberVO toVO(MemberDTO memberDTO) {
         return MemberVO.builder()

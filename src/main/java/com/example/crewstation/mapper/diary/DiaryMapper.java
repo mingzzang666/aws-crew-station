@@ -70,4 +70,8 @@ public interface DiaryMapper {
     public void updateSecret(@Param("postId") Long postId,@Param("secret") Secret secret);
 //   댓글 개수 증가 / 감소
     public void updateReplyCount(@Param("count") int count,@Param("postId") Long postId);
+//    memberId로 다이어리 개수 조회
+    public int selectCountDiaryAllByMemberId(Long memberId);
+//    memberId로 다이어리  조회
+    public List<DiaryDTO>  selectDiaryAllByMemberId(Long memberId);
 }
