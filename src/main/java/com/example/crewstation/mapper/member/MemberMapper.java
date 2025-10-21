@@ -70,7 +70,7 @@ public interface MemberMapper {
                                     @Param("search") Search search);
 
 //  나의 구매내역 상세
-    public List<MyPurchaseDetailDTO>  selectMyPurchaseDetail(@Param("purchaseId") Long purchaseId);
+    public List<MyPurchaseDetailDTO>  selectMyPurchaseDetail(Long purchaseId);
 
 //    월별 가입자 수
     public List<MemberStatics> selectMonthlyJoin();
@@ -83,6 +83,10 @@ public interface MemberMapper {
 
 //    관리자 등록
     public void insertAdmin(MemberDTO memberDTO);
+
+//  내 정보 수정 정보조회
+    public ModifyDTO selectMemberInfo(Long memberId);
+
 
 }
 

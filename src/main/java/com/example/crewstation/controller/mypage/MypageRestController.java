@@ -2,6 +2,7 @@ package com.example.crewstation.controller.mypage;
 
 import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
+import com.example.crewstation.dto.member.ModifyDTO;
 import com.example.crewstation.dto.member.MyPurchaseDetailDTO;
 import com.example.crewstation.dto.member.MySaleDetailDTO;
 import com.example.crewstation.dto.member.MySaleListDTO;
@@ -94,6 +95,11 @@ public class MypageRestController {
         return memberService.getSellerOrderDetails(sellerId, paymentStatusId);
     }
 
-
+    // 마이페이지 - 내 정보 조회
+    @GetMapping("/modify/info")
+    public ResponseEntity<ModifyDTO> getMemberInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ModifyDTO dto = memberService.getMemberInfo(customUserDetails);
+        return ResponseEntity.ok(dto);
+    }
 
 }

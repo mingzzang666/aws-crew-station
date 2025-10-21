@@ -107,4 +107,10 @@ public class MypageController {
         return "mypage/sale-detail";
     }
 
+    //  마이페이지 - 내 정보 수정 페이지 로드
+    @GetMapping("/modify")
+    public String loadMyInfoPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return "mypage/modify";
+    }
+
 }
