@@ -29,13 +29,10 @@ public class PurchaseListDTO {
     private String createdDatetime;
     private String updatedDatetime;
     private PaymentPhase status;
+    private Long paymentStatusId;
 
     public String getFormattedCreatedDatetime() {
         return formatDateString(createdDatetime);
-    }
-
-    public String getFormattedUpdatedDatetime() {
-        return formatDateString(updatedDatetime);
     }
 
     private String formatDateString(String datetime) {

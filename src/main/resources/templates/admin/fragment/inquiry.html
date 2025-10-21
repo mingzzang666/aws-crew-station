@@ -3,7 +3,6 @@
     <div id="section-inquiry" class="page wide-page receipt-index" style="display:none;">
         <div class="page-header">
             <div class="page-title">문의 내역 조회</div>
-            <div class="page-subtitle">회원 문의</div>
         </div>
 
         <div class="page-body">
@@ -49,7 +48,7 @@
                             <div class="col-auto">
                                 <div class="filter-wrapper filter-status mr-2">
                                     <div class="boot-pop-checkbox">
-                                        <button id="btn-filter-status" class="boot-pop-checkbox-filter-btn btn btn-outline-filter">
+                                        <button id="button-filter-status" class="boot-pop-checkbox-filter-btn btn btn-outline-filter">
                                             답변상태 <i class="mdi mdi-menu-down"></i>
                                         </button>
 
@@ -73,11 +72,11 @@
                                                     </li>
 
                                                     <!-- 답변완료 -->
-                                                    <li id="checkboxactive1" class="list-item">
+                                                    <li class="list-item">
                                                         <div class="row">
                                                             <div class="col">
                                                                 <div class="boot-check d-flex align-items-center">
-                                                                    <div class="boot-check-box" tabindex="0" style="width:20px;height:20px;">
+                                                                    <div id="checkboxactive1" class="boot-check-box" tabindex="0" style="width:20px;height:20px;">
                                                                         <i class="mdi mdi-check"></i>
                                                                     </div>
                                                                     <div class="boot-check-content flex-grow-1">답변완료</div>
@@ -87,11 +86,11 @@
                                                     </li>
 
                                                     <!-- 미답변(기본 체크) -->
-                                                    <li id="checkboxactive2" class="list-item active">
+                                                    <li class="list-item">
                                                         <div class="row">
                                                             <div class="col">
-                                                                <div class="boot-check d-flex align-items-center checked">
-                                                                    <div class="boot-check-box checked" tabindex="0" style="width:20px;height:20px;">
+                                                                <div class="boot-check d-flex align-items-center">
+                                                                    <div id="checkboxactive2" class="boot-check-box" tabindex="0" style="width:20px;height:20px;">
                                                                         <i class="mdi mdi-check"></i>
                                                                     </div>
                                                                     <div class="boot-check-content flex-grow-1">미답변</div>
@@ -118,11 +117,7 @@
                                         <input type="text" class="form-control flex-grow-1" placeholder="문의번호/회원">
                                         <div class="input-group-append">
                                             <button class="btn btn-search">
-                        <span class="comp-icon icon-magnify">
-                          <svg class="icon-img" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path class="icon-color fill" d="m13.523 12.463 3.212 3.211-1.06 1.061-3.212-3.212A6.72 6.72 0 0 1 8.25 15 6.752 6.752 0 0 1 1.5 8.25 6.752 6.752 0 0 1 8.25 1.5 6.752 6.752 0 0 1 15 8.25a6.72 6.72 0 0 1-1.477 4.213z" fill="#292929"></path>
-                          </svg>
-                        </span>
+                                                <i class="mdi mdi-magnify"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -231,9 +226,9 @@
                                     </div>
 
                                     <!-- 답변하기 -->
-                                    <div class="info-layout payment-info">
+                                    <div class="info-layout inquiry-reply">
                                         <div class="info-title justify-content-between">
-                                            <div class="flex-left d-flex"><div class="title">답변하기</div></div>
+                                            <button type="button" data-role="inquiry-reply-submit" class="btn btn-outline-filter">답변하기</button>
                                         </div>
                                         <div class="info-body">
                                             <div class="table-info row">
@@ -255,7 +250,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button class="btn-close btn btn-outline-filter">답변하기</button>
+                        <button type="button" class="btn-close btn btn-outline-filter">답변하기</button>
                     </div>
                 </div>
             </div>

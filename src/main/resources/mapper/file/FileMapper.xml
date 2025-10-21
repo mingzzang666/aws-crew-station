@@ -15,4 +15,15 @@
         delete from tbl_file
         where id = #{id}
     </delete>
+
+    <select id="selectOne">
+        select id,
+               file_path as filePath,
+               file_name as fileName,
+               file_origin_name as fileOriginName,
+               file_size as fileSize
+        from tbl_file
+        where id = #{id}
+    </select>
+
 </mapper>

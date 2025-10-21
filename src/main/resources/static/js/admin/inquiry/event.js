@@ -1,21 +1,49 @@
-// ===== 문의 관리 Event / Init =====
-window.inquireInit = async function () {
+window.closeAllLayerUIs = function () {
+    document.querySelectorAll('.bt-pop-menu.show, .bt-pop-menu-back.show')
+        .forEach(el => el.classList.remove('show'));
+
+    document.querySelectorAll('#pop-menu-bt2.show')
+        .forEach(el => el.classList.remove('show'));
+
+    document.querySelectorAll('.modal.show, .payment-modal.show').forEach(m => {
+        m.classList.remove('show');
+        m.style.display = 'none';
+    });
+    document.body.classList.remove('modal-open');
+};
+
+
+window.inquiryInit = async function () {
     if (window._inquireInited) return;
     window._inquireInited = true;
 
+    window.closeAllLayerUIs();
     const section = document.getElementById('section-inquiry');
     if (!section) return;
 
-    const modal = document.getElementById('modal');
-    const btnClose = modal?.querySelector('#close');
-    const btnReply = modal?.querySelector('.modal-footer .btn-close');
-    const replyInput = modal?.querySelector('.payment-info input');
+    window.closeAllLayerUIs = function () {
+        document.querySelectorAll('.bt-pop-menu.show, .bt-pop-menu-back.show')
+            .forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('#pop-menu-bt2.show')
+            .forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.modal.show, .payment-modal.show').forEach(m => {
+            m.classList.remove('show');
+            m.style.display = 'none';
+        });
+        document.body.classList.remove('modal-open');
+    };
+
+
+    const modal     = document.getElementById('inquiry-modal');
+    const btnClose  = modal?.querySelector('[data-role="inquiry-close"]') || modal?.querySelector('.close');
+    const btnReply  = modal?.querySelector('[data-role="inquiry-reply-submit"]');
+    const replyInput= modal?.querySelector('.inquiry-reply input, .inquiry-reply textarea');
 
     const searchInput = section.querySelector('.filter-search input');
     const searchBtn   = section.querySelector('.filter-search .btn-search');
 
     // 필터 팝업(답변상태)
-    const filterBtn   = section.querySelector('#btn-filter-status');
+    const filterBtn   = section.querySelector('#button-filter-status');
     const filterPopup = section.querySelector('#pop-menu-bt2');
     const chkAns      = section.querySelector('#checkboxactive1'); // 답변완료
     const chkUnAns    = section.querySelector('#checkboxactive2'); // 미답변
@@ -28,8 +56,8 @@ window.inquireInit = async function () {
     const state = { keyword: '', category: '' }; // category: '', 'ANSWERED', 'UNANSWERED'
 
     const calcCategory = () => {
-        const a = chkAns?.classList.contains('active');
-        const u = chkUnAns?.classList.contains('active');
+        const a = chkAns?.classList.contains('is-checked');
+        const u = chkUnAns?.classList.contains('is-checked');
         if (a && !u) state.category = 'ANSWERED';
         else if (!a && u) state.category = 'UNANSWERED';
         else state.category = '';
@@ -67,20 +95,37 @@ window.inquireInit = async function () {
     // ===== 필터 팝업 토글 =====
     filterBtn?.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         if (!filterPopup) return;
         filterPopup.classList.toggle('show');
     });
+
+    filterPopup?.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    document.addEventListener('click', () => {
+        const visible = section && section.offsetParent !== null;
+        if (!visible) return;
+        filterPopup?.classList.remove('show');
+    });
+
     btnAll?.addEventListener('click', (e) => {
         e.preventDefault();
-        chkAns?.classList.add('active'); chkUnAns?.classList.add('active');
+        chkAns?.classList.add('is-checked'); chkUnAns?.classList.add('is-checked');
     });
     btnNone?.addEventListener('click', (e) => {
         e.preventDefault();
-        chkAns?.classList.remove('active'); chkUnAns?.classList.remove('active');
+        chkAns?.classList.remove('is-checked'); chkUnAns?.classList.remove('is-checked');
     });
-    chkAns?.addEventListener('click', () => chkAns.classList.toggle('active'));
-    chkUnAns?.addEventListener('click', () => chkUnAns.classList.toggle('active'));
+    chkAns?.addEventListener('click', () =>
+        chkAns.classList.toggle('is-checked'));
+
+    chkUnAns?.addEventListener('click', () =>
+        chkUnAns.classList.toggle('is-checked'));
+
     btnApply?.addEventListener('click', async (e) => {
+        console.log("적용")
         e.preventDefault();
         calcCategory();
         filterPopup?.classList.remove('show');

@@ -26,4 +26,9 @@ public class FileDAO {
         fileMapper.delete(id);
     }
 
+//    파일 링크 삭제
+    public FileDTO findById(Long id) {
+        return fileMapper.selectOne(id);
+    }
+
 }

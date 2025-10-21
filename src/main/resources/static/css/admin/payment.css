@@ -2503,11 +2503,11 @@ element.style {
     color: #fff;
 }
 /* 체크됐을 때 박스/체크 보이기 */
-.boot-check .boot-check-box.is-checked{
+.boot-check .boot-check-box .is-checked{
     background: #3b82f6;
     border-color: #3b82f6;
 }
-.boot-check .boot-check-box.is-checked i{
+.boot-check .boot-check-box .is-checked i{
     opacity: 1;
 }
 

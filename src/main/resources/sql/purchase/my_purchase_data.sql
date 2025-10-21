@@ -30,6 +30,8 @@ WHERE tps.member_id = 8;
 TRUNCATE TABLE tbl_payment_status CASCADE;
 SELECT id, member_name, member_phone FROM tbl_member WHERE id = 8;
 
+SELECT * FROM tbl_payment_status WHERE id = 1;
+
 
 
 

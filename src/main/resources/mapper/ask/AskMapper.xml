@@ -22,12 +22,20 @@
         i.inquiry_title as inquiryTitle,
         i.inquiry_content as inquiryContent,
         m.member_name as memberName,
-        i.created_datetime as createdDatetime,
-        r.created_datetime as replyDatetime,
+
+        to_char(i.created_datetime, 'YYYY-MM-DD HH24:MI:SS') as createdDatetime,
+        to_char(r.created_datetime, 'YYYY-MM-DD HH24:MI:SS') as replyDatetime,
+
         case when r.id is not null then 'ANSWERED' else 'UNANSWERED' end as inquiryStatus
         from tbl_inquiry i
         join tbl_member m on m.id = i.member_id
-        left join tbl_inquiry_reply r on r.inquiry_id = i.id
+        left join lateral (
+        select r1.*
+        from tbl_inquiry_reply r1
+        where r1.inquiry_id = i.id
+        order by r1.created_datetime desc
+        limit 1
+        ) r on true
         <where>
             <if test="keyword != null and keyword != ''">
                 and (
@@ -36,7 +44,6 @@
                 or m.member_name ilike concat('%', #{keyword}, '%')
                 )
             </if>
-
             <if test="category != null and category != ''">
                 <choose>
                     <when test="category == 'ANSWERED'">and r.id is not null</when>
@@ -51,17 +58,24 @@
     <select id="selectInquiryById">
         select
             i.id,
-            i.inquiry_title as inquiryTitle,
+            i.inquiry_title  as inquiryTitle,
             i.inquiry_content as inquiryContent,
-            i.member_id as memberId,
-            m.member_name as memberName,
-            i.created_datetime as createdDatetime,
-            r.id as replyId,
+            i.member_id      as memberId,
+            m.member_name    as memberName,
+            to_char(i.created_datetime, 'YYYY-MM-DD HH24:MI:SS') as createdDatetime,
+            r.id             as replyId,
             r.inquiry_reply_content as replyContent,
-            r.created_datetime as replyDatetime
+            to_char(r.created_datetime, 'YYYY-MM-DD HH24:MI:SS') as replyDatetime,
+            case when r.id is not null then 'ANSWERED' else 'UNANSWERED' end as inquiryStatus
         from tbl_inquiry i
                  join tbl_member m on m.id = i.member_id
-                 left join tbl_inquiry_reply r on r.inquiry_id = i.id
+                 left join lateral (
+            select r1.*
+            from tbl_inquiry_reply r1
+            where r1.inquiry_id = i.id
+            order by r1.created_datetime desc
+            limit 1
+            ) r on true
         where i.id = #{id}
     </select>
 

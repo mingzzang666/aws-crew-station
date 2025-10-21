@@ -40,8 +40,8 @@ public class PaymentRestController {
 
     @PostMapping("/complete")
     public ResponseEntity<String> completePayment(@RequestBody PaymentDTO paymentDTO) {
-        paymentService.completePayment(paymentDTO.getPurchaseId(), paymentDTO);
         log.info("[PaymentRestController] 결제 요청 수신: {}", paymentDTO);
+        paymentService.completePayment(paymentDTO.getPaymentStatusId(), paymentDTO);
         return ResponseEntity.ok("결제가 완료되었습니다.");
     }
 }

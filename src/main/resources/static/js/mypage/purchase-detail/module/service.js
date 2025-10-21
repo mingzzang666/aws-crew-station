@@ -2,9 +2,9 @@
 const orderService = (() => {
 
     // 주문 상세 조회
-    const getOrderDetail = async (postId) => {
+    const getOrderDetail = async (paymentStatusId) => {
         try {
-            const res = await fetch(`/api/mypage/purchase-detail/${postId}`);
+            const res = await fetch(`/api/mypage/purchase-detail/${paymentStatusId}`);
             if (!res.ok) throw new Error("주문 상세 조회 실패");
             return await res.json();
         } catch (err) {
@@ -14,9 +14,9 @@ const orderService = (() => {
     };
 
     // 주문 취소
-    const cancelOrder = async (purchaseId) => {
+    const cancelOrder = async (paymentStatusId) => {
         try {
-            const res = await fetch(`/api/mypage/purchase-detail/${purchaseId}/status?paymentPhase=REFUND`, {
+            const res = await fetch(`/api/mypage/purchase-detail/${paymentStatusId}/status?paymentPhase=REFUND`, {
                 method: "PUT"
             });
             if (!res.ok) throw new Error("주문 취소 실패");
@@ -48,9 +48,9 @@ const orderService = (() => {
     };
 
     // 수령 완료
-    const completeReceive = async (purchaseId) => {
+    const completeReceive = async (paymentStatusId) => {
         try {
-            const res = await fetch(`/api/mypage/purchase-detail/${purchaseId}/status?paymentPhase=RECEIVED`, {
+            const res = await fetch(`/api/mypage/purchase-detail/${paymentStatusId}/status?paymentPhase=RECEIVED`, {
                 method: "PUT"
             });
             if (!res.ok) throw new Error("수령 완료 실패");

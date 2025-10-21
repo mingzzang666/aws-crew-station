@@ -1,4 +1,3 @@
-// ===== 문의 관리 Layout =====
 const inquireLayout = (() => {
     const safe = (v, d='-') => (v === null || v === undefined || v === '') ? d : String(v);
     const esc  = (s) => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));

@@ -1,97 +1,79 @@
-// 개수 조회
+document.addEventListener("DOMContentLoaded", () => {
+    const searchBtn = document.getElementById("searchBtn");
+    const searchInput = document.getElementById("keywordInput");
 
-const purchases = document.querySelectorAll(".purchase-list-wrapper");
-const requestNumber = document.querySelector(".request-number");
-const wattingNumber = document.querySelector(".watting-number");
-const paymentOkNumber = document.querySelector(".payment-ok");
-const receiveNumber = document.querySelector(".receive-number");
-
-let request = 0;
-let paymentOk = 0;
-let watting = 0;
-let receive = 0;
-
-purchases.forEach((purchase) => {
-    const title = purchase.querySelector(".title-status");
-
-    let text = title.innerText;
-
-    if (text === "수락대기") {
-        request++;
-    } else if (text === "결제완료") {
-        paymentOk++;
-    } else if (text === "결제대기") {
-        watting++;
-    } else if (text === "전달완료") {
-        receive++;
-    } else {
+    if (!searchBtn || !searchInput) {
+        console.warn("검색창 요소를 찾을 수 없습니다.");
         return;
     }
 
-    requestNumber.innerText = request;
-    wattingNumber.innerText = watting;
-    paymentOkNumber.innerText = paymentOk;
-    receiveNumber.innerText = receive;
-});
+    function goSearch() {
+        const keyword = searchInput.value.trim();
+        const baseUrl = "/mypage/sale-list";
+        const params = new URLSearchParams();
 
-//  검색 드롭다운
+        if (keyword) params.append("keyword", keyword);
+        params.append("page", 1);
+        params.append("size", 10);
 
-const dropDownButtons = document.querySelectorAll(".drop-down-button");
+        window.location.href = `${baseUrl}?${params.toString()}`;
+    }
 
-dropDownButtons.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const list = btn.nextElementSibling;
-        list.classList.toggle("active");
-    });
-});
+    // 버튼 클릭 시 검색
+    searchBtn.addEventListener("click", goSearch);
 
-// 문서 전체 클릭 시 active 제거
-document.addEventListener("click", () => {
-    const activeLists = document.querySelectorAll(".drop-down-list.active");
-    activeLists.forEach((list) => {
-        list.classList.remove("active");
-    });
-});
-
-//  선택 항목 button에 담기
-
-const listContents = document.querySelectorAll(".list-content");
-
-listContents.forEach((content) => {
-    content.addEventListener("click", (e) => {
-        const dropDown = content.closest(".drop-down-wrapper");
-        const text = dropDown.querySelector(".drop-down-text");
-        const list = dropDown.querySelector(".drop-down-list");
-        let word = content.innerText;
-
-        text.innerText = word;
-        list.classList.remove("active");
-    });
-});
-
-// 승락하기 버튼
-
-const acceptButtons = document.querySelectorAll(".accept");
-
-acceptButtons.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-        const confirmed = confirm("주문을 승락 하시겠습니까?");
-        if (confirmed) {
-            // 상태 변경
+    // 엔터 키로 검색
+    searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            goSearch();
         }
     });
-});
 
-// 거절하기 버튼
-
-const cancelButtons = document.querySelectorAll(".purchase-cancel");
-
-cancelButtons.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-        const confirmed = confirm("정말 주문을 거절 하시겠습니까?");
-        if (confirmed) {
-            // 상태 변경
-        }
+    document.querySelectorAll('.purchase-cancel').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const paymentStatusId = this.dataset.paymentStatusId;
+            if (confirm("정말 이 판매 요청을 거절하시겠습니까?")) {
+                updateSaleStatus(paymentStatusId, 'REFUND');
+            }
+        });
     });
+
+    document.querySelectorAll('.accept').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const paymentStatusId = this.dataset.paymentStatusId;
+            if (confirm("이 판매 요청을 수락하시겠습니까?")) {
+                updateSaleStatus(paymentStatusId, 'PENDING');
+            }
+        });
+    });
+
+    // 상태 업데이트 함수
+    function updateSaleStatus(paymentStatusId, newStatus) {
+        if (!paymentStatusId) return;
+
+        fetch(`/api/mypage/status/${paymentStatusId}?paymentPhase=${newStatus}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                paymentStatusId: paymentStatusId,
+                status: newStatus
+            })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('상태 변경 실패');
+                return res.text();
+            })
+            .then(() => {
+                alert('성공적으로 반영되었습니다.');
+                location.reload();
+            })
+            .catch(err => {
+                console.error(err);
+                alert('오류가 발생했습니다.');
+            });
+    }
 });

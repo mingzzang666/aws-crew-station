@@ -181,7 +181,7 @@ ol, ul {
     right: 0;
 }
 
-.search {
+.m-search {
     max-width: 100%;
     margin-top: 8px;
     display: flex;
@@ -190,20 +190,20 @@ ol, ul {
     flex-direction: row-reverse;
 }
 
-.search-bar {
+.m-search-bar {
     padding: 20px 0px;
     display: flex;
     gap: 0px 8px;
 }
 
-.search-bar-wraper {
+.m-search-bar-wraper {
     display: flex;
     width: 343px;
     min-width: 0px;
     gap: 8px;
 }
 
-.search-bar-wrap {
+.m-search-bar-wrap {
     flex-grow: 1;
     min-width: 0px;
     user-select: none;
@@ -217,7 +217,7 @@ ol, ul {
     display: flex;
 }
 
-.search-input {
+.m-search-input {
     display: inline-block;
     margin: 0px;
     border: none;
@@ -359,7 +359,8 @@ ol, ul {
 }
 
 .order-card {
-    padding: 20px 0px;
+    padding: 20px 20px;
+    position: relative
 }
 
 .order-title {
@@ -384,18 +385,18 @@ ol, ul {
 }
 
 .product {
-    flex: 1 1 0%;
-    max-width: 700px;
-    margin-bottom: 0px;
-    margin-right: 53px;
-    min-width: 0px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
 }
 
 .product-wrapper {
-    max-width: 700px;
     display: flex;
-    gap: 12px;
-    min-width: 0px;
+    align-items: center;          /* 세로 가운데 정렬 */
+    justify-content: space-between; /* 좌: 상품, 우: 버튼 */
+    width: 100%;
 }
 
 .product-img {
@@ -780,4 +781,119 @@ ol, ul {
     background-color: rgba(231, 231, 231, 0.5);
     z-index: 1;
     border-radius: 4px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+/* REFUND 상태 오버레이 */
+.cancel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(160, 160, 160, 0.5); /* 회색 반투명 */
+    z-index: 5;
+    border-radius: 4px;
+}
+
+.order {
+    width: 100%;
+    margin: 0;
+    padding: 0; /* ✅ 좌우 여백 제거 */
+    border-radius: 4px;
+    border: 1px solid rgb(234, 237, 239);
+    background: rgb(255, 255, 255);
+    box-sizing: border-box;
+    overflow: hidden; /* ✅ 내부 오버레이가 튀어나오지 않도록 */
+}
+
+/* 버튼 영역 정렬 */
+.button-wrap {
+    display: flex;
+    justify-content: flex-end; /* 👉 오른쪽 정렬 */
+    align-items: center;
+    margin-top: 10px; /* 필요시 여백 조절 */
+    gap: 10px; /* 버튼 사이 간격 */
+}
+
+/* 버튼 전체 레이아웃 */
+.button-inner {
+    display: flex;
+    gap: 8px;
+}
+
+/* 각 버튼 스타일 */
+.button1,
+.button2 {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* 거절하기 버튼 */
+.button1 {
+    background-color: #f2f2f2;
+    color: #444;
+}
+
+/* 수락하기 버튼 */
+.button2 {
+    background-color: #647FBC;
+    color: white;
+}
+
+/* 호버 효과 */
+.button1:hover {
+    background-color: #e0e0e0;
+}
+
+.button2:hover {
+    background-color: #3a7ae0;
+}
+
+.product-img {
+    flex-shrink: 0;
+}
+
+.product-info {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 버튼 영역 */
+.button-wrap {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0; /* 버튼이 줄바꿈 안 되게 */
+}
+
+.button1,
+.button2 {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.button1 {
+    background-color: #f2f2f2;
+    color: #444;
+    border-color: #e0e0e0;
+}
+
+.button2 {
+    background-color: #647FBC;
+    color: #fff;
+    border-color: #647FBC;
 }

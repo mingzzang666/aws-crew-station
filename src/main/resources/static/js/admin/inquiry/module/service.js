@@ -13,7 +13,7 @@ const inquireService = (() => {
             credentials: 'include',
         });
         if (!res.ok) throw new Error('문의 목록 로드 실패');
-        return await res.json(); // Array<AskDTO>
+        return await res.json();
     };
 
     const getDetail = async (id) => {

@@ -40,10 +40,10 @@ public interface PurchaseService {
     public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, ScrollCriteria scrollcriteria, Search search);
 
 //  나의 구매내역 상세 조회
-    public MyPurchaseDetailDTO getMemberOrderDetails(Long memberId, Long postId);
+    public MyPurchaseDetailDTO getMemberOrderDetails(Long memberId, Long paymentStatusId);
 
     // 결제 상태 업데이트
-    public void updatePaymentStatus(Long purchaseId, PaymentPhase paymentPhase);
+    public void updatePaymentStatus(Long paymentStatusId, PaymentPhase paymentPhase);
 
     default PostSectionVO toPostSectionVO(PurchaseDTO purchaseDTO){
         return PostSectionVO.builder()

@@ -1300,6 +1300,10 @@ VALUES
     (303, '채팅 알림 개선 패치를 반영했습니다. 앱 재실행 후 확인 부탁드립니다.', 900, 206, NOW() - INTERVAL '1 days', NOW() - INTERVAL '1 days')
 ON CONFLICT (id) DO NOTHING;
 
-COMMIT;
+
+select * from tbl_banner;
+select * from tbl_banner_file;
+
+select * from view_file_banner_file;
 
 

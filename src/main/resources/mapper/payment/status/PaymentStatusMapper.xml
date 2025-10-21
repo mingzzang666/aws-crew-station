@@ -35,12 +35,25 @@
         where purchase_id = #{purchaseId}
     </select>
 
+    <!-- 결제 상태 단건 조회 -->
+    <select id="findByPaymentStatusId">
+        SELECT
+            id,
+            payment_phase,
+            purchase_id,
+            member_id,
+            created_datetime,
+            updated_datetime
+        FROM tbl_payment_status
+        WHERE id = #{paymentStatusId}
+    </select>
+
     <!-- 결제 상태 업데이트-->
     <update id="updatePaymentStatus">
         UPDATE tbl_payment_status
         SET payment_phase = #{paymentPhase},
             updated_datetime = now()
-        WHERE purchase_id = #{purchaseId}
+        WHERE id = #{paymentStatusId}
     </update>
 
     <select id="countPayment">
