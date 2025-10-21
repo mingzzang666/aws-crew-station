@@ -128,7 +128,7 @@ public class MemberDAO {
 
 //  내 정보 수정 정보조회
     public ModifyDTO selectMemberInfo(Long memberId) {
-        return memberMapper.selectMemberInfo(memberId);
+        return memberMapper.selectMyInfo(memberId);
     }
 
 
