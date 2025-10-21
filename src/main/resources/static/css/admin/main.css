@@ -1475,3 +1475,13 @@ td {
     font-weight: 700;
 }
 
+/* 사이드바 서브메뉴 표시 규칙을 강제 */
+#bootpay-side .menu-sub-list { display: none; }                 /* 기본은 숨김 */
+#bootpay-side .menu-sub-list.show { display: block; }           /* .show면 보이기 */
+#bootpay-side .menu-item.open > .menu-sub-list { display: block; } /* open 상태도 보이기 */
+
+/* 혹시 bootstrap .collapse 규칙과 충돌 시 높이/가시성 강제 */
+#bootpay-side .menu-sub-list.collapse {
+    height: auto !important;
+    visibility: visible !important;
+}

@@ -20,6 +20,7 @@ public class MyPurchaseDetailDTO {
     private String AddressDetail;
 
     // 결제
+    private Long paymentStatusId;
     private PaymentPhase paymentPhase;
 
     // 구매(상품)

@@ -1,16 +1,16 @@
 // ===================== Member Order Event =====================
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("order-detail");
-    const postId = document.body.dataset.postId;
+    const paymentStatusId = document.body.dataset.paymentStatusId;
 
-    if (!postId) {
-        console.error("postId가 없습니다. <body th:data-post-id>가 비어있습니다.");
+    if (!paymentStatusId) {
+        console.error("paymentStatusId가 없습니다. <body th:data-payment-status-id>가 비어있습니다.");
         container.innerHTML = "<p>주문 정보를 불러올 수 없습니다.</p>";
         return;
     }
 
     // 주문 상세 조회
-    orderService.getOrderDetail(postId)
+    orderService.getOrderDetail(paymentStatusId)
         .then(order => {
             console.log("회원 주문 상세:", order);
             if (!order) {
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (cancelBtn && cancelBtn.classList.contains("active")) {
                 cancelBtn.addEventListener("click", () => {
                     if (confirm("정말 주문을 취소하시겠습니까?")) {
-                        orderService.cancelOrder(order.purchaseId)
+                        orderService.cancelOrder(order.paymentStatusId)
                             .then(() => {
                                 orderLayout.updateOrderStatus("주문 취소");
                                 orderLayout.showToast("주문이 취소되었습니다.", true);
@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         const itemName = order.postTitle || "기프트샵 결제";
                         const amount = order.purchaseProductPrice || 1000;
 
-                        // Bootpay 결제 요청
                         const response = await Bootpay.requestPayment({
                             application_id: "68de1c1f00d008657455bbbf",
                             price: amount,
@@ -78,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                 try {
                                     await orderService.completePayment({
+                                        paymentStatusId: order.paymentStatusId,
                                         purchaseId: order.purchaseId,
                                         memberId: order.buyerMemberId,
                                         receiptId: response.data.receipt_id,
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (receiveBtn && receiveBtn.classList.contains("active")) {
                 receiveBtn.addEventListener("click", () => {
                     if (confirm("상품을 수령 완료 처리하시겠습니까?")) {
-                        orderService.completeReceive(order.purchaseId)
+                        orderService.completeReceive(order.paymentStatusId)
                             .then(() => {
                                 orderLayout.updateOrderStatus("수령 완료");
                                 orderLayout.showToast("수령 확인이 완료되었습니다.", true);
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         e.preventDefault();
                         if (selectedScore >= 1 && selectedScore <= 5) {
                             if (confirm("별점을 등록하시겠습니까?")) {
-                                orderService.submitReview(order.sellerId, order.purchaseId, selectedScore)
+                                orderService.submitReview(order.sellerId, order.paymentStatusId, selectedScore)
                                     .then(() => {
                                         modal.style.display = "none";
                                         orderLayout.showToast("별점이 정상적으로 등록되었습니다.", true);
@@ -166,7 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     };
 
-                    // 닫기 버튼
                     closeBtn.onclick = () => {
                         modal.style.display = "none";
                     };
@@ -174,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         })
         .catch(err => {
-            console.error("❌ 주문 상세 조회 중 오류:", err);
+            console.error("주문 상세 조회 중 오류:", err);
             container.innerHTML = "<p>주문 정보를 불러오지 못했습니다.</p>";
         });
 });

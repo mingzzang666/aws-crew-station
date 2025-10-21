@@ -60,8 +60,7 @@ const memberService = (() => {
 })();
 
 
-// 로그인 시
-const loginSection = document.querySelector("login-profile-wrap");
-// 비 로그인 시
-const userSection= document.querySelector("login-logout-container");
-const profileImg
+
+
+
+

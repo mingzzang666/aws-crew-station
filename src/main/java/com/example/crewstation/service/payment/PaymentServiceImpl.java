@@ -83,12 +83,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Transactional
     @Override
-    public void completePayment(Long purchaseId, PaymentDTO paymentDTO) {
+    public void completePayment(Long paymentStatusId, PaymentDTO paymentDTO) {
 
         // 1결제 상태 조회
-        PaymentStatusDTO status = paymentStatusDAO.findByPurchaseId(purchaseId);
+        PaymentStatusDTO status = paymentStatusDAO.findByPaymentStatusId(paymentStatusId);
         if (status == null) {
-            throw new IllegalStateException("결제 상태 정보가 없습니다. purchaseId=" + purchaseId);
+            throw new IllegalStateException("결제 상태 정보가 없습니다. paymentStatusId=" + paymentStatusId);
         }
 
         paymentDTO.setPaymentStatusId(status.getId());
@@ -102,7 +102,7 @@ public class PaymentServiceImpl implements PaymentService {
         paymentDAO.insertPayment(paymentDTO);
 
         // 결제 상태 업데이트
-        paymentStatusDAO.updatePaymentStatus(purchaseId, PaymentPhase.SUCCESS);
+        paymentStatusDAO.updatePaymentStatus(paymentStatusId, PaymentPhase.SUCCESS);
     }
 
 
@@ -124,6 +124,16 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentCriteriaDTO getPaymentDetail(Long id) {
         return paymentStatusDAO.selectPaymentDetail(id);
+    }
+
+    @Override
+    public Map<String, Object> getPaymentSummary(Search search) {
+        Map<String, Object> raw = paymentStatusDAO.selectPaymentSummary(search);
+        long approved = ((Number) raw.getOrDefault("approvedAmount", 0L)).longValue();
+        long canceled = ((Number) raw.getOrDefault("canceledAmount", 0L)).longValue();
+
+        return Map.of("approvedAmount", approved, "canceledAmount", canceled);
+
     }
 
 

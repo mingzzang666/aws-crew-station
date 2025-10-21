@@ -1,7 +1,3 @@
-// before
-// const diaryReport = document.querySelector(".table-reports tbody");
-
-// after
 const diarySection = document.getElementById("section-diary-report");
 const diaryReport = diarySection
     ? diarySection.querySelector(".table-reports tbody")

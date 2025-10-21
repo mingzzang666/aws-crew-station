@@ -12,15 +12,10 @@
 
             <if test="search != null and search.keyword != null and search.keyword != ''">
                 <bind name="kw" value="'%' + search.keyword + '%'" />
-                AND (
-                b.member_name ILIKE #{kw}
-                OR vpp.post_title ILIKE #{kw}
-                )
+                AND ( b.member_name ILIKE #{kw} OR vpp.post_title ILIKE #{kw} )
             </if>
         </where>
     </sql>
-
-
 
 
 
@@ -40,12 +35,25 @@
         where purchase_id = #{purchaseId}
     </select>
 
+    <!-- 결제 상태 단건 조회 -->
+    <select id="findByPaymentStatusId">
+        SELECT
+            id,
+            payment_phase,
+            purchase_id,
+            member_id,
+            created_datetime,
+            updated_datetime
+        FROM tbl_payment_status
+        WHERE id = #{paymentStatusId}
+    </select>
+
     <!-- 결제 상태 업데이트-->
     <update id="updatePaymentStatus">
         UPDATE tbl_payment_status
         SET payment_phase = #{paymentPhase},
             updated_datetime = now()
-        WHERE purchase_id = #{purchaseId}
+        WHERE id = #{paymentStatusId}
     </update>
 
     <select id="countPayment">
@@ -147,6 +155,30 @@
         order by ps.id, p.updated_datetime desc nulls last , p.created_datetime desc nulls last
         limit 1
     </select>
+
+    <select id="selectPaymentSummary">
+        select
+        coalesce(sum(case when upper(ps.payment_phase::text) = 'SUCCESS'
+        then coalesce(vpp.purchase_product_price, 0) * coalesce(vpp.purchase_product_count, 0) else 0 end), 0) as "approvedAmount",
+
+        coalesce(sum(case when upper(ps.payment_phase::text) in ('REFUND', 'CANCEL')
+        then coalesce(vpp.purchase_product_price, 0) * coalesce(vpp.purchase_product_count, 0) else 0 end), 0) as "canceledAmount"
+
+        from tbl_payment_status ps
+
+        left join tbl_payment p on p.payment_status_id = ps.id
+        left join view_post_purchase vpp on vpp.id = ps.purchase_id
+        left join tbl_member b on b.id = ps.member_id
+        left join tbl_member s on s.id = vpp.member_id
+        <include refid="searchWhere"/>
+    </select>
+
+
+
+
+
+
+
 
 
 

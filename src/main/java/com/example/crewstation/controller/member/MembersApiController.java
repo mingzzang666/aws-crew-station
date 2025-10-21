@@ -1,5 +1,7 @@
 package com.example.crewstation.controller.member;
 
+import com.example.crewstation.aop.aspect.annotation.LogReturnStatus;
+import com.example.crewstation.aop.aspect.annotation.LogStatus;
 import com.example.crewstation.dto.member.MemberProfileDTO;
 import com.example.crewstation.service.mail.MailService;
 import com.example.crewstation.service.member.MemberService;
@@ -23,6 +25,7 @@ public class MembersApiController implements MembersApiControllerDocs {
     private final JoinSmsService joinSmsService;
 
     @PostMapping("email-check")
+    @LogStatus
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         boolean check = memberService.checkEmail(email);
 
@@ -39,6 +42,7 @@ public class MembersApiController implements MembersApiControllerDocs {
     }
 
     @PostMapping("/send-email")
+    @LogReturnStatus
     public ResponseEntity<Map<String, String>> sendEmail(@RequestParam("email") String email) {
         try {
             String code = mailService.sendMail(email);
@@ -53,6 +57,7 @@ public class MembersApiController implements MembersApiControllerDocs {
 
 //    핸드폰 인증 메세지 발송
     @PostMapping("/phone-check")
+    @LogReturnStatus
     public ResponseEntity<Map<String, String>> checkPhone(@RequestParam String phone) {
         String code = joinSmsService.send(phone);
         log.info("code: {}", code);

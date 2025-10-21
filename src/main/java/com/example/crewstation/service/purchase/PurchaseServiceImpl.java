@@ -263,66 +263,48 @@ public class PurchaseServiceImpl implements PurchaseService {
         return today.format(formatter);
     }
 
-//  구매내역 목록 조회
-//  구매내역 목록 조회
-@Override
-public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, ScrollCriteria scrollcriteria, Search search) {
+    // 나의 구매내역 목록 조회
+    @Override
+    public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, ScrollCriteria scrollcriteria, Search search) {
 
-    List<PurchaseListDTO> list = purchaseDAO.selectPurchaseList(memberId, scrollcriteria, search);
-    int total = purchaseDAO.selectTotalCount(memberId, search);
-    scrollcriteria.setTotal(total);
+        List<PurchaseListDTO> list = purchaseDAO.selectPurchaseList(memberId, scrollcriteria, search);
 
-    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        int total = purchaseDAO.selectTotalCount(memberId, search);
+        scrollcriteria.setTotal(total);
 
-    list.forEach(dto -> {
-        try {
-            //
-            if (dto.getCreatedDatetime() != null && !dto.getCreatedDatetime().isEmpty()) {
-                String created = dto.getCreatedDatetime().split("\\.")[0];
-                dto.setCreatedDatetime(
-                        LocalDate.parse(created, inputFormatter).format(outputFormatter)
-                );
+        // S3 presigned URL 변환
+        list.forEach(dto -> {
+            try {
+                if (dto.getFilePath() != null && !dto.getFilePath().isBlank()) {
+                    log.info("Before S3 convert filePath={}", dto.getFilePath());
+                    String preSignedUrl = s3Service.getPreSignedUrl(dto.getFilePath(), Duration.ofMinutes(5));
+                    dto.setFilePath(preSignedUrl);
+                    log.info("After S3 convert preSignedUrl={}", preSignedUrl);
+                }
+            } catch (Exception e) {
+                log.warn("S3 URL 변환 실패: {}", e.getMessage());
             }
-            if (dto.getUpdatedDatetime() != null && !dto.getUpdatedDatetime().isEmpty()) {
-                String updated = dto.getUpdatedDatetime().split("\\.")[0];
-                dto.setUpdatedDatetime(
-                        LocalDate.parse(updated, inputFormatter).format(outputFormatter)
-                );
-            }
+        });
 
-            //
-            log.info("Before S3 convert filePath={}", dto.getFilePath());
+        // 결과 DTO 구성
+        PurchaseListCriteriaDTO result = new PurchaseListCriteriaDTO();
+        result.setPurchaseListDTOs(list);
+        result.setScrollcriteria(scrollcriteria);
+        result.setSearch(search);
 
-            //
-            if (dto.getFilePath() != null && !dto.getFilePath().isBlank()) {
-                String preSignedUrl = s3Service.getPreSignedUrl(dto.getFilePath(), Duration.ofMinutes(5));
-                log.info("After S3 convert preSignedUrl={}", preSignedUrl); // 변환 결과 확인
-                dto.setFilePath(preSignedUrl);
-            }
+        log.info("result.getPurchaseListDTOs() = {}", result.getPurchaseListDTOs());
+        return result;
+    }
 
-        } catch (Exception e) {
-            log.warn("Date format error: {}", e.getMessage());
-        }
-    });
-
-    PurchaseListCriteriaDTO result = new PurchaseListCriteriaDTO();
-    result.setPurchaseListDTOs(list);
-    result.setScrollcriteria(scrollcriteria);
-    result.setSearch(search);
-
-    log.info("result.getPurchaseListDTOs() = {}", result.getPurchaseListDTOs());
-    return result;
-}
 
 
     //  나의 구매내역 상세 조회
     @Override
-    public MyPurchaseDetailDTO getMemberOrderDetails(Long memberId, Long postId) {
-        MyPurchaseDetailDTO detail = purchaseDAO.selectMemberOrderDetails(memberId, postId);
+    public MyPurchaseDetailDTO getMemberOrderDetails(Long memberId, Long paymentStatusId) {
+        MyPurchaseDetailDTO detail = purchaseDAO.selectMemberOrderDetails(memberId, paymentStatusId);
 
         if (detail == null) {
-            throw new RuntimeException("회원 구매내역을 찾을 수 없습니다. memberId=" + memberId + ", postId=" + postId);
+            throw new RuntimeException("회원 구매내역을 찾을 수 없습니다. memberId=" + memberId + ", paymentStatusId=" + paymentStatusId);
         }
 
         // S3 프리사인 URL 변환
@@ -337,9 +319,9 @@ public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, ScrollCr
     //  결제 상태 업데이트 추가
     @Override
     @Transactional
-    public void updatePaymentStatus(Long purchaseId, PaymentPhase paymentPhase) {
-        paymentStatusDAO.updatePaymentStatus(purchaseId, paymentPhase);
-        log.info("결제 상태 업데이트 완료 → purchaseId={}, phase={}", purchaseId, paymentPhase);
+    public void updatePaymentStatus(Long paymentStatusId, PaymentPhase paymentPhase) {
+        paymentStatusDAO.updatePaymentStatus(paymentStatusId, paymentPhase);
+        log.info("결제 상태 업데이트 완료 -> paymentStatusId={}, phase={}", paymentStatusId, paymentPhase);
     }
 
 }

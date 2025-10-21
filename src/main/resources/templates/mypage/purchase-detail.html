@@ -10,10 +10,8 @@
     <link rel="stylesheet" href="/css/fixed/web/header.css">
     <link rel="stylesheet" href="/css/fixed/web/footer.css">
 </head>
-<body>
-
-<body th:data-post-id="${postId}">
 <header th:replace="~{fixed/web/header :: header}"></header>
+<body th:data-payment-status-id="${paymentStatusId}">
 <div class="all">
     <div class="myhome-nav">
         <nav class="page-navigation">

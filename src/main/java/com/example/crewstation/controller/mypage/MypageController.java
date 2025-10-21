@@ -1,10 +1,12 @@
 package com.example.crewstation.controller.mypage;
 
 import com.example.crewstation.auth.CustomUserDetails;
+import com.example.crewstation.dto.member.MySaleListCriteriaDTO;
 import com.example.crewstation.dto.member.MySaleListDTO;
 import com.example.crewstation.dto.purchase.PurchaseListCriteriaDTO;
 import com.example.crewstation.service.member.MemberService;
 import com.example.crewstation.service.purchase.PurchaseService;
+import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.ScrollCriteria;
 import com.example.crewstation.util.Search;
 import lombok.RequiredArgsConstructor;
@@ -63,21 +65,38 @@ public class MypageController {
     }
 
     // 마이페이지 - 구매 상세 페이지
-    @GetMapping("/purchase-detail/{postId}")
-    public String loadMyPurchaseDetailPage(@PathVariable("postId") Long postId, Model model) {
-        model.addAttribute("postId", postId);
+    @GetMapping("/purchase-detail/{paymentStatusId}")
+    public String loadMyPurchaseDetailPage(@PathVariable("paymentStatusId") Long paymentStatusId, Model model) {
+        model.addAttribute("paymentStatusId", paymentStatusId);
         return "mypage/purchase-detail";
     }
 
 
+    // 마이페이지 -> 나의 판매내역 목록
     @GetMapping("/sale-list")
-    public String goToMySaleListPage(Model model,@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public String getSaleList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                              @RequestParam(defaultValue = "1") int page,
+                              @RequestParam(defaultValue = "10") int size,
+                              @RequestParam(required = false) String keyword,
+                              Model model) {
 
         Long memberId = customUserDetails.getId();
 
-        List<MySaleListDTO> saleList = memberService.getMySaleList(memberId);
-        model.addAttribute("saleList", saleList);
+        Criteria criteria = new Criteria(page, size);
+        Search search = new Search();
+        search.setKeyword(keyword);
+
+        MySaleListCriteriaDTO result = memberService.getSaleListByMemberId(memberId, criteria, search);
+
+        model.addAttribute("result", result);
+        model.addAttribute("saleList", result.getMySaleListDTOs());
+        model.addAttribute("criteria", result.getCriteria());
+        model.addAttribute("search", result.getSearch());
+
+        log.info("memberId={}, keyword={}, page={}, size={}", memberId, keyword, page, size);
+        log.info("total={}, hasMore={}", criteria.getTotal(), criteria.isHasMore());
 
         return "mypage/sale-list";
     }
+
 }

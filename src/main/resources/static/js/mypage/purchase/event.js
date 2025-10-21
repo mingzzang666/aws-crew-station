@@ -1,95 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. 구매 상태 개수 조회
-    const purchases = document.querySelectorAll(".purchase-list-wrapper");
-    const requestNumber = document.querySelector(".request-number");
-    const waitingNumber = document.querySelector(".watting-number");
-    const paymentOkNumber = document.querySelector(".payment-ok");
-    const receiveNumber = document.querySelector(".receive-number");
+    const searchBtn = document.getElementById("searchBtn");
+    const searchInput = document.getElementById("keywordInput");
 
-    let request = 0;
-    let paymentOk = 0;
-    let waiting = 0;
-    let receive = 0;
+    if (!searchBtn || !searchInput) {
+        console.warn("검색창 요소를 찾을 수 없습니다.");
+        return;
+    }
 
-    purchases.forEach((purchase) => {
-        const title = purchase.querySelector(".title-status");
-        if (!title) return;
+    function goSearch() {
+        const keyword = searchInput.value.trim();
+        const baseUrl = "/mypage/purchase-list";
+        const params = new URLSearchParams();
 
-        const text = title.innerText.trim();
+        if (keyword) params.append("keyword", keyword);
+        params.append("page", 1);
+        params.append("size", 10);
 
-        switch (text) {
-            case "수락 요청":
-                request++;
-                break;
-            case "결제 완료":
-                paymentOk++;
-                break;
-            case "결제 대기":
-                waiting++;
-                break;
-            case "수령 완료":
-                receive++;
-                break;
+        window.location.href = `${baseUrl}?${params.toString()}`;
+    }
+
+    // 버튼 클릭 시 검색
+    searchBtn.addEventListener("click", goSearch);
+
+    // 엔터 키로 검색
+    searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            goSearch();
         }
     });
-
-    if (requestNumber) requestNumber.innerText = request;
-    if (waitingNumber) waitingNumber.innerText = waiting;
-    if (paymentOkNumber) paymentOkNumber.innerText = paymentOk;
-    if (receiveNumber) receiveNumber.innerText = receive;
-
-    // 버튼 동작
-
-    document.querySelectorAll(".purchase-cancel").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            if (confirm("정말 주문을 취소하시겠습니까?")) {
-                // TODO: 주문취소 API 호출
-                console.log("주문취소 요청");
-            }
-        });
-    });
-
-    document.querySelectorAll(".receive-button").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            if (confirm("제품을 수령하셨나요?")) {
-                // TODO: 수령 완료 API 호출
-                console.log("수령 완료 요청");
-            }
-        });
-    });
-
-    // 4. 별점 남기기
-    const stars = document.querySelectorAll("label.star");
-    let currentStar = 0;
-
-    stars.forEach((star) => {
-        star.addEventListener("click", () => {
-            const point = parseInt(star.dataset.point);
-            currentStar = point;
-
-            stars.forEach((s, i) => {
-                s.parentElement.classList.toggle("full", i < point);
-            });
-
-            // hidden input 값 세팅 (백엔드 전송용)
-            const hiddenInput = document.querySelector("#star");
-            if (hiddenInput) hiddenInput.value = currentStar;
-        });
-    });
-
-    // 5. 모달 열기 / 닫기
-    const modal = document.querySelector(".modal-wrapper");
-    const closeButton = document.querySelector(".close-button");
-
-    document.querySelectorAll(".star-button").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            if (modal) modal.style.display = "flex";
-        });
-    });
-
-    if (closeButton) {
-        closeButton.addEventListener("click", () => {
-            if (modal) modal.style.display = "none";
-        });
-    }
 });

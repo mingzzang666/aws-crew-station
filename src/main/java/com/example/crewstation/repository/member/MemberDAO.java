@@ -6,7 +6,10 @@ import com.example.crewstation.dto.member.MemberDTO;
 import com.example.crewstation.dto.member.MemberProfileDTO;
 import com.example.crewstation.dto.member.MySaleListDTO;
 import com.example.crewstation.dto.member.MemberStatics;
+import com.example.crewstation.dto.purchase.PurchaseListDTO;
 import com.example.crewstation.mapper.member.MemberMapper;
+import com.example.crewstation.util.Criteria;
+import com.example.crewstation.util.ScrollCriteria;
 import com.example.crewstation.util.Search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,10 +93,16 @@ public class MemberDAO {
         return memberMapper.findAdminMemberDetail(memberId);
     }
 
-//  나의 판매내역 목록
-    public List<MySaleListDTO> findMySaleList(Long memberId) {
-        return memberMapper.selectMySaleList(memberId);
+    //  판매 내역 목록 조회
+    public List<MySaleListDTO> selectSaleList(Long memberId, Criteria criteria, Search search) {
+        return memberMapper.selectSaleList(memberId, criteria, search);
     }
+
+    //  전체 개수 조회
+    public int selectSaleTotalCount(Long memberId, Search search) {
+        return memberMapper.selectSaleTotalCount(memberId, search);
+    }
+
 //    월별 가입자 수
         public List<MemberStatics> findMonthlyJoin() {
             return memberMapper.selectMonthlyJoin();

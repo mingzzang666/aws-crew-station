@@ -40,4 +40,6 @@ public class PaymentCriteriaDTO {
     private String deliveryType;
     private String productName;
     private long totalCount;
+    private long approvedAmount;
+    private long canceledAmount;
 }

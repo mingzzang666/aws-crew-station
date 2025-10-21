@@ -64,8 +64,8 @@ public class PurchaseDAO {
         return purchaseMapper.selectTotalCount(memberId, search);
     }
     // 나의 구매 내역 상세 조회
-    public MyPurchaseDetailDTO selectMemberOrderDetails(Long memberId, Long postId) {
-        return purchaseMapper.selectMemberOrderDetails(memberId, postId);
+    public MyPurchaseDetailDTO selectMemberOrderDetails(Long memberId, Long paymentId) {
+        return purchaseMapper.selectMemberOrderDetails(memberId, paymentId);
     }
 
 }

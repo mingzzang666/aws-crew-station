@@ -1,158 +1,201 @@
+/* =========================
+   섹션 라우터 (수정 본)
+   - 모든 .page / section-* 숨김
+   - 타깃 섹션의 .page 래퍼까지 표시
+   - init 1회 실행
+========================= */
 function showSection(name) {
     const container = document.getElementById('page-container');
     if (!container) return;
 
-    const sections = Array.from(container.children).filter(
-        el => el.id && el.id.startsWith('section-')
-    );
     const targetId = `section-${name}`;
+    const sections = Array.from(container.querySelectorAll('[id^="section-"]'));
+    let target = container.querySelector(`#${CSS.escape(targetId)}`);
 
-    sections.forEach(sec => {
-        sec.style.display = (sec.id === targetId ? 'block' : 'none');
-    });
-
-    if (location.hash !== `#${name}`) {
-        history.pushState(null, '', `#${name}`);
+    // ❗ 타깃이 없으면 화면 비우지 말고 반환 (또는 home 폴백)
+    if (!target) {
+        console.warn('[showSection] target not found:', targetId);
+        return;
     }
 
+    // 1) 모든 섹션 숨김 (important)
+    sections.forEach(sec => {
+        sec.style.setProperty('display', 'none', 'important');
+    });
+
+    // 2) 타깃 섹션/내부 래퍼를 확실히 표시 (important)
+    target.style.setProperty('display', 'block', 'important');
+    target.style.setProperty('visibility', 'visible', 'important');
+    target.style.setProperty('opacity', '1', 'important');
+
+    // 내부 래퍼가 접혀있는 케이스를 위해 펼침
+    target.querySelectorAll('.tab-view-body, .tab-wrapper, .tab-body')
+        .forEach(el => {
+            el.style.setProperty('display', 'block', 'important');
+            el.style.setProperty('visibility', 'visible', 'important');
+            el.style.setProperty('opacity', '1', 'important');
+            el.style.setProperty('height', 'auto', 'important');
+            el.style.setProperty('max-height', 'none', 'important');
+            el.style.setProperty('overflow', 'visible', 'important');
+        });
+
+    if (location.hash !== `#${name}`) history.pushState(null, '', `#${name}`);
     document.querySelectorAll('[data-section]').forEach(a => {
         a.classList.toggle('active', a.dataset.section === name);
     });
 
+    // init 1회 실행
     if (!showSection.inited) showSection.inited = {};
-
     const initMap = {
         'home'        : window.mainInit,
         'member'      : window.memberInit,
         'notice'      : window.noticeInit,
         'diary-report': window.diaryReportInit,
         'gift-report' : window.giftReportInit,
-        payment       : window.paymentInit,
+        'payment'     : window.paymentInit,
+        'inquiry'     : window.inquiryInit,
     };
-
     const init = initMap[name];
-    if (typeof init === 'function') {
-        init();
+    if (typeof init === 'function' && !showSection.inited[name]) {
+        try { init(); showSection.inited[name] = true; }
+        catch (e) { console.error(`[showSection] init error (${name})`, e); }
     }
 }
 
 
 
-// =============== 사이드바 ===============
+/* =========================
+   사이드바
+========================= */
 (() => {
     const side = document.querySelector("#bootpay-side");
     if (!side) return;
 
     const topButtons = side.querySelectorAll(".menu-item > .menu-btn");
-    const subLists = side.querySelectorAll(".menu-item > .menu-sub-list");
+    const subLists   = side.querySelectorAll(".menu-item > .menu-sub-list");
+
+    const openPanel = (btn, panel) => {
+        if (!panel) return;
+        panel.classList.add("show");
+        panel.style.display = "block";
+        panel.style.height  = "auto";
+        panel.style.overflow = "visible";
+        btn.classList.add("active", "current");
+        btn.closest("li")?.classList.add("open");
+    };
+
+    const closePanel = (panel) => {
+        panel.classList.remove("show");
+        panel.style.display = "none";
+        panel.style.height  = "";
+        panel.style.overflow = "";
+    };
 
     const closeAllMenus = () => {
-        subLists.forEach((ul) => {
-            ul.classList.remove("show");
-            ul.style.display = "none";
-        });
+        subLists.forEach(closePanel);
         topButtons.forEach((btn) => btn.classList.remove("active", "current"));
-        side.querySelectorAll(".menu-list > li").forEach((li) =>
-            li.classList.remove("open")
-        );
+        side.querySelectorAll(".menu-list > li").forEach((li) => li.classList.remove("open"));
     };
 
+    // 해시/active 상태에 맞춰 초기 동기화
     const syncFromDOM = () => {
-        // 서브링크 .active 가 있는 패널들은 펼친다
         subLists.forEach((ul) => {
             const hasActiveChild = !!ul.querySelector(".boot-link.active");
-            const markedShow = ul.classList.contains("show");
-            if (hasActiveChild || markedShow) {
-                ul.classList.add("show");
-                ul.style.display = "block";
-                const btn = ul.previousElementSibling; // 상위 메뉴 버튼
-                const li = ul.closest("li");
-                btn && btn.classList.add("active", "current");
-                li && li.classList.add("open");
+            const hash = (location.hash || "").slice(1);
+            const childForHash = ul.querySelector(`.boot-link[data-section="${hash}"]`);
+            if (hasActiveChild || childForHash || ul.classList.contains("show")) {
+                const btn = ul.previousElementSibling;
+                openPanel(btn, ul);
+                if (childForHash) childForHash.classList.add('active');
+            } else {
+                closePanel(ul);
             }
         });
-
-        //  최상위 버튼이 .active 라면 그 다음 패널도 열어준다
-        side.querySelectorAll(".menu-item > .menu-btn.active").forEach(
-            (btn) => {
-                const panel = btn.nextElementSibling;
-                if (panel && panel.classList.contains("menu-sub-list")) {
-                    panel.classList.add("show");
-                    panel.style.display = "block";
-                    btn.classList.add("current");
-                    btn.closest("li")?.classList.add("open");
-                }
-            }
-        );
     };
 
-    // 초기 처리: active/show 가 하나라도 있으면 그 상태를 살리고,
-    // 없으면(아무 지정도 없으면) 전체 닫기
-    const hasExplicit = !!side.querySelector(
-        ".menu-btn.active, .menu-btn.current, .menu-sub-list.show, .menu-sub-list .boot-link.active"
-    );
+    // 초기 동작
+    syncFromDOM();
 
-    if (hasExplicit) {
-        syncFromDOM();
-    } else {
-        closeAllMenus();
-    }
-
-    // 이하 클릭 위임 로직은 그대로 유지
+    // 클릭 위임
     side.addEventListener("click", (e) => {
+        if (e.target.closest('#filter-status, .bt-pop-menu-context')) return;
+        // 하위 링크(다이어리/기프트)
         const subLink = e.target.closest(".menu-sub-list .boot-link");
         if (subLink && side.contains(subLink)) {
-            if (subLink.dataset.section) {
-                e.preventDefault();
-                showSection(subLink.dataset.section);
-            }
-
+            e.preventDefault();
+            if (subLink.dataset.section) showSection(subLink.dataset.section); // 라우팅
+            // 하위 active 토글
             const ul = subLink.closest(".menu-sub-list");
-            ul.querySelectorAll(".boot-link.active").forEach((a) =>
-                a.classList.remove("active")
-            );
+            ul.querySelectorAll(".boot-link.active").forEach((a) => a.classList.remove("active"));
             subLink.classList.add("active");
-
-            closeAllMenus();
-            ul.classList.add("show");
-            ul.style.display = "block";
+            // 부모 패널은 열린 상태 유지
             const btn = ul.previousElementSibling;
-            const li = ul.closest("li");
-            btn && btn.classList.add("active", "current");
-            li && li.classList.add("open");
+            openPanel(btn, ul);
             return;
         }
 
+        // 최상위 버튼(신고/회원관리/문의 등)
         const btnTop = e.target.closest(".menu-item > .menu-btn");
         if (!btnTop || !side.contains(btnTop)) return;
 
+        // data-section이 있으면 바로 라우팅
         if (btnTop.dataset.section) {
             e.preventDefault();
             showSection(btnTop.dataset.section);
             return;
         }
-        e.preventDefault();
 
+        // data-section이 없는 상위(= 신고) → 패널 열고 첫 하위로 자동 라우팅
+        // data-section이 없는 상위(= 신고) → 패널 토글 + 첫 하위로 강제 라우팅
+        e.preventDefault();
         const panel = btnTop.nextElementSibling;
         const hasPane = panel && panel.classList.contains("menu-sub-list");
-        const wasOpen = hasPane && panel.classList.contains("show");
+        if (!hasPane) return;
 
+        const willOpen = !panel.classList.contains("show");
         closeAllMenus();
-        btnTop.classList.add("active");
 
-        if (hasPane && !wasOpen) {
-            panel.classList.add("show");
-            panel.style.display = "block";
-            btnTop.classList.add("current");
-            btnTop.closest("li")?.classList.add("open");
+        if (willOpen) {
+            // 패널 열기
+            openPanel(btnTop, panel);
+
+            const first = panel.querySelector('.boot-link[data-section]');
+            if (first) {
+                // 다른 리스너/리플로우 이후에도 라우팅 보장
+                setTimeout(() => {
+                    panel.querySelectorAll('.boot-link.active').forEach(a => a.classList.remove('active'));
+                    first.classList.add('active');
+                    showSection(first.dataset.section);
+                    console.log('[sidebar] auto route ->', first.dataset.section);
+                }, 0);
+            }
+        } else {
+            // 이미 열려있는 패널 다시 클릭: 하위 active 없으면 첫 하위로 라우팅
+            openPanel(btnTop, panel);
+            const activeChild = panel.querySelector('.boot-link.active');
+            const first = panel.querySelector('.boot-link[data-section]');
+            if (!activeChild && first) {
+                setTimeout(() => {
+                    first.classList.add('active');
+                    showSection(first.dataset.section);
+                    console.log('[sidebar] reopen route ->', first.dataset.section);
+                }, 0);
+            }
         }
+
     });
+
+    // 해시 변경 시 부모 패널 자동 오픈
+    window.addEventListener("popstate", syncFromDOM);
 })();
 
-// =============== 우측 상단 유저 메뉴 ===============
+
+/* =========================
+   우측 상단 유저 메뉴
+========================= */
 (() => {
     const initUserMenu = () => {
-        const btn = document.getElementById("userMenuBtn");
+        const btn  = document.getElementById("userMenuBtn");
         const menu = document.getElementById("userMenu");
         if (!btn || !menu) return;
 
@@ -176,6 +219,7 @@ function showSection(name) {
         });
 
         document.addEventListener("click", (e) => {
+            if (e.target.closest('#filter-status, .bt-pop-menu-context')) return;
             if (!btn.contains(e.target) && !menu.contains(e.target)) hide();
         });
 
@@ -184,7 +228,6 @@ function showSection(name) {
         });
     };
 
-    // DOM 준비 후 실행
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initUserMenu);
     } else {
@@ -192,9 +235,9 @@ function showSection(name) {
     }
 })();
 
-
-
-// ===== 모달 열기/닫기 =====
+/* =========================
+   회원 모달(기존 그대로)
+========================= */
 (() => {
     const modal = document.querySelector(".member-modal");
     if (!modal) return;
@@ -224,7 +267,7 @@ function showSection(name) {
             const btn = e.target.closest(".member-detail-btn, .action-btn");
             if (!btn) return;
 
-            const memberId = btn.dataset.memberid;  // data-memberid 필수
+            const memberId = btn.dataset.memberid;
             if (!memberId) return;
 
             const loading = document.getElementById("loading");
@@ -241,19 +284,24 @@ function showSection(name) {
     }
 
     closeBtns.forEach((b) => b.addEventListener("click", closeModal));
-    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+    modal.addEventListener("click", (e) => {
+
+        if (e.target === modal) closeModal();
+
+    });
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && modal.classList.contains("show")) closeModal();
     });
 })();
 
-
-const memberMenuBtn = document.getElementById("memberMenu");
-const paginationMember = document.querySelector(".pagination.bootpay-pagination.member-pagination");
-const memberKeywordInput = document.getElementById("memberKeyword");
-const memberKeywordBtn = document.getElementById("memberKeywordBtn");
-
-const loading = document.getElementById("loading");
+/* =========================
+   회원 목록/검색/페이징 (기존 그대로)
+========================= */
+const memberMenuBtn       = document.getElementById("memberMenu");
+const paginationMember    = document.querySelector(".pagination.bootpay-pagination.member-pagination");
+const memberKeywordInput  = document.getElementById("memberKeyword");
+const memberKeywordBtn    = document.getElementById("memberKeywordBtn");
+const loading             = document.getElementById("loading");
 
 const showMembers = async (page = 1, keyword = "") => {
     if (loading) loading.style.display = "block";
@@ -262,21 +310,16 @@ const showMembers = async (page = 1, keyword = "") => {
     return res;
 };
 
-
 if (memberKeywordInput) {
     memberKeywordInput.addEventListener("keydown", async (e) => {
-        if (e.key === "Enter") {
-            await showMembers(1, memberKeywordInput.value.trim());
-        }
+        if (e.key === "Enter") await showMembers(1, memberKeywordInput.value.trim());
     });
 }
-
 if (memberKeywordBtn) {
     memberKeywordBtn.addEventListener("click", async () => {
         await showMembers(1, memberKeywordInput?.value.trim() || "");
     });
 }
-
 if (memberMenuBtn) {
     memberMenuBtn.addEventListener("click", async (e) => {
         e.preventDefault();
@@ -284,47 +327,35 @@ if (memberMenuBtn) {
     });
 }
 
-
-
-// 페이징 클릭
 document.addEventListener("click", async (e) => {
     const a = e.target.closest(".pagination.bootpay-pagination a.paging");
     if (!a) return;
-
     e.preventDefault();
-
     const page = Number(a.dataset.page || 1);
     const keyword = (memberKeywordInput?.value || "").trim();
-
     await showMembers(page, keyword);
 });
 
-
-//  구글 차트
+/* =========================
+   대시보드 차트 (기존 그대로)
+========================= */
 google.charts.load('current', { packages: ['corechart', 'bar'] });
 
 window.addEventListener('DOMContentLoaded', async () => {
     const staticsData = await mainService.getMain(mainLayout.showMain);
-
-    // 구글 차트가 로드되면 실행
     google.charts.setOnLoadCallback(() => {
         drawJoinChart(staticsData);
         drawPie(staticsData);
     });
 });
 
-//  join 차트
 function drawJoinChart(staticsData) {
     const el = document.getElementById('join_chart');
     if (!el) return;
-
     const dataArray = [['월', '가입자 수']];
     if (Array.isArray(staticsData?.monthlyJoins)) {
-        staticsData.monthlyJoins.forEach(m => {
-            dataArray.push([m.date, Number(m.count)]);
-        });
+        staticsData.monthlyJoins.forEach(m => dataArray.push([m.date, Number(m.count)]));
     }
-
     const data = google.visualization.arrayToDataTable(dataArray);
     const options = {
         title: '최근 3개월 가입자 수',
@@ -333,23 +364,17 @@ function drawJoinChart(staticsData) {
         colors: ['#3366cc'],
         chartArea: { width: '85%', height: '70%' },
     };
-
     const chart = new google.visualization.ColumnChart(el);
     chart.draw(data, options);
 }
 
-//  인기 여행지 파이차트
 function drawPie(staticsData) {
     const el = document.getElementById('piechart');
     if (!el) return;
-
     const dataArray = [['지역', '비율']];
     if (Array.isArray(staticsData?.popularCountries)) {
-        staticsData.popularCountries.forEach(c => {
-            dataArray.push([c.country, Number(c.count)]);
-        });
+        staticsData.popularCountries.forEach(c => dataArray.push([c.country, Number(c.count)]));
     }
-
     const data = google.visualization.arrayToDataTable(dataArray);
     const options = {
         title: '인기 여행지 TOP 5',
@@ -357,14 +382,13 @@ function drawPie(staticsData) {
         legend: { position: 'bottom' },
         chartArea: { width: '90%', height: '80%' },
     };
-
     const chart = new google.visualization.PieChart(el);
     chart.draw(data, options);
 }
 
-
-// ===== 로그인 정보 표시 + 로그아웃 =====
-
+/* =========================
+   로그인 정보/로그아웃 (기존 그대로)
+========================= */
 async function fetchWithRefresh(url, opts = {}) {
     let res = await fetch(url, { credentials: 'include'});
     if (res.status === 401) {
@@ -390,30 +414,28 @@ async function fetchWithRefresh(url, opts = {}) {
             avatarEl.textContent = letter || 'C';
         }
     } catch (e) {
-        // 토큰 없거나 만료면 로그인 페이지로
         window.location.href = '/admin/login';
     }
 })();
 
-// 2) 로그아웃 클릭 처리
 (function attachLogout() {
-    let logoutLink = document.getElementById('logout-link');
-
+    const logoutLink = document.getElementById('logout-link');
+    if (!logoutLink) return;
     logoutLink.addEventListener('click', async (e) => {
         e.preventDefault();
-        try {
-            await fetch('/api/admin/auth/logout', { method: 'POST', credentials: 'include' });
-        } finally {
-            window.location.href = '/admin/login';
-        }
+        try { await fetch('/api/admin/auth/logout', { method: 'POST', credentials: 'include' }); }
+        finally { window.location.href = '/admin/login'; }
     });
 })();
 
+
+/* =========================
+   초기 진입/뒤로가기
+========================= */
 window.addEventListener('DOMContentLoaded', () => {
     const initial = (location.hash || '#home').slice(1);
     showSection(initial);
 });
-
 window.addEventListener('popstate', () => {
     const name = (location.hash || '#home').slice(1);
     showSection(name);

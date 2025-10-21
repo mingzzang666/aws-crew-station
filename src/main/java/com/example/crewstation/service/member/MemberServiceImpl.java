@@ -301,10 +301,47 @@ public class MemberServiceImpl implements MemberService {
         paymentStatusMapper.updatePaymentStatus(purchaseId, PaymentPhase.REVIEWED);
     }
 
-//  나의 판매내역 목록
+    // 나의 판매내역 목록 조회
     @Override
-    public List<MySaleListDTO> getMySaleList(Long memberId) {
-        return memberDAO.findMySaleList(memberId);
+    public MySaleListCriteriaDTO getSaleListByMemberId(Long memberId, Criteria criteria, Search search) {
+
+        List<MySaleListDTO> list = memberDAO.selectSaleList(memberId, criteria, search);
+
+        int total = memberDAO.selectSaleTotalCount(memberId, search);
+        criteria.setTotal(total);
+
+        list.forEach(dto -> {
+            try {
+                if (dto.getFilePath() != null && !dto.getFilePath().isBlank()) {
+                    log.info("Before S3 convert filePath={}", dto.getFilePath());
+                    String preSignedUrl = s3Service.getPreSignedUrl(dto.getFilePath(), Duration.ofMinutes(5));
+                    log.info("After S3 convert preSignedUrl={}", preSignedUrl);
+                    dto.setFilePath(preSignedUrl);
+                }
+            } catch (Exception e) {
+                log.warn("S3 URL 변환 실패: {}", e.getMessage());
+            }
+        });
+
+        MySaleListCriteriaDTO result = new MySaleListCriteriaDTO();
+        result.setMySaleListDTOs(list);
+        result.setCriteria(criteria);
+        result.setSearch(search);
+
+        log.info("result.getSaleListDTOs() = {}", result.getMySaleListDTOs());
+        return result;
     }
+
+    @Override
+    public void updateSaleStatus(Long memberId, Long paymentStatusId, PaymentPhase paymentPhase) {
+        log.info("판매 상태 변경 요청: memberId={}, paymentStatusId={}, paymentPhase={}",
+                memberId, paymentStatusId, paymentPhase);
+
+        paymentStatusMapper.updatePaymentStatus(paymentStatusId, paymentPhase);
+
+        log.info(" 판매 상태가 {} 로 변경되었습니다.", paymentPhase);
+    }
+
+
 
 }
