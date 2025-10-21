@@ -12,6 +12,7 @@ import com.example.crewstation.dto.member.*;
 import com.example.crewstation.mapper.payment.status.PaymentStatusMapper;
 import com.example.crewstation.repository.country.CountryDAO;
 import com.example.crewstation.repository.crew.CrewDAO;
+import com.example.crewstation.repository.diary.DiaryDAO;
 import com.example.crewstation.repository.file.FileDAO;
 import com.example.crewstation.repository.member.AddressDAO;
 import com.example.crewstation.repository.member.MemberDAO;
@@ -50,6 +51,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDTO memberDTO;
     private final CrewDAO crewDAO;
     private final CountryDAO countryDAO;
+    private final DiaryDAO diaryDAO;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -285,6 +287,16 @@ public class MemberServiceImpl implements MemberService {
         memberDTO.setMemberPassword(memberDTO.getMemberPassword());
 
         memberDAO.insertAdmin(memberDTO);
+    }
+
+    @Override
+    public MemberDTO getProfileMember(Long memberId) {
+        MemberDTO memberDTO = memberDAO.findMemberById(memberId);
+        if(memberDTO.getFilePath() != null) {
+            memberDTO.setFilePath(s3Service.getPreSignedUrl(memberDTO.getFilePath(), Duration.ofMinutes(10)));
+        }else{memberDTO.setFilePath("https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c");}
+        memberDTO.setDiaryCount(diaryDAO.countAllByMemberId(memberId));
+        return memberDTO;
     }
 
     public Optional<MemberProfileDTO> getMember(Long memberId) {

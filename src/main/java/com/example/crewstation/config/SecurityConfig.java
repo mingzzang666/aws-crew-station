@@ -69,6 +69,7 @@ public class SecurityConfig {
                                 "/member/join",
                                 "/member/login",
                                 "/member/sns/join",
+                                "/member/profile/**",
                                 "/mobile/join",
                                 "/mobile/login",
                                 "/mobile/sns/join",

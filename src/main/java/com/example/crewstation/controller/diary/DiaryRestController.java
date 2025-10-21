@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -107,5 +108,9 @@ public class DiaryRestController {
         }
 
 
+    }
+    @GetMapping("/profile/{memberId}")
+    public List<DiaryDTO> getProfile(@PathVariable Long memberId) {
+            return diaryService.findDiaryById(memberId);
     }
 }

@@ -42,4 +42,6 @@ public class MemberDTO {
     public MemberRole getMemberRole() {
         return memberRole != null ? memberRole : MemberRole.MEMBER;
     }
+    private Long chemistryScore;
+    private int diaryCount;
 }

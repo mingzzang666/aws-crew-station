@@ -219,7 +219,21 @@
         insert into tbl_member (member_name, member_email, member_password, member_role)
         values (#{memberName}, #{memberEmail}, #{memberPassword}, #{memberRole})
     </insert>
-
+    <select id="selectMemberById">
+        select
+            m.id,
+            m.member_name,
+            m.member_email,
+            m.member_social_url,
+            m.social_img_url,
+            m.member_social_email,
+            m.member_role,
+            m.chemistry_score,
+            vm.file_path
+        from tbl_member m left join view_file_member_file vm
+        on m.id = vm.member_id
+        where m.id = #{memberId} and m.member_role = 'member' and m.member_status = 'active'
+    </select>
 
 
 

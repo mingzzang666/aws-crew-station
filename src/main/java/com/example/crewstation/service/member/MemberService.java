@@ -55,6 +55,9 @@ public interface MemberService {
 //    관리자 등록
     public void joinAdmin(MemberDTO memberDTO);
 
+//    id로 멤버 조회
+    public MemberDTO getProfileMember(Long memberId);
+
     default MemberVO toVO(MemberDTO memberDTO) {
         return MemberVO.builder()
                 .id(memberDTO.getId())

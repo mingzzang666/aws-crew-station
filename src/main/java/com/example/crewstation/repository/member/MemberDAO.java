@@ -114,5 +114,8 @@ public class MemberDAO {
         memberMapper.insertAdmin(memberDTO);
     }
 
-
+//    id로 멤버 조회
+    public MemberDTO findMemberById(Long memberId){
+       return memberMapper.selectMemberById(memberId);
+    };
 }
