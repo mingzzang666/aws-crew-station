@@ -84,8 +84,13 @@ public interface MemberMapper {
 //    관리자 등록
     public void insertAdmin(MemberDTO memberDTO);
 
+
 //  내 정보 수정 정보조회
     public ModifyDTO selectMemberInfo(Long memberId);
+
+
+//    id로 멤버 조회
+    public MemberDTO selectMemberById(Long memberId);
 
 
 }

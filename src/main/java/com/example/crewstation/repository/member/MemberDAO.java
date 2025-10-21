@@ -125,10 +125,17 @@ public class MemberDAO {
         memberMapper.insertAdmin(memberDTO);
     }
 
+
 //  내 정보 수정 정보조회
     public ModifyDTO selectMemberInfo(Long memberId) {
         return memberMapper.selectMemberInfo(memberId);
     }
 
+
+
+//    id로 멤버 조회
+    public MemberDTO findMemberById(Long memberId){
+       return memberMapper.selectMemberById(memberId);
+    };
 
 }

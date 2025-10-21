@@ -19,3 +19,4 @@ values ('20250401','20250607',1,2);
 
 insert into tbl_like(post_id,member_id)
 values (2,3);
+
