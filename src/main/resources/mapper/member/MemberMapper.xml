@@ -207,6 +207,51 @@
         <include refid="purchaseSearch"/>
     </select>
 
+    <!-- 판매 주문 상세 조회 -->
+    <select id="selectSellerOrderDetails">
+        SELECT
+            buyer.id                    AS buyer_member_id,
+            buyer.member_name           AS member_name,
+            buyer.member_phone          AS member_phone,
+            addr.address_zip_code       AS address_zip_code,
+            addr.address                AS address,
+            addr.address_detail         AS address_detail,
+
+            ps.id                       AS payment_status_id,
+            ps.payment_phase            AS payment_phase,
+            ps.created_datetime         AS created_datetime,
+            ps.updated_datetime         AS updated_datetime,
+
+            p.id                        AS post_id,
+            p.post_title                AS post_title,
+            pu.purchase_product_price   AS purchase_product_price,
+
+            (
+                SELECT f2.file_path
+                FROM tbl_post_section s2
+                         JOIN tbl_post_section_file sf2 ON s2.id = sf2.post_section_id
+                         JOIN tbl_file f2 ON sf2.file_id = f2.id
+                WHERE s2.post_id = p.id
+                  AND sf2.image_type = 'main'
+                LIMIT 1
+            ) AS main_image,
+
+            seller.id                   AS seller_id
+        FROM tbl_purchase pu
+                 JOIN tbl_payment_status ps
+                      ON ps.purchase_id = pu.post_id
+                 JOIN tbl_member buyer
+                      ON ps.member_id = buyer.id
+                 LEFT JOIN tbl_address addr
+                           ON buyer.id = addr.member_id
+                 JOIN tbl_post p
+                      ON pu.post_id = p.id
+                 JOIN tbl_member seller
+                      ON p.member_id = seller.id
+        WHERE p.member_id = #{sellerId}
+          AND ps.id = #{paymentStatusId}
+    </select>
+
     <select id="selectMonthlyJoin">
         select
             TO_CHAR(
@@ -241,8 +286,50 @@
         insert into tbl_member (member_name, member_email, member_password, member_role)
         values (#{memberName}, #{memberEmail}, #{memberPassword}, #{memberRole})
     </insert>
+<<<<<<< HEAD
 
+    <!-- 내 정보 수정 정보 조회-->
+    <select id="selectMyInfo">
+    SELECT
+        m.id                    AS memberId,
+        m.member_name           AS memberName,
+        m.member_email          AS memberEmail,
+        m.member_phone          AS memberPhone,
+        m.member_birth          AS memberBirth,
+        m.member_social_url     AS memberSocialUrl,
+        m.social_img_url        AS socialImgUrl,
+        a.address_zip_code      AS zipCode,
+        a.address               AS address,
+        a.address_detail        AS addressDetail,
+        f.file_path             AS filePath,
+        f.file_name             AS fileName
+    FROM tbl_member m
+             LEFT JOIN tbl_address a
+                       ON m.id = a.member_id
+             LEFT JOIN tbl_member_file mf
+                       ON m.id = mf.member_id
+             LEFT JOIN tbl_file f
+                       ON mf.file_id = f.id
+    WHERE m.id = #{memberId}
+    </select>
+=======
+    <select id="selectMemberById">
+        select
+            m.id,
+            m.member_name,
+            m.member_email,
+            m.member_social_url,
+            m.social_img_url,
+            m.member_social_email,
+            m.member_role,
+            m.chemistry_score,
+            vm.file_path
+        from tbl_member m left join view_file_member_file vm
+        on m.id = vm.member_id
+        where m.id = #{memberId} and m.member_role = 'member' and m.member_status = 'active'
+    </select>
 
+>>>>>>> profile
 
 
 </mapper>

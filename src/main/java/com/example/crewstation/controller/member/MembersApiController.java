@@ -28,7 +28,6 @@ public class MembersApiController implements MembersApiControllerDocs {
     @LogReturnStatus
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         boolean check = memberService.checkEmail(email);
-        log.info("Checking email address {}, {}", email,  check);
 
         return ResponseEntity.ok(check);
 

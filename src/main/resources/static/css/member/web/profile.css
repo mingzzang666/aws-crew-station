@@ -590,6 +590,10 @@ nav {
     margin: 0 auto;
     padding: 50px 0 0;
     color: #292929;
+    display: none;
+}
+.t-list-container.active{
+    display: block;
 }
 
 .t-list-container > section {

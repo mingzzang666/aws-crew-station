@@ -1,6 +1,7 @@
 package com.example.crewstation.service.member;
 
 import aj.org.objectweb.asm.TypeReference;
+import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.common.exception.MemberLoginFailException;
 import com.example.crewstation.common.exception.MemberNotFoundException;
@@ -12,6 +13,7 @@ import com.example.crewstation.dto.member.*;
 import com.example.crewstation.mapper.payment.status.PaymentStatusMapper;
 import com.example.crewstation.repository.country.CountryDAO;
 import com.example.crewstation.repository.crew.CrewDAO;
+import com.example.crewstation.repository.diary.DiaryDAO;
 import com.example.crewstation.repository.file.FileDAO;
 import com.example.crewstation.repository.member.AddressDAO;
 import com.example.crewstation.repository.member.MemberDAO;
@@ -50,6 +52,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDTO memberDTO;
     private final CrewDAO crewDAO;
     private final CountryDAO countryDAO;
+    private final DiaryDAO diaryDAO;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -287,6 +290,16 @@ public class MemberServiceImpl implements MemberService {
         memberDAO.insertAdmin(memberDTO);
     }
 
+    @Override
+    public MemberDTO getProfileMember(Long memberId) {
+        MemberDTO memberDTO = memberDAO.findMemberById(memberId);
+        if(memberDTO.getFilePath() != null) {
+            memberDTO.setFilePath(s3Service.getPreSignedUrl(memberDTO.getFilePath(), Duration.ofMinutes(10)));
+        }else{memberDTO.setFilePath("https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c");}
+        memberDTO.setDiaryCount(diaryDAO.countAllByMemberId(memberId));
+        return memberDTO;
+    }
+
     public Optional<MemberProfileDTO> getMember(Long memberId) {
         return Optional.empty();
     }
@@ -342,6 +355,34 @@ public class MemberServiceImpl implements MemberService {
         log.info(" 판매 상태가 {} 로 변경되었습니다.", paymentPhase);
     }
 
+    @Override
+    public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId) {
+        return memberDAO.selectSellerOrderDetails(sellerId, paymentStatusId);
+    }
+
+    @Override
+    public ModifyDTO getMemberInfo(CustomUserDetails customUserDetails) {
+        Long memberId = customUserDetails.getId();
+        ModifyDTO dto = memberDAO.selectMemberInfo(memberId);
+
+        String imageUrl = null;
+
+        // S3 이미지 존재 여부
+        if (dto.getFilePath() != null && dto.getFileName() != null) {
+            imageUrl = dto.getFilePath() + dto.getFileName();
+        }
+        // 소셜 이미지 존재 여부
+        else if (dto.getProfileImageUrl() != null && !dto.getProfileImageUrl().isEmpty()) {
+            imageUrl = dto.getProfileImageUrl();
+        }
+        // 기본 이미지
+        else {
+            imageUrl = "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
+        }
+
+        dto.setProfileImageUrl(imageUrl);
+        return dto;
+    }
 
 
 }

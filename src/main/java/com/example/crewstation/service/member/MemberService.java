@@ -1,5 +1,6 @@
 package com.example.crewstation.service.member;
 
+import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.domain.address.AddressVO;
 import com.example.crewstation.domain.file.FileVO;
@@ -51,13 +52,25 @@ public interface MemberService {
 //  나의 판매내역 목록
     public MySaleListCriteriaDTO getSaleListByMemberId(Long memberId, Criteria criteria, Search search);
 
+//   나의 판매내역 상세 조회
+    public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId);
+
 //    관리자 회원 통계 자료
     public MemberAdminStatics getStatics();
 
 //    관리자 등록
     public void joinAdmin(MemberDTO memberDTO);
 
+
+//  판매 상태 업데이트
     public void updateSaleStatus(Long memberId, Long paymentStatusId, PaymentPhase paymentPhase);
+
+//  내 정보 수정 정보조회
+    public ModifyDTO getMemberInfo(CustomUserDetails customUserDetails);
+
+//    id로 멤버 조회
+    public MemberDTO getProfileMember(Long memberId);
+
 
     default MemberVO toVO(MemberDTO memberDTO) {
         return MemberVO.builder()

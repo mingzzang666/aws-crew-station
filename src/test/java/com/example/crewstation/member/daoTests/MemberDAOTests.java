@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.List;
 public class MemberDAOTests {
     @Autowired
     public MemberDAO memberDAO;
+    @Autowired
+    public PasswordEncoder passwordEncoder;
 
     @Test
     public void testInsert() {
@@ -72,12 +75,28 @@ public class MemberDAOTests {
     @Test
     @Transactional
     public void passwordUpdateTest() {
-        memberDAO.updatePassword("test@gmail.com", "1234");
+        memberDAO.updatePassword("test1@gmail.com", "1234");
     }
 
     @Test
     public void testfindSearchMember() {
         List<MemberDTO> test = memberDAO.findSearchMember("test");
         test.stream().map(MemberDTO::toString).forEach(log::info);
+    }
+
+    @Test
+    public void testjoin() {
+        MemberVO memberVO = MemberVO.builder()
+                .memberName("test1")
+                .memberPhone("01011111111")
+                .memberEmail("test1@gmail.com")
+                .memberBirth("20000101")
+                .memberPassword(passwordEncoder.encode("test1234"))
+                .memberProvider(MemberProvider.CREWSTATION)
+                .memberRole(MemberRole.MEMBER)
+                .build();
+
+        memberDAO.save(memberVO);
+
     }
 }

@@ -100,4 +100,12 @@ public class DiaryDAO {
     public void changeReplyCount(int count,Long postId){
         diaryMapper.updateReplyCount(count,postId);
     }
+    //    memberId로 다이어리 개수 조회
+    public int countAllByMemberId(Long memberId) {
+        return diaryMapper.selectCountDiaryAllByMemberId(memberId);
+    }
+    //    memberId로 다이어리  조회
+    public List<DiaryDTO>  findDiaryAllByMemberId(Long memberId){
+        return diaryMapper.selectDiaryAllByMemberId(memberId);
+    }
 }

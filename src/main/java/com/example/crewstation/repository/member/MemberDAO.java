@@ -2,10 +2,7 @@ package com.example.crewstation.repository.member;
 
 import com.example.crewstation.common.enumeration.MemberRole;
 import com.example.crewstation.domain.member.MemberVO;
-import com.example.crewstation.dto.member.MemberDTO;
-import com.example.crewstation.dto.member.MemberProfileDTO;
-import com.example.crewstation.dto.member.MySaleListDTO;
-import com.example.crewstation.dto.member.MemberStatics;
+import com.example.crewstation.dto.member.*;
 import com.example.crewstation.dto.purchase.PurchaseListDTO;
 import com.example.crewstation.mapper.member.MemberMapper;
 import com.example.crewstation.util.Criteria;
@@ -98,6 +95,11 @@ public class MemberDAO {
         return memberMapper.selectSaleList(memberId, criteria, search);
     }
 
+    // 판매 내역 상세 조회
+    public MySaleDetailDTO selectSellerOrderDetails(Long sellerId, Long paymentStatusId) {
+        return memberMapper.selectSellerOrderDetails(sellerId, paymentStatusId);
+    }
+
     //  전체 개수 조회
     public int selectSaleTotalCount(Long memberId, Search search) {
         return memberMapper.selectSaleTotalCount(memberId, search);
@@ -123,5 +125,17 @@ public class MemberDAO {
         memberMapper.insertAdmin(memberDTO);
     }
 
+
+//  내 정보 수정 정보조회
+    public ModifyDTO selectMemberInfo(Long memberId) {
+        return memberMapper.selectMyInfo(memberId);
+    }
+
+
+
+//    id로 멤버 조회
+    public MemberDTO findMemberById(Long memberId){
+       return memberMapper.selectMemberById(memberId);
+    };
 
 }

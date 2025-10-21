@@ -111,4 +111,10 @@ public class MemberController {
         return "member/web/reset-password-success";
     }
 
+    @GetMapping("profile/{memberId}")
+    public String profile() {
+        return "member/web/profile";
+
+    }
+
 }

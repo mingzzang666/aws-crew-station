@@ -1303,7 +1303,16 @@ ON CONFLICT (id) DO NOTHING;
 
 select * from tbl_banner;
 select * from tbl_banner_file;
+select * from tbl_file;
+
+delete from tbl_banner;
 
 select * from view_file_banner_file;
+
+insert into tbl_banner(banner_order)
+values (2);
+
+insert into tbl_banner_file(file_id, banner_id)
+values (34, 11);
 
 

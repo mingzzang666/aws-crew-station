@@ -440,7 +440,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-//    @LogStatus
+    @LogStatus
     public void write(PostDiaryDetailTagDTO request) {
         FileDTO fileDTO = new FileDTO();
         FilePostSectionDTO sectionFileDTO = new FilePostSectionDTO();
@@ -588,6 +588,15 @@ public class DiaryServiceImpl implements DiaryService {
         }
         diaryDAO.updateSecret(diaryDTO.getPostId(), secret);
         return message;
+    }
+
+    @Override
+    public List<DiaryDTO> findDiaryById(Long diaryId) {
+        List<DiaryDTO>  diaryDTOs = diaryDAO.findDiaryAllByMemberId(diaryId);
+        diaryDTOs.forEach( diaryDTO -> {
+            diaryDTO.setDiaryFilePath(s3Service.getPreSignedUrl(diaryDTO.getDiaryFilePath(), Duration.ofMinutes(10)));
+        });
+        return diaryDTOs;
     }
 
     public void deleteDiary(Long postId) {
