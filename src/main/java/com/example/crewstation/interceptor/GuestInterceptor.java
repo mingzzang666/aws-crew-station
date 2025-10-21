@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -35,7 +36,6 @@ public class GuestInterceptor implements HandlerInterceptor {
             if(username.contains("@")){
                 return true;
             }
-            log.info("dwqdqwfqfqdff");
             Cookie deleteAccessCookie = new Cookie("accessToken", null);
             deleteAccessCookie.setHttpOnly(true);
             deleteAccessCookie.setSecure(true);
@@ -53,7 +53,18 @@ public class GuestInterceptor implements HandlerInterceptor {
             res.addCookie(deleteRefreshCookie);
 
             jwtTokenProvider.deleteRefreshToken(username);
-            res.sendRedirect("/member/login");
+
+            String ua = req.getHeader("User-Agent");
+
+            // 모바일 여부 판단
+            boolean isMobile = ua != null && (ua.contains("iPhone") || ua.contains("Android"));
+
+            if (isMobile) {
+                res.sendRedirect("/mobile/login");
+            } else {
+                res.sendRedirect("/member/login");
+            }
+//            res.sendRedirect("/member/login");
             return false;
         }
 
