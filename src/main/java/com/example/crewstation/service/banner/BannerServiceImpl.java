@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +30,6 @@ import java.util.stream.IntStream;
 public class BannerServiceImpl implements BannerService {
     private final BannerDAO bannerDAO;
     private final S3Service s3Service;
-    private final RedisTemplate<String, Object> redisTemplate;
     private final BannerTransactionService bannerTransactionService;
     private final FileDAO fileDAO;
 
@@ -35,74 +37,50 @@ public class BannerServiceImpl implements BannerService {
     @Transactional(rollbackFor = Exception.class)
     @LogReturnStatus
     public List<BannerDTO> getBanners(int limit) {
-        List<BannerDTO> banners = null;
-        Object obj = redisTemplate.opsForValue().get("banners");
-        if (obj != null) {
-            ObjectMapper mapper = new ObjectMapper();
-            banners = mapper.convertValue(
-                    obj,
-                    new TypeReference<List<BannerDTO>>() {
-                    }
-            );
+        List<BannerDTO> banners = bannerDAO.getBanners(limit);
+        if (!banners.isEmpty()) {
+            banners.forEach(banner -> {
+                String filePath = banner.getFilePath();
+                String presignedUrl = s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5));
+                banner.setUrl(presignedUrl);
+            });
         }
-
-//        if (banners != null) {
-//            banners.forEach(banner -> {
-//                String filePath = banner.getFilePath();
-//                String presignedUrl = s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5));
-//
-//                log.info("Accompany ID={}, 원본 filePath={}, 발급된 presignedUrl={}",
-//                        banner, filePath, presignedUrl);
-//                banner.setFilePath(s3Service.getPreSignedUrl(banner.getFilePath(),
-//                        Duration.ofMinutes(5)));
-//            });
-//            return banners;
-//        }
-        return bannerTransactionService.getBanners(limit);
-    }
-
-    @Override
-    public void insertBanner(BannerDTO bannerDTO) {
-        bannerDTO.setBannerOrder(bannerDTO.getBannerOrder());
-        bannerDAO.insertBanner(bannerDTO);
-
+        return banners;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     @LogReturnStatus
     public void insertBannerFile(BannerDTO bannerDTO, List<MultipartFile> files) {
-        if (bannerDTO.getBannerId() == null) {
-            bannerDAO.insertBanner(bannerDTO);
-        }
+        FileDTO fileDTO = new FileDTO();
+        bannerDAO.insertBanner(bannerDTO);
         if (files == null || files.isEmpty()) {
             return;
         }
 
         IntStream.range(0, files.size()).forEach(i -> {
             MultipartFile file = files.get(i);
-            if (file == null || file.isEmpty()) {
+            if (file.getOriginalFilename().equals("")) {
                 return;
             }
             try {
                 String originalFilename = file.getOriginalFilename();
-                if (originalFilename == null) originalFilename = "";
-
                 String extension = "";
-                int dot = originalFilename.lastIndexOf('.');
-                if (dot >= 0 && dot < originalFilename.length() - 1) {
-                    extension = originalFilename.substring(dot + 1).trim().toLowerCase();
+                fileDTO.setFilePath(getPath());
+                String s3Key = s3Service.uploadPostFile(file, fileDTO.getFilePath());
+
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    extension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 }
 
-                String fileName = UUID.randomUUID().toString() + (extension.isEmpty() ? "" : "." + extension);
-                String s3Key = s3Service.uploadPostFile(file, fileName);
 
-                FileDTO fileDTO = new FileDTO();
-                fileDTO.setFileName(fileName);
+                fileDTO.setFileName(UUID.randomUUID() + extension);
                 fileDTO.setFilePath(s3Key);
                 fileDTO.setFileSize(String.valueOf(file.getSize()));
                 fileDTO.setFileOriginName(originalFilename);
                 fileDAO.saveFile(fileDTO);
+
+                log.info("{}----------------------------------------", bannerDTO.getBannerId());
 
                 bannerDAO.insertBannerFile(bannerDTO.getBannerId(), fileDTO.getId());
 
@@ -138,7 +116,6 @@ public class BannerServiceImpl implements BannerService {
                 fileDAO.delete(fileId);
             });
         }
-
         // 신규 파일 추가
         if (multipartFiles != null && !multipartFiles.isEmpty()) {
             IntStream.range(0, multipartFiles.size()).forEach(i -> {
@@ -156,7 +133,7 @@ public class BannerServiceImpl implements BannerService {
                         extension = originalFilename.substring(dot + 1).trim().toLowerCase();
                     }
 
-                    String fileName = UUID.randomUUID().toString() + (extension.isEmpty() ? "" : "." + extension);
+                    String fileName = UUID.randomUUID() + extension;
                     String s3Key = s3Service.uploadPostFile(file, fileName);
 
                     FileDTO fileDTO = new FileDTO();
@@ -196,6 +173,13 @@ public class BannerServiceImpl implements BannerService {
         }
         bannerDAO.deleteBanner(id);
     }
+
+    public String getPath() {
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        return today.format(formatter);
+    }
+
 }
 
 
