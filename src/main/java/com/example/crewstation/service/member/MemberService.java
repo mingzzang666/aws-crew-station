@@ -51,6 +51,9 @@ public interface MemberService {
 //  나의 판매내역 목록
     public MySaleListCriteriaDTO getSaleListByMemberId(Long memberId, Criteria criteria, Search search);
 
+//   나의 판매내역 상세 조회
+    public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId);
+
 //    관리자 회원 통계 자료
     public MemberAdminStatics getStatics();
 
