@@ -178,7 +178,7 @@ html{
 .name {
     font-size: 14px;
     line-height: 18px;
-    color: rgb(130, 140, 148);
+    color: rgb(90, 90, 90);
     font-weight: 500;
     margin-bottom: 8px;
     position: relative;
@@ -228,20 +228,24 @@ html{
 
 .email {
     display: flex;
+    color: rgb(90, 90, 90);
     flex-direction: column;
     gap: 8px;
     width: 100%;
+    cursor: default;
+
 }
 
 .email-input {
     width: 100%;
     padding: 0px;
+    cursor: default;
 }
 
 .email-label {
     font-size: 14px;
     line-height: 18px;
-    color: rgb(130, 140, 148);
+    color: rgb(90, 90, 90);
     font-weight: 500;
     margin-bottom: 8px;
     position: relative;
@@ -262,7 +266,8 @@ html{
     align-items: center;
     line-height: 0;
     box-sizing: border-box;
-    border: 1px solid rgb(219, 219, 219);
+    background-color: rgb(247, 249, 250);
+    border: 1px solid rgb(230, 230, 230);
     border-radius: 4px;
     height: 40px;
     padding: 0px 14px;
@@ -306,7 +311,7 @@ html{
 .phone {
     font-size: 14px;
     line-height: 18px;
-    color: rgb(130, 140, 148);
+    color: rgb(90, 90, 90);
     font-weight: 500;
     margin-bottom: 8px;
     position: relative;
@@ -442,7 +447,7 @@ div.phone-input{
 .birth {
     font-size: 14px;
     line-height: 18px;
-    color: rgb(130, 140, 148);
+    color: rgb(90, 90, 90);
     font-weight: 500;
     margin-bottom: 8px;
     position: relative;
@@ -777,7 +782,7 @@ input.address-detail {
 .puls {
     font-size: 14px;
     line-height: 18px;
-    color: rgb(130, 140, 148);
+    color: rgb(90, 90, 90);
     font-weight: 500;
     margin-bottom: 8px;
     position: relative;
@@ -790,7 +795,7 @@ input.address-detail {
     cursor: pointer;
     font-size: 14px;
     line-height: 18px;
-    color: rgb(130, 140, 148);
+    color: rgb(90, 90, 90);
     font-weight: 500;
     display: flex;
     align-items: center;
