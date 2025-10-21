@@ -13,7 +13,7 @@ public interface BannerMapper {
     public List<BannerDTO> getBanners(@Param("limit") int limit);
 
     //    배너 추가
-    public void insertBanner(BannerDTO banner);
+    public void insertBanner(BannerDTO bannerDTO);
 
     //    배너 파일 추가
     public void insertBannerFile(BannerDTO bannerDTO);

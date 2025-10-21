@@ -21,8 +21,10 @@ public interface PaymentStatusMapper {
 //  구매 내역 조회
     public  PaymentStatusDTO selectByPurchaseId(Long purchaseId);
 
+    public PaymentStatusDTO findByPaymentStatusId(@Param("paymentStatusId") Long paymentStatusId);
+
 //  결제 상태 업데이트
-    public void updatePaymentStatus(@Param("purchaseId") Long purchaseId, @Param("paymentPhase") PaymentPhase paymentPhase);
+    public void updatePaymentStatus(@Param("paymentStatusId") Long paymentStatusId, @Param("paymentPhase") PaymentPhase paymentPhase);
 
     //    관리자 결제 내역
     public List<PaymentCriteriaDTO> selectPayment(@Param("search") Search search, @Param("criteria") Criteria criteria);
@@ -30,8 +32,11 @@ public interface PaymentStatusMapper {
 //    결제 갯수
     public int countPayment(@Param("search") Search search);
 
-//    관리자 상세
+//    관리자 결제 목록 상세
     public PaymentCriteriaDTO selectPaymentDetail(Long paymentId);
+
+//    관리자 결제 승인/취소 금액
+    public Map<String, Object> selectPaymentSummary(@Param("search") Search search);
 
 
 }

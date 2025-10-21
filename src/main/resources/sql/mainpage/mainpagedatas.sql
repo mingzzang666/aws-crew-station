@@ -1265,3 +1265,43 @@ values (98,1),(99,2),(100,3),(101,4),(102,5);
 select * from tbl_banner_file;
 
 select * from tbl_file;
+
+BEGIN;
+
+-- 1) 멤버 더미 (관리자 1명 + 일반 회원 3명)
+--   ※ tbl_member 컬럼이 더 있다면 NOT NULL 컬럼에 기본값을 채워줘야 함.
+--   ※ id가 identity여도 명시 삽입하려면 OVERRIDING SYSTEM VALUE 사용.
+INSERT INTO tbl_member (id, member_name) OVERRIDING SYSTEM VALUE
+VALUES
+    (900, '관리자'),
+    (101, '김태민'),
+    (102, '이가영'),
+    (103, '홍길동')
+ON CONFLICT (id) DO NOTHING;
+-- 2) 문의 더미 (답변 완료/미답변이 섞이도록 6건)
+INSERT INTO tbl_inquiry (id, inquiry_title, inquiry_content, member_id, created_datetime, updated_datetime)
+    OVERRIDING SYSTEM VALUE
+VALUES
+    (201, '결제 관련 문의', '영수증을 다시 받을 수 있나요?', 101, NOW() - INTERVAL '7 days', NOW() - INTERVAL '7 days'),
+    (202, '크루 가입 신청', '크루 승인까지 시간이 얼마나 걸리나요?', 102, NOW() - INTERVAL '6 days', NOW() - INTERVAL '6 days'),
+    (203, '게시글 신고', '부적절한 게시글이 있어요', 103, NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
+    (204, '계정 비밀번호', '비밀번호 재설정 메일이 오지 않아요', 101, NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
+    (205, '프로필 이미지', '이미지가 깨져 보여요', 102, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+    (206, '크루 채팅', '채팅 알림이 오락가락해요', 103, NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- 3) 답변 더미 (일부 문의에는 답변 달고, 일부는 미답변으로 남김)
+--    201, 203, 206 은 답변 ‘있음’ / 202, 204, 205 는 ‘없음’ 상태가 되도록
+INSERT INTO tbl_inquiry_reply (id, inquiry_reply_content, member_id, inquiry_id, created_datetime, updated_datetime)
+    OVERRIDING SYSTEM VALUE
+VALUES
+    (301, '영수증은 마이페이지 > 결제내역에서 재발급 가능합니다.', 900, 201, NOW() - INTERVAL '6 days', NOW() - INTERVAL '6 days'),
+    (302, '부적절한 게시글은 신고 접수되어 확인 중입니다. 조치 예정입니다.', 900, 203, NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
+    (303, '채팅 알림 개선 패치를 반영했습니다. 앱 재실행 후 확인 부탁드립니다.', 900, 206, NOW() - INTERVAL '1 days', NOW() - INTERVAL '1 days')
+ON CONFLICT (id) DO NOTHING;
+
+
+select * from tbl_banner;
+select * from tbl_banner_file;
+
+

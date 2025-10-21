@@ -214,3 +214,63 @@ logoutLink.addEventListener("click", async (e) => {
     await memberService.logout()
     location.href = "/mobile/login";
 });
+
+
+const menuModal = document.querySelector('.menu-list-modal');
+if (menuModal) {
+    const profileWrap   = menuModal.querySelector('.login-profile-wrap');       // 로그인 전용
+    const profileImgEl  = profileWrap ? profileWrap.querySelector('img') : null;
+    const profileNameEl = profileWrap ? profileWrap.querySelector('p')   : null;
+
+    const guestWrap     = menuModal.querySelector('.login-logout-container');   // 비로그인 전용
+    const logoutLink    = menuModal.querySelector('.logout-menu-footer');       // 로그아웃 링크
+
+    // 기본 상태: 비로그인
+    if (profileWrap) profileWrap.style.display = 'none';
+    if (guestWrap)   guestWrap.style.display   = '';
+    if (logoutLink)  logoutLink.style.display  = 'none';
+
+    // 로그인 정보 불러오기
+    memberService.info(async (member) => {
+        if (!member) {
+            // 비로그인 유지
+            if (profileWrap) profileWrap.style.display = 'none';
+            if (guestWrap)   guestWrap.style.display   = '';
+            if (logoutLink)  logoutLink.style.display  = 'none';
+            return;
+        }
+
+        // 로그인 상태
+        if (guestWrap)   guestWrap.style.display   = 'none';
+        if (profileWrap) profileWrap.style.display = '';
+        if (logoutLink)  logoutLink.style.display  = '';
+
+        if (profileImgEl) {
+            const fallback = 'https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c';
+            const imgUrl =
+                (member.filePath && member.filePath.trim()) ||
+                (member.socialImgUrl && member.socialImgUrl.trim()) ||
+                fallback;
+            profileImgEl.src = imgUrl;
+            profileImgEl.alt = (member.memberName || member.memberEmail || '사용자') + ' 프로필';
+        }
+
+        if (profileNameEl) {
+            profileNameEl.textContent = member.memberName || member.memberEmail || '사용자';
+        }
+
+        if (logoutLink) {
+            logoutLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try { await memberService.logout(); } catch (_) {}
+                location.href = '/mobile/login';
+            }, { once: true });
+        }
+
+    }).catch(() => {
+        if (profileWrap) profileWrap.style.display = 'none';
+        if (guestWrap)   guestWrap.style.display   = '';
+        if (logoutLink)  logoutLink.style.display  = 'none';
+    });
+}
+

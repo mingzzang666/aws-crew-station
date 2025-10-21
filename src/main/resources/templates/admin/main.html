@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/css/admin/main.css"/>
     <link rel="stylesheet" href="/css/admin/member.css"/>
     <link rel="stylesheet" href="/css/admin/payment.css"/>
+    <link rel="stylesheet" href="/css/admin/inquiry.css">
     <link rel="shortcut icon" href="/images/crew-station-favicon.png" type="image/x-icon"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
 </head>
@@ -141,6 +142,7 @@
             <div th:replace="~{admin/fragment/diary-report :: diary-report-page}"></div>
             <div th:replace="~{admin/fragment/gift-report :: gift-report-page}"></div>
             <div th:replace="~{admin/fragment/payment :: payment}"></div>
+            <div th:replace="~{admin/fragment/inquiry :: inquiry-page}"></div>
 
         </div>
 
@@ -151,16 +153,16 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="/js/admin/main/module/service.js" ></script>
 <script src="/js/admin/main/module/layout.js" ></script>
-<script src="/js/admin/main/event.js" ></script>
+
 <script src="/js/admin/member/module/service.js"></script>
 <script src="/js/admin/member/module/layout.js"></script>
 <script src="/js/admin/member/event.js"></script>
 <script src="/js/admin/notification/module/service.js"></script>
 <script src="/js/admin/notification/module/layout.js"></script>
 <script src="/js/admin/notification/event.js"></script>
-<!--<script src="/js/admin/banner/module/service.js"></script>-->
-<!--<script src="/js/admin/banner/module/layout.js"></script>-->
-<!--<script src="/js/admin/banner/event.js"></script>-->
+<script src="/js/admin/banner/module/service.js"></script>
+<script src="/js/admin/banner/module/layout.js"></script>
+<script src="/js/admin/banner/event.js"></script>
 <script src="/js/admin/diary-report/module/layout.js"></script>
 <script src="/js/admin/diary-report/module/service.js"></script>
 <script src="/js/admin/diary-report/event.js"></script>
@@ -170,5 +172,9 @@
 <script src="/js/admin/payment/module/layout.js"></script>
 <script src="/js/admin/payment/module/service.js"></script>
 <script src="/js/admin/payment/event.js"></script>
+<script src="/js/admin/inquiry/module/layout.js"></script>
+<script src="/js/admin/inquiry/module/service.js"></script>
+<script src="/js/admin/inquiry/event.js"></script>
+<script src="/js/admin/main/event.js" ></script>
 </body>
 </html>

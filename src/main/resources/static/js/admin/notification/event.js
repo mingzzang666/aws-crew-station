@@ -105,7 +105,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ✅ 완료(저장) 버튼
+//  완료(저장) 버튼
 let _saving = false;
 document.addEventListener('click', async (e) => {
     const submit = e.target.closest('#notice-modal-submit');

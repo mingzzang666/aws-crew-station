@@ -2,6 +2,7 @@ package com.example.crewstation.mapper.member;
 
 import com.example.crewstation.domain.member.MemberVO;
 import com.example.crewstation.dto.member.*;
+import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.Search;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -53,8 +54,14 @@ public interface MemberMapper {
 //   관리자 상세 조회
     public MemberDTO findAdminMemberDetail(@Param("memberId") Long memberId);
 
-//  나의 판매내역 목록
-    public List<MySaleListDTO> selectMySaleList(@Param("memberId") Long memberId);
+    // 나의 판매내역 목록 조회
+    public List<MySaleListDTO> selectSaleList(@Param("memberId") Long memberId,
+                                            @Param("criteria") Criteria criteria,
+                                            @Param("search") Search search);
+
+    // 전체 개수 조회 (페이징)
+    public int selectSaleTotalCount(@Param("memberId") Long memberId,
+                                    @Param("search") Search search);
 
 //  나의 구매내역 상세
     public List<MyPurchaseDetailDTO>  selectMyPurchaseDetail(@Param("purchaseId") Long purchaseId);

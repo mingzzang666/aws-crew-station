@@ -46,6 +46,6 @@ public interface PurchaseMapper {
     public int selectTotalCount(@Param("memberId") Long memberId, @Param("search") Search search);
 
     // 회원 주문 상세 조회
-    public MyPurchaseDetailDTO selectMemberOrderDetails(@Param("memberId") Long memberId, @Param("postId") Long postId);
+    public MyPurchaseDetailDTO selectMemberOrderDetails(@Param("memberId") Long memberId, @Param("paymentStatusId") Long paymentStatusId);
 
 }

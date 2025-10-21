@@ -38,5 +38,27 @@ const paymentService = (() => {
         return res.ok;
     };
 
-    return { getPayments, getDetail, processPayment };
+    const getSummary = async (opt = {}) => {
+        const { categories = [], keyword = "" } = opt || {};
+        const qs = new URLSearchParams();
+        if (categories.length) qs.set("categories", categories.join(","));
+        if (keyword) qs.set("keyword", keyword);
+
+        const url = `/api/admin/payment/summary?${qs.toString()}`;
+        console.log('[summary] url =', url);      // ← 이 줄이 콘솔에 꼭 찍혀야 함
+
+        const res = await fetchWithRefresh(url, { method: "GET", credentials: "include" });
+        if (!res.ok) {
+            console.error('[summary] http error:', res.status);
+            throw new Error("결제 요약 불러오기 실패");
+        }
+
+        const data = await res.json();
+        console.log('[summary] resp =', data);    // ← 응답 확인
+        return data;
+    };
+
+
+
+    return { getPayments, getDetail, processPayment, getSummary };
 })();

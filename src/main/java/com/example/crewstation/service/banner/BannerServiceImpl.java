@@ -38,6 +38,8 @@ public class BannerServiceImpl implements BannerService {
     private final S3Service s3Service;
     private final RedisTemplate<String, Object> redisTemplate;
     private final BannerTransactionService bannerTransactionService;
+    private final FileDAO fileDAO;
+    private final FileDTO fileDTO;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -67,63 +69,68 @@ public class BannerServiceImpl implements BannerService {
 //        }
         return bannerTransactionService.getBanners(limit);
     }
+
+    @Override
+    public void insertBanner(BannerDTO bannerDTO) {
+        bannerDTO.setBannerOrder(bannerDTO.getBannerOrder());
+        bannerDAO.insertBanner(bannerDTO);
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void insertBannerFile(BannerDTO bannerDTO, List<MultipartFile> files) {
+        FileDTO fileDTO = new FileDTO();
+        bannerDAO.insertBannerFile(bannerDTO);
+        IntStream.range(0, files.size()).forEach(i -> {
+            MultipartFile file = files.get(i);
+            if (file.getOriginalFilename().equals("")) {
+                return;
+            }
+            try {
+                String s3Key = s3Service.uploadPostFile(file, fileDTO.getFilePath());
+                String originalFilename = file.getOriginalFilename();
+                String extension = "";
+
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+
+                fileDTO.setFileName(UUID.randomUUID() + extension);
+                fileDTO.setFilePath(s3Key);
+                fileDTO.setFileSize(String.valueOf(file.getSize()));
+                fileDTO.setFileOriginName(originalFilename);
+                fileDAO.saveFile(fileDTO);
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+    }
+
+    @Override
+    public void updateBanner(BannerDTO bannerDTO, Long[] deleteFiles, List<MultipartFile> multipartFiles) {
+        FileDTO fileDTO = new FileDTO();
+        bannerDAO.updateBannerFile(bannerDTO);
+
+        if (deleteFiles != null && deleteFiles.length > 0) {
+            s3Service.deleteFile(fileDTO.getFilePath());
+            fileDAO.delete(fileDTO.getId());
+
+        }
+    }
+
+    @Override
+    public void deleteBanner(Long id) {
+
+    }
 }
 
-//    @Override
-//    public void insertBanner(BannerDTO banner) {
-//
-//        bannerDTO.setBannerOrder(banner.getBannerOrder());
-//        bannerDAO.insertBanner(banner);
-//    }
-//
-//
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    @LogStatus
-//    public void insertBannerFile(BannerDTO bannerDTO, List<MultipartFile> files) {
-//
-//        bannerDTO.setBannerOrder(bannerDTO.getBannerOrder());
-//        bannerDAO.insertBanner(bannerDTO);
-//        Long bannerId = bannerDTO.getBannerId();
-//        if (bannerId != null) {
-//            throw new IllegalStateException("배너ID 생성하지 못했습니다");
-//        }
-//
-//        if (files != null && !files.isEmpty()) {
-//            return;
-//        }
-//
-//        if (files != null) {
-//            for (MultipartFile file : files) {
-//                if (file == null || file.isEmpty()) {
-//                    continue;
-//                }
-//                try {
-//                    String bannerPath = "banners/" + bannerId;
-//                    String s3Key = s3Service.uploadPostFile(file, bannerPath);
-//
-//                    String originalFilename = file.getOriginalFilename();
-//                    String extension = (originalFilename != null && originalFilename.contains("."))
-//                            ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
-//
-//                    FileDTO fileDTO = new FileDTO();
-//                    fileDTO.setFileName(UUID.randomUUID() + extension);
-//                    fileDTO.setFilePath(s3Key);
-//                    fileDTO.setFileSize(String.valueOf(file.getSize()));
-//                    fileDTO.setFileOriginName(originalFilename);
-//                    fileDAO.saveFile(fileDTO);
-//
-//                    BannerDTO mapDTO = new BannerDTO();
-//                    mapDTO.setBannerId(bannerId);
-//                    mapDTO.setFileId(fileDTO.getId());
-//                    bannerDAO.insertBannerFile(mapDTO);
-//
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }
-//    }
-//}
+
+
+
+
+
 
 
