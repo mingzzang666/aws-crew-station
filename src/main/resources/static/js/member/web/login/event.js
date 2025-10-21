@@ -54,8 +54,16 @@ button.addEventListener('click', async () => {
 
 const guestButton = document.querySelector(".login-guest-btn");
 
+// window.onpageshow = async function(event){
+//     if(event.persisted || (window.performance && window.performance.navigation.type == 2)){
+memberService.resetCookies();
+    // }
+// }
+
+
 guestButton.addEventListener("click", async(e) => {
     console.log("들어옴")
+
     loginError.innerHTML = ``;
     const guestID = document.querySelector(".guest-id").value;
     const guestPhone = document.querySelector(".guest-phone").value;

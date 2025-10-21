@@ -1,4 +1,4 @@
-const memberService = (() => {
+const memberCheckService = (() => {
     const checkEmail = async (email) => {
         try{
             const response = await fetch(`/api/member/email-check?email=${email}`, {

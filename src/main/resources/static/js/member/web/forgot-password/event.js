@@ -40,7 +40,7 @@ const mailSendBtn = document.querySelector("button.mail-send-btn");
 let mailSendCheck = true;
 mailCheckBtn.addEventListener("click", async (e) => {
     // 여기서 서버 연결해서 응답에 따라 에러 문구가 나오거나 메일 인증 보내기 버튼 활성화
-    let check = await memberService.checkEmail(inputTag.value);
+    let check = await memberCheckService.checkEmail(inputTag.value);
     if (check) {
         mailSendBtn.disabled = false;
         inputWrap.classList.remove("error");
@@ -86,7 +86,7 @@ mailSendBtn.addEventListener("click", (e) => {
 });
 
 mailSendBtn.addEventListener("click", async (e) => {
-    serverCode = await memberService.sendEmail(inputTag.value);
+    serverCode = await memberCheckService.sendEmail(inputTag.value);
 
     if (!mailSendCheck) return;
     mailSendCheck = false;;
@@ -100,7 +100,7 @@ mailSendBtn.addEventListener("click", async (e) => {
 const mailResendBtn = document.querySelector("button.mail-resend");
 mailResendBtn.addEventListener("click", async (e) => {
     // 시간
-    serverCode = await memberService.sendEmail(inputTag.value);
+    serverCode = await memberCheckService.sendEmail(inputTag.value);
 
     clearInterval(timer);
     time = 5 * 60;
