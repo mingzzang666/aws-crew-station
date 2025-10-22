@@ -434,7 +434,9 @@ public class DiaryServiceImpl implements DiaryService {
             filePostSectionDAO.updateImageTypeByFileId(request.getThumbnail(), Type.SUB);
             filePostSectionDAO.updateImageTypeByFileId(request.getNewThumbnail(), Type.MAIN);
         }
-
+        if(redisTemplate.opsForValue().get("diaries") != null){
+            redisTemplate.delete("diaries");
+        }
 
     }
 
@@ -528,12 +530,14 @@ public class DiaryServiceImpl implements DiaryService {
                 throw new RuntimeException(e);
             }
         });
-
+        if(redisTemplate.opsForValue().get("diaries") != null){
+            redisTemplate.delete("diaries");
+        }
 
     }
 
     @Override
-//    @LogReturnStatus
+    @LogReturnStatus
     @Transactional(rollbackFor = Exception.class)
     public DiaryDetailDTO getDiary(Long postId, CustomUserDetails customUserDetails) {
         DiaryDetailDTO diaryDetailDTO = new DiaryDetailDTO();
@@ -587,6 +591,9 @@ public class DiaryServiceImpl implements DiaryService {
             throw new PostNotFoundException("이미 삭제된 게시글입니다.");
         }
         diaryDAO.updateSecret(diaryDTO.getPostId(), secret);
+        if(redisTemplate.opsForValue().get("diaries") != null){
+            redisTemplate.delete("diaries");
+        }
         return message;
     }
 
@@ -601,6 +608,9 @@ public class DiaryServiceImpl implements DiaryService {
 
     public void deleteDiary(Long postId) {
         postDAO.updatePostStatus(postId);
+        if(redisTemplate.opsForValue().get("diaries") != null){
+            redisTemplate.delete("diaries");
+        }
     }
 
     public String getPath() {
