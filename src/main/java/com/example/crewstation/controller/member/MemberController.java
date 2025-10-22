@@ -1,5 +1,6 @@
 package com.example.crewstation.controller.member;
 
+import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.auth.JwtTokenProvider;
 import com.example.crewstation.common.enumeration.MemberProvider;
 import com.example.crewstation.common.enumeration.MemberRole;
@@ -9,6 +10,7 @@ import com.example.crewstation.service.guest.GuestService;
 import com.example.crewstation.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -112,7 +114,8 @@ public class MemberController {
     }
 
     @GetMapping("profile/{memberId}")
-    public String profile() {
+    public String profile(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
+        model.addAttribute("memberDTO", customUserDetails);
         return "member/web/profile";
 
     }
