@@ -9,7 +9,7 @@ secretToggle?.addEventListener("click", async (e) => {
     secretCheckbox.checked = secretToggle.classList.toggle("active");
     console.log(secretCheckbox.checked)
     console.log(document.getElementById("postId").dataset.post);
-    const {message,status}= await diaryDetailService.changeSecret({"check":secretCheckbox.checked,"postId":+document.getElementById("postId").dataset.post});
+    const {message,status}= await diaryDetailService.changeSecret({"check":secretCheckbox.checked,"diaryId":+document.getElementById("postId").dataset.post});
     toastModal(message);
     if(status ===404){
         location.href="/diaries";

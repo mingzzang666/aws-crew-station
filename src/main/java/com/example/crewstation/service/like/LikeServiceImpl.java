@@ -29,17 +29,19 @@ public class LikeServiceImpl implements LikeService {
     @Override
     @LogStatus
     @Transactional(rollbackFor = Exception.class)
-    public void like(LikeDTO likeDTO, CustomUserDetails customUserDetails) {
+    public void like(Long postId, CustomUserDetails customUserDetails) {
+        LikeDTO likeDTO = new LikeDTO();
 //        임시방편
         if (customUserDetails == null) {
             throw new MemberNotFoundException("로그인 후 사용 가능");
         }
-        if (!postDAO.isActivePost(likeDTO.getPostId())) {
+        if (!postDAO.isActivePost(postId)) {
             throw new PostNotFoundException("이미 삭제된 게시글입니다.");
         }
         likeDTO.setMemberId(customUserDetails.getId());
+        likeDTO.setPostId(postId);
 //        likeDTO.setMemberId(1L);
-        diaryDAO.changeLikeCount(+1,likeDTO.getPostId());
+        diaryDAO.changeLikeCount(+1,postId);
         likeDAO.saveLike(likeDTO);
         alarmDAO.saveLikeAlarm(likeDTO.getId());
     }

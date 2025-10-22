@@ -60,7 +60,7 @@ public interface DiaryService {
     public DiaryDetailDTO getDiary(Long postId,CustomUserDetails customUserDetails);
 
 //    다이어리 공개 비공개 변경
-    public String changeSecret(DiaryDTO diaryDTO);
+    public String changeSecret(Long diaryId, boolean check);
 //    memberId로 다이어리  조회
     public List<DiaryDTO> findDiaryById(Long diaryId);
 

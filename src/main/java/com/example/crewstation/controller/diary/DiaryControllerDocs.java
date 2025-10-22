@@ -58,7 +58,8 @@ public interface DiaryControllerDocs {
     @Operation(summary = "다이어리 설정 변경",
             description = "다이어리 공개, 비공개 설정 변경",
             parameters = {
-                    @Parameter(name = "diaryDTO",description = "공개인지 비공개인지 정보가 들어온다."),
+                    @Parameter(name = "diaryId",description = "다이어리 게시글 아이디가 들어온다."),
+                    @Parameter(name = "check",description = "공개인지 비공개인지 정보가 들어온다.")
             })
-    public ResponseEntity<String> changeSecret(@RequestBody DiaryDTO diaryDTO) ;
+    public ResponseEntity<String> changeSecret(@PathVariable Long diaryId,@RequestBody boolean check) ;
 }

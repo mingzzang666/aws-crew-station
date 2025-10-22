@@ -69,7 +69,7 @@ public class SecurityConfig {
                                 "/notice/detail/**",
                                 "/api/auth/guest-login",
                                 "/admin/login",
-                                "/api/payment",
+                                "/api/payment/{purchaseId:\\d+}",
                                 "/error",
                                 "/api/auth/**",
                                 "/api/admin/auth/**",
@@ -123,6 +123,7 @@ public class SecurityConfig {
                                 "/diaries/{postId:\\d+}")
                         .authenticated()
                         .requestMatchers(HttpMethod.PUT,
+                                "/api/diaries/secret/{diaryId:\\d+}",
                                 "/api/replies")
                         .authenticated()
                         .requestMatchers(HttpMethod.DELETE,

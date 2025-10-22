@@ -1,5 +1,6 @@
 package com.example.crewstation.service.payment;
 
+import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.domain.guest.GuestVO;
 import com.example.crewstation.dto.payment.PaymentDTO;
 import com.example.crewstation.dto.payment.PaymentResponseDTO;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface PaymentService {
-    public PaymentResponseDTO requestPayment(PaymentStatusDTO paymentStatusDTO);
+    public PaymentResponseDTO requestPayment(Long purchaseId,PaymentStatusDTO paymentStatusDTO, CustomUserDetails userDetails);
 
     public void completePayment(Long purchaseId, PaymentDTO paymentDTO);
 

@@ -95,10 +95,12 @@ public class DiaryRestController {
         return ResponseEntity.ok(diaries);
     }
 
-    @PostMapping("secret")
-    public ResponseEntity<String> changeSecret(@RequestBody DiaryDTO diaryDTO) {
+    @PutMapping("/secret/{diaryId}")
+    public ResponseEntity<String> changeSecret(@PathVariable Long diaryId,@RequestBody boolean check) {
         try {
-            String message = diaryService.changeSecret(diaryDTO);
+//            log.info("changeSecret: {}", diaryDTO);
+            log.info("diaryId: {}", diaryId);
+            String message = diaryService.changeSecret(diaryId,check);
             return ResponseEntity.ok(message);
         } catch (PostNotActiveException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

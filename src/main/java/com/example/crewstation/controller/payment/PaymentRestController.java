@@ -24,13 +24,11 @@ import java.util.Map;
 public class PaymentRestController {
     private final PaymentService paymentService;
 
-    @PostMapping
-    public ResponseEntity<PaymentResponseDTO> requestPayment(@RequestBody PaymentStatusDTO paymentStatusDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @PostMapping("{purchaseId}")
+    public ResponseEntity<PaymentResponseDTO> requestPayment(@PathVariable Long purchaseId,@RequestBody(required = false) PaymentStatusDTO paymentStatusDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try{
-            if(userDetails != null){
-                paymentStatusDTO.setMemberId(userDetails.getId());
-            }
-            PaymentResponseDTO message = paymentService.requestPayment(paymentStatusDTO);
+
+            PaymentResponseDTO message = paymentService.requestPayment(purchaseId, paymentStatusDTO, userDetails);
             log.info(message.toString());
             return ResponseEntity.ok().body(message);
         }catch (PostNotFoundException e){
