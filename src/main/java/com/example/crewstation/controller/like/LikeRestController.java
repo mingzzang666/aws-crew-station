@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.*;
 public class LikeRestController {
     private final LikeService likeService;
 
-    @PostMapping
-    public ResponseEntity<String> addLike(@RequestBody LikeDTO likeDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @PostMapping("{postId}")
+    public ResponseEntity<String> addLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-            log.info("likeDTO =========== {}", likeDTO);
-            likeService.like(likeDTO, userDetails);
+
+            likeService.like(postId, userDetails);
 
             return ResponseEntity.ok().body("좋아요를 추가하였습니다.");
         } catch (MemberNotFoundException e) {

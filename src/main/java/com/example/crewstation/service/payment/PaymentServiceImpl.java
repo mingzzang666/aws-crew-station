@@ -1,6 +1,7 @@
 package com.example.crewstation.service.payment;
 
 import com.example.crewstation.aop.aspect.annotation.LogReturnStatus;
+import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.common.exception.CannotDecreaseBelowZeroException;
 import com.example.crewstation.common.exception.PostNotActiveException;
@@ -50,12 +51,15 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @LogReturnStatus
-    public PaymentResponseDTO requestPayment(PaymentStatusDTO paymentStatusDTO) {
+    public PaymentResponseDTO requestPayment(Long purchaseId,PaymentStatusDTO paymentStatusDTO, CustomUserDetails userDetails) {
+
         String code = null;
         PaymentResponseDTO paymentResponseDTO = new PaymentResponseDTO();
         String message = null;
-        boolean isExist = postDAO.isActivePost(paymentStatusDTO.getPurchaseId());
-
+        boolean isExist = postDAO.isActivePost(purchaseId);
+        if(userDetails != null){
+            paymentStatusDTO.setMemberId(userDetails.getId());
+        }
         log.info("isExist={}", isExist);
         log.info("paymentStatusDTO={}", paymentStatusDTO.toString());
 
@@ -82,20 +86,20 @@ public class PaymentServiceImpl implements PaymentService {
             paymentResponseDTO.setGuest(true);
             return paymentResponseDTO;
         }
-        boolean shouldDecrease = purchaseDAO.updatePurchaseProductCount(paymentStatusDTO.getPurchaseId(),-1);
+        boolean shouldDecrease = purchaseDAO.updatePurchaseProductCount(purchaseId,-1);
         if(!shouldDecrease){
             throw new CannotDecreaseBelowZeroException("이미 품절된 상품입니다.");
         }
 
-        int count = purchaseDAO.findPurchaseProductCount(paymentStatusDTO.getPurchaseId());
-
+        int count = purchaseDAO.findPurchaseProductCount(purchaseId);
+        paymentStatusDTO.setPurchaseId(purchaseId);
         paymentStatusDAO.save(paymentStatusDTO);
         alarmDAO.savePaymentAlarm(paymentStatusDTO.getId());
         message = "판매요청 완료되었습니다.";
         paymentResponseDTO.setMessage(message);
 
-        if(purchaseRedisTemplate.opsForValue().get("purchase::purchases_" + paymentStatusDTO.getPurchaseId()) !=null){
-            purchaseRedisTemplate.delete("purchase::purchases_" + paymentStatusDTO.getPurchaseId());
+        if(purchaseRedisTemplate.opsForValue().get("purchase::purchases_" + purchaseId) !=null){
+            purchaseRedisTemplate.delete("purchase::purchases_" + purchaseId);
         }
         if(redisTemplate.opsForValue().get("gifts") !=null){
             redisTemplate.delete("gifts");

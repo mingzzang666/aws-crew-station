@@ -18,9 +18,9 @@ public interface ReplyService {
 
     public void write(ReplyDTO replyDTO, CustomUserDetails customUserDetails);
 
-    public void upate(ReplyDTO replyDTO);
+    public void upate(Long replyId, ReplyDTO replyDTO);
 
-    public void delete(ReplyDTO replyDTO);
+    public void delete(Long replyId, Long postId);
 
     default ReplyVO toReplyVO(ReplyDTO replyDTO){
         return ReplyVO.builder()

@@ -39,14 +39,16 @@ public interface ReplyControllerDocs {
     @Operation(summary = "댓글 수정",
             description = "다이어리 댓글 수정",
             parameters = {
-                    @Parameter(name = "replyDTO",description = "댓글 수정한 정보가 들어온다"),
+                    @Parameter(name = "replyId",description = "수정한 댓글 아이디가 들어온다"),
+                    @Parameter(name = "replyDTO",description = "수정한 댓글의 게시글 아이디와 내용이 들어온다"),
             })
-    public ResponseEntity<String> modify(@RequestBody ReplyDTO replyDTO);
+    public ResponseEntity<String> modify(@PathVariable Long replyId,@RequestBody ReplyDTO replyDTO);
 
     @Operation(summary = "댓글 삭제",
             description = "다이어리 댓글 삭제",
             parameters = {
-                    @Parameter(name = "replyDTO",description = "삭제할 댓글의 정보가 들어온다"),
+                    @Parameter(name = "replyId",description = "삭제한 댓글 아이디가 들어온다."),
+                    @Parameter(name = "postId",description = "삭제한 댓글의 게시글 아이디가 들어온다."),
             })
-    public ResponseEntity<String> delete(@RequestBody ReplyDTO replyDTO);
+    public ResponseEntity<String> delete(@PathVariable Long replyId, @RequestBody Long postId);
 }

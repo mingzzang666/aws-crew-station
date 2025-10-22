@@ -243,9 +243,11 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(status)
         confirmReportModal.style.display = "none";
         document.getElementById("reportModal").style.display = "none";
-        toastModal(message);
+
         if (status === 404) {
             location.href = "/gifts"
+        }else{
+            toastModal(message);
         }
     });
 
