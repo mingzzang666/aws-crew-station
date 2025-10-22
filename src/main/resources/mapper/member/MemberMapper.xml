@@ -286,7 +286,7 @@
         insert into tbl_member (member_name, member_email, member_password, member_role)
         values (#{memberName}, #{memberEmail}, #{memberPassword}, #{memberRole})
     </insert>
-<<<<<<< HEAD
+
 
     <!-- 내 정보 수정 정보 조회-->
     <select id="selectMyInfo">
@@ -312,7 +312,7 @@
                        ON mf.file_id = f.id
     WHERE m.id = #{memberId}
     </select>
-=======
+
     <select id="selectMemberById">
         select
             m.id,
@@ -329,7 +329,6 @@
         where m.id = #{memberId} and m.member_role = 'member' and m.member_status = 'active'
     </select>
 
->>>>>>> profile
 
 
 </mapper>
