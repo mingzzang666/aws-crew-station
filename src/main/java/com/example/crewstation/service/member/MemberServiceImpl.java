@@ -297,6 +297,7 @@ public class MemberServiceImpl implements MemberService {
             memberDTO.setFilePath(s3Service.getPreSignedUrl(memberDTO.getFilePath(), Duration.ofMinutes(10)));
         }else{memberDTO.setFilePath("https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c");}
         memberDTO.setDiaryCount(diaryDAO.countAllByMemberId(memberId));
+        log.info("profile"+memberDTO.toString());
         return memberDTO;
     }
 
