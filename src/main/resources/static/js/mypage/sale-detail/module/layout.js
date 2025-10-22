@@ -63,7 +63,7 @@ const saleLayout = (() => {
 
                 <h2 class="address-wrap">구매자 정보</h2>
                 <div class="address">
-                    <span class="address-span">받은 사람</span>${order.memberName}
+                    <span class="address-span">구매자명</span>${order.memberName}
                 </div>
                 <div class="address">
                     <span class="address-span">전화번호</span>${formatPhone(order.memberPhone)}
@@ -75,7 +75,7 @@ const saleLayout = (() => {
                     ${order.addressZipCode ? "(" + order.addressZipCode + ") " : ""}${order.address || ""} ${order.addressDetail || ""}
                 </div>
                 <div class="address">
-                    <span class="address-span">받은 사람</span>${order.memberName}
+                    <span class="address-span">받는 사람</span>${order.memberName}
                 </div>
                 <div class="address">
                     <span class="address-span">전화번호</span>${formatPhone(order.memberPhone)}
