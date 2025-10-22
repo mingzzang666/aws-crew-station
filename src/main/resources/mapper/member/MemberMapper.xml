@@ -285,6 +285,7 @@
         values (#{memberName}, #{memberEmail}, #{memberPassword}, #{memberRole})
     </insert>
 
+
     <!-- 내 정보 수정 정보 조회-->
     <select id="selectMyInfo">
     SELECT
@@ -325,5 +326,6 @@
         on m.id = vm.member_id
         where m.id = #{memberId} and m.member_role = 'member' and m.member_status = 'active'
     </select>
+
 
 </mapper>

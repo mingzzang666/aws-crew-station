@@ -2,6 +2,7 @@ package com.example.crewstation.controller.member;
 
 import com.example.crewstation.aop.aspect.annotation.LogReturnStatus;
 import com.example.crewstation.aop.aspect.annotation.LogStatus;
+import com.example.crewstation.dto.member.MemberDTO;
 import com.example.crewstation.dto.member.MemberProfileDTO;
 import com.example.crewstation.service.mail.MailService;
 import com.example.crewstation.service.member.MemberService;
@@ -79,6 +80,10 @@ public class MembersApiController implements MembersApiControllerDocs {
                 "success", true,
                 "message", "별점이 반영되고 주문 상태가 reviewed로 변경되었습니다."
         ));
+    }
+    @GetMapping("profile/{memberId}")
+    public MemberDTO getProfileMember(@PathVariable Long memberId) {
+        return memberService.getProfileMember(memberId);
     }
 
 }
