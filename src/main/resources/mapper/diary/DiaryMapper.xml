@@ -240,7 +240,7 @@
                tc.crew_name,
                tc.id as crew_id
         from tbl_member tm
-                 join view_post_diary vpd on tm.id = vpd.member_id and vpd.id = #{postId}
+                 join view_post_diary vpd on tm.id = vpd.member_id and vpd.id = #{postId} and vpd.diary_secret = 'public'
                  left join view_file_member_file vfmf on tm.id = vfmf.member_id
         left join tbl_crew_diary tcd on tcd.diary_id = vpd.id
         left join tbl_crew tc on tcd.crew_id = tc.id

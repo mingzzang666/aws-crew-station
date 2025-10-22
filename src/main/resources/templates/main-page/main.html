@@ -23,13 +23,13 @@
                                 <div class="banner-item-wrap">
                                     <div class="banner-group">
                                         <div class="banner-slide">
-                                            <img th:src="@{${banners[4].filePath}}" alt="">
+                                            <img th:src="@{${banners[4].url}}" alt="">
                                             <div th:each="banner : ${banners}">
                                                 <div>
-                                                    <img th:src="@{${banner.filePath}}" alt="">
+                                                    <img th:src="@{${banner.url}}" alt="">
                                                 </div>
                                             </div>
-                                            <img th:src="@{${banners[0].filePath}}" alt="">
+                                            <img th:src="@{${banners[0].url}}" alt="">
                                         </div>
                                     </div>
                                     <div class="banner-arrow-wrap">
