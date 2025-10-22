@@ -21,6 +21,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 // 클라이언트 -> 로그인 요청, AuthController
 // AuthController -> 인증 요청, AuthenticationManager
@@ -144,7 +150,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-//
 
     @Bean
     public PasswordEncoder passwordEncoder() {
