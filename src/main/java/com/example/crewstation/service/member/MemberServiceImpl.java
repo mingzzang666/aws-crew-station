@@ -354,10 +354,32 @@ public class MemberServiceImpl implements MemberService {
 
         log.info(" 판매 상태가 {} 로 변경되었습니다.", paymentPhase);
     }
-
+    
+    // 나의 판매내역 상세 조회
     @Override
     public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId) {
-        return memberDAO.selectSellerOrderDetails(sellerId, paymentStatusId);
+        // DB에서 판매 상세 데이터 조회
+        MySaleDetailDTO detail = memberDAO.selectSellerOrderDetails(sellerId, paymentStatusId);
+
+        if (detail == null) {
+            log.warn("판매 상세 데이터가 없습니다. sellerId={}, paymentStatusId={}", sellerId, paymentStatusId);
+            return null;
+        }
+
+        // 이미지 경로가 존재하면 S3 프리사인드 URL로 변환
+        try {
+            if (detail.getMainImage() != null && !detail.getMainImage().isBlank()) {
+                String preSignedUrl = s3Service.getPreSignedUrl(detail.getMainImage(), Duration.ofMinutes(5));
+                detail.setMainImage(preSignedUrl);
+                log.info("판매 상세 이미지 S3 프리사인드 URL 변환 성공: {}", preSignedUrl);
+            } else {
+                log.info("판매 상세 이미지 없음 (mainImage 필드 null 또는 공백)");
+            }
+        } catch (Exception e) {
+            log.error("S3 프리사인드 URL 변환 실패 - paymentStatusId={}, error={}", paymentStatusId, e.getMessage());
+        }
+
+        return detail;
     }
 
     @Override
