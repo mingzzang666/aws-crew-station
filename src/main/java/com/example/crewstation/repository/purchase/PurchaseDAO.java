@@ -68,4 +68,13 @@ public class PurchaseDAO {
         return purchaseMapper.selectMemberOrderDetails(memberId, paymentId);
     }
 
+
+    //  판매 요청 시 상품 개수 줄이기
+    public boolean updatePurchaseProductCount(Long postId,int count){
+        return purchaseMapper.updatePurchaseProductCount(postId,count);
+    }
+
+    public int findPurchaseProductCount(Long postId){
+        return purchaseMapper.selectPurchaseProductCount(postId);
+    }
 }

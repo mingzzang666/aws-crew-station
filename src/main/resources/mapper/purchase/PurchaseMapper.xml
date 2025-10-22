@@ -205,4 +205,15 @@
         <include refid="purchaseSearch"/>
     </select>
 
+    <update id="updatePurchaseProductCount">
+        update tbl_purchase
+        set purchase_product_count = purchase_product_count + #{count}
+        where post_id = #{postId} and purchase_product_count > 0
+    </update>
+
+    <select id="selectPurchaseProductCount">
+        select purchase_product_count
+        from tbl_purchase
+        where post_id = #{postId}
+    </select>
 </mapper>
