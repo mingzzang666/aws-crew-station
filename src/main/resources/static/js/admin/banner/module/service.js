@@ -29,6 +29,27 @@ const bannerService = (() => {
 
     }
 
+    const update = async (file) => {
+        const formData = new FormData();
+        formData.append("files",file);
+        deleteFiles.forEach(id => formData.append("deleteFiles", id));
+
+        const response = await fetch("/api/admin/banner/{bannerId}", {
+            method : 'PUT',
+            body : formData,
+
+        });
+
+        if (response.ok) {
+            console.log("배너 수정완료");
+        } else {
+            console.log("배너 수정 실패");
+        }
+
+
+
+    }
+
 
     return {showList: showList, insert: insert}
 
