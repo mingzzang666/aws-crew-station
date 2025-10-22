@@ -48,7 +48,7 @@ public class JoinSmsService {
         String code = createCode();
         Message message = new Message();
         message.setTo(phoneNumber);
-        message.setFrom("01051133095");
+        message.setFrom("01079428158");
         message.setText("Crew Station 회원가입 인증 번호: " + code);
         try {
             SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));

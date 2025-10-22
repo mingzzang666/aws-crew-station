@@ -1,6 +1,6 @@
 const bannerLayout = (() => {
         function list(urls) {
-            const ul = document.querySelector(".pg-list");
+            const ul = document.querySelector("#registered-banner-list");
             let text = ``;
             urls.forEach((url) => {
                 text += `

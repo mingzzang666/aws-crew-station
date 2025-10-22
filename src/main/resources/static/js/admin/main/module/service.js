@@ -8,7 +8,6 @@ const mainService = (() => {
                 return null;
             }
             const result = await response.json();
-            console.log("관리자 통계:", result);
 
             if (callback) callback(result);
             return result;
