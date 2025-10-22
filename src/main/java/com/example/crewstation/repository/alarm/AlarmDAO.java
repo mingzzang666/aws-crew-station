@@ -36,6 +36,11 @@ public class AlarmDAO {
         alarmMapper.insertReplyAlarm(postId);
     }
 
+//    멤버 알람 추가
+    public void saveMemberAlarm(Long memberId) {
+        alarmMapper.insertMemberAlarm(memberId);
+    }
+
 //    안읽은 알람 갯수
      public int selectUnreadCount(Long memberId){
         return alarmMapper.selectUnreadCount(memberId);

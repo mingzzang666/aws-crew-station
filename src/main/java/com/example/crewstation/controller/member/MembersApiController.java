@@ -2,6 +2,7 @@ package com.example.crewstation.controller.member;
 
 import com.example.crewstation.aop.aspect.annotation.LogReturnStatus;
 import com.example.crewstation.aop.aspect.annotation.LogStatus;
+import com.example.crewstation.dto.member.MemberDTO;
 import com.example.crewstation.dto.member.MemberProfileDTO;
 import com.example.crewstation.service.mail.MailService;
 import com.example.crewstation.service.member.MemberService;
@@ -35,7 +36,7 @@ public class MembersApiController implements MembersApiControllerDocs {
 
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<MemberProfileDTO> getMemberProfile(@PathVariable Long memberId) {
+    public ResponseEntity<MemberDTO> getMemberProfile(@PathVariable Long memberId) {
         return memberService.getMemberProfile(memberId)
                 .map(ResponseEntity::ok)      // 값이 있으면 200ok
                 .orElse(ResponseEntity.notFound().build()); // 없으면 404

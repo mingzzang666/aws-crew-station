@@ -13,4 +13,5 @@ public class MemberProfileDTO {
     private Long memberId;
     private String memberName;
     private String profileImage;
+    private String filePath;
 }
