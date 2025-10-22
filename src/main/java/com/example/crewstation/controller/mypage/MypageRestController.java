@@ -84,15 +84,23 @@ public class MypageRestController {
         return ResponseEntity.ok().build();
     }
 
-//  마이페이지 - 판매 상세 조회
+    //  마이페이지 - 판매 상세 조회
     @GetMapping("/sale-detail/{paymentStatusId}")
-    public MySaleDetailDTO getMySaleDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                           @PathVariable("paymentStatusId") Long paymentStatusId) {
+    public ResponseEntity<MySaleDetailDTO> getMySaleDetail(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("paymentStatusId") Long paymentStatusId) {
 
         Long sellerId = customUserDetails.getId();
         log.info("판매 상세 요청 - sellerId={}, paymentStatusId={}", sellerId, paymentStatusId);
 
-        return memberService.getSellerOrderDetails(sellerId, paymentStatusId);
+        MySaleDetailDTO detail = memberService.getSellerOrderDetails(sellerId, paymentStatusId);
+
+        if (detail == null) {
+            log.warn("판매 상세 정보 없음 - sellerId={}, paymentStatusId={}", sellerId, paymentStatusId);
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(detail);
     }
 
     // 마이페이지 - 내 정보 조회

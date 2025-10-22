@@ -13,7 +13,7 @@
     <section class="page-container">
         <div class="main-container">
             <a class="home-logo" th:href="@{/}">
-                <img src="/images/crew-station-favicon.png"  width="147" height="100">
+                <img src="/images/crew-station-favicon.png"  width="147" height="100" style="object-fit: cover;">
             </a>
             <h1 class="join-title">회원가입</h1>
             <form action="/mobile/join" method="post" id="signupForm" th:object="${memberDTO}" enctype="multipart/form-data">

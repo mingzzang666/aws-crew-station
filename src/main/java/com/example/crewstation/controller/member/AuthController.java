@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -34,11 +36,13 @@ AuthController implements AuthControllerDocs{
     private final JwtTokenProvider jwtTokenProvider;
     private final HttpServletResponse response;
     private final MemberService memberService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     //    로그인
     @PostMapping("login")
     @LogReturnStatus
     public ResponseEntity<?> login(@RequestBody MemberDTO memberDTO){
+
         try {
             Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(memberDTO.getMemberEmail(), memberDTO.getMemberPassword()));
@@ -52,6 +56,7 @@ AuthController implements AuthControllerDocs{
             tokens.put("refreshToken", refreshToken);
 
             Cookie rememberEmailCookie = new Cookie("rememberEmail", memberDTO.getMemberEmail());
+
 
             rememberEmailCookie.setPath("/"); // 모든 경로에서 접근 가능
 
@@ -184,6 +189,37 @@ AuthController implements AuthControllerDocs{
 
         return member;
     }
+
+    @PostMapping("/reset-cookies")
+    public void resetCookies(HttpServletRequest req, HttpServletResponse res){
+        Cookie[] cookies = req.getCookies();
+        log.info("Cookies are {}", cookies);
+        if (cookies != null) {
+            boolean accessTokenExists = false;
+            for (Cookie cookie : cookies) {
+                if ("accessToken".equals(cookie.getName())) {
+                    accessTokenExists = true;
+                    break;
+                }
+            }
+            if (!accessTokenExists) {
+                for (Cookie cookie : cookies) {
+                    Cookie newCookie = new Cookie(cookie.getName(), null);
+                    newCookie.setHttpOnly(true);
+                    newCookie.setSecure(false);
+                    newCookie.setPath("/");
+                    newCookie.setMaxAge(0);
+                    res.addCookie(newCookie);
+                }
+            }
+        }
+
+        Set<String> keys = redisTemplate.keys("refresh:*");
+        if(!keys.isEmpty()){
+           redisTemplate.delete(keys);
+        }
+    }
+
 }
 
 
