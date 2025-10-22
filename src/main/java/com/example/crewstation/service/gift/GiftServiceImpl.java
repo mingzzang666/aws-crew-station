@@ -59,6 +59,8 @@ public class GiftServiceImpl implements GiftService {
                     new TypeReference<List<GiftDTO>>() {}
             );
         }
+        log.info("obj {}::::::::",obj);
+        log.info("gifts {}::::::::",gifts);
 //        List<GiftDTO> gifts = (List<GiftDTO>) redisTemplate.opsForValue().get("gifts");
         if (gifts != null) {
             gifts.forEach(gift -> {
