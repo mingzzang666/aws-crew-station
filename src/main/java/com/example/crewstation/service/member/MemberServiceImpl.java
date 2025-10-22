@@ -382,23 +382,34 @@ public class MemberServiceImpl implements MemberService {
         return detail;
     }
 
+
     @Override
     public ModifyDTO getMemberInfo(CustomUserDetails customUserDetails) {
-        Long memberId = customUserDetails.getId();
-        ModifyDTO dto = memberDAO.selectMemberInfo(memberId);
+        String memberEmail = customUserDetails.getUserEmail();
 
-        String imageUrl = null;
+        // email이 null이면 socialEmail로 대체
+        if (memberEmail == null || memberEmail.isEmpty()) {
+            memberEmail = customUserDetails.getMemberSocialEmail();
+        }
 
-        // S3 이미지 존재 여부
+        System.out.println("🔹 로그인된 사용자 이메일 (자동보정): " + memberEmail);
+
+        // email 기준으로 DB 조회
+        ModifyDTO dto = memberDAO.selectMemberInfo(memberEmail);
+
+        // 회원이 없으면 처리
+        if (dto == null) {
+            System.out.println("⚠️ 회원 정보를 찾을 수 없습니다. 이메일: " + memberEmail);
+            throw new RuntimeException("회원 정보를 찾을 수 없습니다. 이메일=" + memberEmail);
+        }
+
+        // 프로필 이미지 세팅
+        String imageUrl;
         if (dto.getFilePath() != null && dto.getFileName() != null) {
             imageUrl = dto.getFilePath() + dto.getFileName();
-        }
-        // 소셜 이미지 존재 여부
-        else if (dto.getProfileImageUrl() != null && !dto.getProfileImageUrl().isEmpty()) {
+        } else if (dto.getProfileImageUrl() != null && !dto.getProfileImageUrl().isEmpty()) {
             imageUrl = dto.getProfileImageUrl();
-        }
-        // 기본 이미지
-        else {
+        } else {
             imageUrl = "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
         }
 

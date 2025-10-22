@@ -86,7 +86,7 @@ public interface MemberMapper {
 
 
 //  내 정보 수정 정보조회
-    public ModifyDTO selectMyInfo(Long memberId);
+    public ModifyDTO selectMyInfo(String memberEmail);
 
 
 //    id로 멤버 조회
