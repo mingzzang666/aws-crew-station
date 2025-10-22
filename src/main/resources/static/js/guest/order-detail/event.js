@@ -79,7 +79,8 @@ document.addEventListener("DOMContentLoaded", async() => {
                                             paymentAmount: response.data.price,
                                             method: response.data.method,
                                             status: "success",
-                                            memberId: order.buyerMemberId
+                                            memberId: order.buyerMemberId,
+                                            paymentStatusId: order.paymentStatusId
                                         })
                                     });
                                     console.log("서버 응답 상태:", res.status);

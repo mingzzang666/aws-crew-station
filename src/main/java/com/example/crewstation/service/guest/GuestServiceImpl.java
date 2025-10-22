@@ -45,7 +45,7 @@ public class GuestServiceImpl implements GuestService {
 
     // 비회원이 주문번호로 조회한 후 결제 상태 변경
     @Override
-    public void updatePaymentStatus(Long purchaseId, PaymentPhase paymentPhase) {
-        paymentStatusDAO.updatePaymentStatus(purchaseId, paymentPhase);
+    public void updatePaymentStatus(Long paymentStatusId, PaymentPhase paymentPhase) {
+        paymentStatusDAO.updatePaymentStatus(paymentStatusId, paymentPhase);
     }
 }

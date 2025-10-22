@@ -85,7 +85,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void completePayment(Long paymentStatusId, PaymentDTO paymentDTO) {
 
-        // 1결제 상태 조회
+        // 결제 상태 조회
         PaymentStatusDTO status = paymentStatusDAO.findByPaymentStatusId(paymentStatusId);
         if (status == null) {
             throw new IllegalStateException("결제 상태 정보가 없습니다. paymentStatusId=" + paymentStatusId);
