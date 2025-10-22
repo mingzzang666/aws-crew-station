@@ -46,7 +46,7 @@ const purchaseDetailService = (() => {
             console.log("에러 발생");
         }
         console.log(message)
-        return {isGuest: message.guest,message: message.message, status: response.status}
+        return {isGuest: message.guest,message: message.message, status: response.status, count:message.count}
     }
     return {report: report, requestToSell: requestToSell}
 })();

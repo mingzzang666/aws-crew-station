@@ -2,6 +2,7 @@ package com.example.crewstation.service.payment;
 
 import com.example.crewstation.aop.aspect.annotation.LogReturnStatus;
 import com.example.crewstation.common.enumeration.PaymentPhase;
+import com.example.crewstation.common.exception.CannotDecreaseBelowZeroException;
 import com.example.crewstation.common.exception.PostNotActiveException;
 import com.example.crewstation.domain.guest.GuestVO;
 import com.example.crewstation.dto.member.MemberDTO;
@@ -9,17 +10,20 @@ import com.example.crewstation.dto.payment.PaymentDTO;
 import com.example.crewstation.dto.payment.PaymentResponseDTO;
 import com.example.crewstation.dto.payment.status.PaymentCriteriaDTO;
 import com.example.crewstation.dto.payment.status.PaymentStatusDTO;
+import com.example.crewstation.dto.purchase.PurchaseDTO;
 import com.example.crewstation.repository.alarm.AlarmDAO;
 import com.example.crewstation.repository.guest.GuestDAO;
 import com.example.crewstation.repository.member.MemberDAO;
 import com.example.crewstation.repository.payment.PaymentDAO;
 import com.example.crewstation.repository.payment.status.PaymentStatusDAO;
 import com.example.crewstation.repository.post.PostDAO;
+import com.example.crewstation.repository.purchase.PurchaseDAO;
 import com.example.crewstation.service.sms.SmsService;
 import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.Search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +43,9 @@ public class PaymentServiceImpl implements PaymentService {
     private final GuestDAO guestDAO;
     private final SmsService smsService;
     private final PasswordEncoder passwordEncoder;
+    private final PurchaseDAO purchaseDAO;
+    private final RedisTemplate<String, PurchaseDTO> purchaseRedisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -48,13 +55,14 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentResponseDTO paymentResponseDTO = new PaymentResponseDTO();
         String message = null;
         boolean isExist = postDAO.isActivePost(paymentStatusDTO.getPurchaseId());
+
         log.info("isExist={}", isExist);
         log.info("paymentStatusDTO={}", paymentStatusDTO.toString());
 
         if (!isExist) {
             throw new PostNotActiveException("이미 삭제된 상품입니다.");
         }
-
+        
         if (paymentStatusDTO.isGuest()) {
 //            멤버랑 게스트에 값 넣어주기
             MemberDTO memberDTO = new MemberDTO();
@@ -74,10 +82,25 @@ public class PaymentServiceImpl implements PaymentService {
             paymentResponseDTO.setGuest(true);
             return paymentResponseDTO;
         }
+        boolean shouldDecrease = purchaseDAO.updatePurchaseProductCount(paymentStatusDTO.getPurchaseId(),-1);
+        if(!shouldDecrease){
+            throw new CannotDecreaseBelowZeroException("이미 품절된 상품입니다.");
+        }
+
+        int count = purchaseDAO.findPurchaseProductCount(paymentStatusDTO.getPurchaseId());
+
         paymentStatusDAO.save(paymentStatusDTO);
         alarmDAO.savePaymentAlarm(paymentStatusDTO.getId());
         message = "판매요청 완료되었습니다.";
         paymentResponseDTO.setMessage(message);
+
+        if(purchaseRedisTemplate.opsForValue().get("purchase::purchases_" + paymentStatusDTO.getPurchaseId()) !=null){
+            purchaseRedisTemplate.delete("purchase::purchases_" + paymentStatusDTO.getPurchaseId());
+        }
+        if(redisTemplate.opsForValue().get("gifts") !=null){
+            redisTemplate.delete("gifts");
+        }
+        paymentResponseDTO.setCount(count);
         return paymentResponseDTO;
     }
 

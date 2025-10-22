@@ -1,6 +1,7 @@
 package com.example.crewstation.controller.payment;
 
 import com.example.crewstation.auth.CustomUserDetails;
+import com.example.crewstation.common.exception.CannotDecreaseBelowZeroException;
 import com.example.crewstation.common.exception.PostNotFoundException;
 import com.example.crewstation.common.exception.SmsSendFailException;
 import com.example.crewstation.dto.payment.PaymentDTO;
@@ -36,7 +37,7 @@ public class PaymentRestController {
             PaymentResponseDTO error = new PaymentResponseDTO();
             error.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-        }catch (SmsSendFailException e){
+        }catch (SmsSendFailException | CannotDecreaseBelowZeroException e){
             PaymentResponseDTO error = new PaymentResponseDTO();
             error.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
