@@ -21,6 +21,7 @@ public class GuestOrderDetailDTO {
     private String guestOrderNumber;
 
     // 결제
+    private Long paymentStatusId;
     private PaymentPhase paymentStatus;
 
     // 구매(상품)

@@ -2,6 +2,7 @@ package com.example.crewstation.controller.member;
 
 import com.example.crewstation.aop.aspect.annotation.LogReturnStatus;
 import com.example.crewstation.aop.aspect.annotation.LogStatus;
+import com.example.crewstation.dto.member.MemberDTO;
 import com.example.crewstation.dto.member.MemberProfileDTO;
 import com.example.crewstation.service.mail.MailService;
 import com.example.crewstation.service.member.MemberService;
@@ -70,15 +71,19 @@ public class MembersApiController implements MembersApiControllerDocs {
     @PostMapping("/rating")
     public ResponseEntity<?> giveRating(@RequestBody Map<String, Object> body) {
         Long sellerId = Long.valueOf(body.get("sellerId").toString());
-        Long purchaseId = Long.valueOf(body.get("purchaseId").toString()); // ⭐ 추가
+        Long paymentStatusId = Long.valueOf(body.get("paymentStatusId").toString());
         int rating = Integer.parseInt(body.get("rating").toString());
 
-        memberService.submitReview(sellerId, purchaseId, rating);
+        memberService.submitReview(sellerId, paymentStatusId, rating);
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "별점이 반영되고 주문 상태가 reviewed로 변경되었습니다."
         ));
+    }
+    @GetMapping("profile/{memberId}")
+    public MemberDTO getProfileMember(@PathVariable Long memberId) {
+        return memberService.getProfileMember(memberId);
     }
 
 }

@@ -38,6 +38,7 @@ public class MainPageController {
         List<DiaryDTO> diaries = diaryService.selectDiaryList(4);
         List<BannerDTO> banners = bannerService.getBanners(5);
         List<GiftDTO> gifts = giftService.getGift(4);
+        log.info("{}:::::::",gifts);
 //        List<AccompanyDTO> accompanies = accompanyService.getAccompanies(4);
 
 

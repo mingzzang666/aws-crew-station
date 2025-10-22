@@ -35,13 +35,13 @@ const orderService = (() => {
     };
 
     // 별점 주기 -> 케미지수 업데이트 + 주문 상태 변경
-    const submitReview = async (sellerId, purchaseId, score) => {
+    const submitReview = async (sellerId, paymentStatusId, score) => {
         const res = await fetch(`/api/member/rating`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 sellerId: sellerId,
-                purchaseId: purchaseId,
+                paymentStatusId: paymentStatusId,
                 rating: score
             })
         });
