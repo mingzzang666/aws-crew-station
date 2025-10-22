@@ -23,13 +23,13 @@
                                 <div class="banner-item-wrap">
                                     <div class="banner-group">
                                         <div class="banner-slide">
-                                            <img th:src="@{${banners[4].filePath}}" alt="">
+                                            <img th:src="@{${banners[4].url}}" alt="">
                                             <div th:each="banner : ${banners}">
                                                 <div>
-                                                    <img th:src="@{${banner.filePath}}" alt="">
+                                                    <img th:src="@{${banner.url}}" alt="">
                                                 </div>
                                             </div>
-                                            <img th:src="@{${banners[0].filePath}}" alt="">
+                                            <img th:src="@{${banners[0].url}}" alt="">
                                         </div>
                                     </div>
                                     <div class="banner-arrow-wrap">
@@ -190,7 +190,7 @@
                                                     <div>오늘의 여행일지</div>
                                                 </div> -->
                                                 <div class="diary-img-count" th:text="${'+' + diary.fileCount}">+</div>
-                                                <a class="card-content-link" href="/diaries"></a>
+                                                <a class="card-content-link" href="/diaries/detail/{id}"></a>
                                             </div>
                                         </div>
                                         <a class="card-content-link" href=""></a>
@@ -330,7 +330,7 @@
                                                      th:text="${gift.purchaseLimitTime + '남음'}">
                                                 </div>
                                                 <div class="gift-item-img">
-                                                    <a href="/gifts" class="today-gift-item-overlay"></a>
+                                                    <a href="/gifts/detail/{id}" class="today-gift-item-overlay"></a>
                                                     <img th:src="@{${gift.filePath}}" src="https://prs.ohousecdn.com/apne2/any/uploads/productions/v1-413232022855744.jpg?w=640&h=640&c=c&q=0.8&webp=1" alt="">
                                                     <div class="gift-item-image-dark-overlay">
                                                     </div>
