@@ -70,10 +70,10 @@ public class MembersApiController implements MembersApiControllerDocs {
     @PostMapping("/rating")
     public ResponseEntity<?> giveRating(@RequestBody Map<String, Object> body) {
         Long sellerId = Long.valueOf(body.get("sellerId").toString());
-        Long purchaseId = Long.valueOf(body.get("purchaseId").toString()); // ⭐ 추가
+        Long paymentStatusId = Long.valueOf(body.get("paymentStatusId").toString());
         int rating = Integer.parseInt(body.get("rating").toString());
 
-        memberService.submitReview(sellerId, purchaseId, rating);
+        memberService.submitReview(sellerId, paymentStatusId, rating);
 
         return ResponseEntity.ok(Map.of(
                 "success", true,

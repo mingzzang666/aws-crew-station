@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async() => {
                                 id: order.guestOrderNumber,          // 주문번호 기반
                                 username: order.guestName || "손님",
                                 phone: order.guestPhone || "01000000000",
-                                email: order.guestEmail || "test@test.com",
+                                email: order.guestEmail || "example@email.com",
                             },
                             items: [
                                 {
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", async() => {
                         e.preventDefault();
                         if (selectedScore >= 1 && selectedScore <= 5) {
                             if (confirm("별점을 등록하시겠습니까?")) {
-                                orderService.submitReview(order.sellerId, order.purchaseId, selectedScore)
+                                orderService.submitReview(order.sellerId, order.paymentStatusId, selectedScore)
                                     .then(() => {
                                         modal.style.display = "none";
                                         orderLayout.showToast("별점이 정상적으로 등록되었습니다.", true);
