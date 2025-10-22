@@ -102,6 +102,7 @@ public class DiaryServiceImpl implements DiaryService {
 //                diary.setDiaryFilePath(presignedUrl);
             });
             redisTemplate.opsForValue().set("diaries",diaries,Duration.ofMinutes(5));
+            log.info("diaries: {}", diaries);
             return diaries;
 
         }

@@ -35,13 +35,14 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @LogReturnStatus
+//    @LogReturnStatus
     public List<BannerDTO> getBanners(int limit) {
         List<BannerDTO> banners = bannerDAO.getBanners(limit);
         if (!banners.isEmpty()) {
             banners.forEach(banner -> {
                 String filePath = banner.getFilePath();
                 String presignedUrl = s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5));
+                log.info(presignedUrl);
                 banner.setUrl(presignedUrl);
             });
         }
