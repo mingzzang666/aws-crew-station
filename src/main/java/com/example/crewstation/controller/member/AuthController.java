@@ -110,7 +110,7 @@ AuthController implements AuthControllerDocs{
 
         Cookie deleteAccessCookie = new Cookie("accessToken", null);
         deleteAccessCookie.setHttpOnly(true);
-        deleteAccessCookie.setSecure(true);
+        deleteAccessCookie.setSecure(false);
         deleteAccessCookie.setPath("/");
         deleteAccessCookie.setMaxAge(0);
 
@@ -118,7 +118,7 @@ AuthController implements AuthControllerDocs{
 
         Cookie deleteRefreshCookie = new Cookie("refreshToken", null);
         deleteRefreshCookie.setHttpOnly(true);
-        deleteRefreshCookie.setSecure(true);
+        deleteRefreshCookie.setSecure(false);
         deleteRefreshCookie.setPath("/");
         deleteRefreshCookie.setMaxAge(0);
 
@@ -126,7 +126,7 @@ AuthController implements AuthControllerDocs{
 
         Cookie memberEmailCookie = new Cookie("memberEmail", null);
         memberEmailCookie.setHttpOnly(true);
-        memberEmailCookie.setSecure(true);
+        memberEmailCookie.setSecure(false);
         memberEmailCookie.setPath("/");
         memberEmailCookie.setMaxAge(0);
 
@@ -135,7 +135,7 @@ AuthController implements AuthControllerDocs{
 
         Cookie roleCookie = new Cookie("role", null);
         roleCookie.setHttpOnly(true);
-        roleCookie.setSecure(true);
+        roleCookie.setSecure(false);
         roleCookie.setPath("/");
         roleCookie.setMaxAge(0);
 
@@ -143,7 +143,7 @@ AuthController implements AuthControllerDocs{
 
         Cookie deleteProviderCookie = new Cookie("provider", null);
         deleteProviderCookie.setHttpOnly(true);
-        deleteProviderCookie.setSecure(true);
+        deleteProviderCookie.setSecure(false);
         deleteProviderCookie.setPath("/");
         deleteProviderCookie.setMaxAge(0);
 
@@ -172,8 +172,7 @@ AuthController implements AuthControllerDocs{
     }
 
     @GetMapping("/info")
-    public MemberDTO getMyInfo(HttpServletRequest request) {
-        String token = jwtTokenProvider.parseTokenFromHeader(request);
+    public MemberDTO getMyInfo(@CookieValue(name = "accessToken", required = false) String token) {
         if (token == null) {
             throw new RuntimeException("토큰이 없습니다.");
         }

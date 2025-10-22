@@ -79,7 +79,7 @@ public class AdminAuthController implements AdminAuthControllerDocs {
             if (Boolean.TRUE.equals(memberDTO.getRemember())) {
                 Cookie rememberEmailCookie = new Cookie("rememberEmail", memberDTO.getMemberEmail());
                 rememberEmailCookie.setHttpOnly(false);
-                rememberEmailCookie.setSecure(isHttps);
+                rememberEmailCookie.setSecure(false);
                 rememberEmailCookie.setPath("/");
                 rememberEmailCookie.setMaxAge(60 * 60 * 24 * 30);
                 response.addCookie(rememberEmailCookie);

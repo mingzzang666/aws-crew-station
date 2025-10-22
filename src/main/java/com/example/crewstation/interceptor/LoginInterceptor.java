@@ -39,7 +39,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             }else{
                 Cookie deleteAccessCookie = new Cookie("accessToken", null);
                 deleteAccessCookie.setHttpOnly(true);
-                deleteAccessCookie.setSecure(true);
+                deleteAccessCookie.setSecure(false);
                 deleteAccessCookie.setPath("/");
                 deleteAccessCookie.setMaxAge(0);
 
@@ -47,7 +47,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
                 Cookie deleteRefreshCookie = new Cookie("refreshToken", null);
                 deleteRefreshCookie.setHttpOnly(true);
-                deleteRefreshCookie.setSecure(true);
+                deleteRefreshCookie.setSecure(false);
                 deleteRefreshCookie.setPath("/");
                 deleteRefreshCookie.setMaxAge(0);
 
