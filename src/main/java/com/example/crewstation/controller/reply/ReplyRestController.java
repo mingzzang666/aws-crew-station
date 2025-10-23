@@ -44,19 +44,19 @@ public class ReplyRestController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<String> modify(@RequestBody ReplyDTO replyDTO) {
+    @PutMapping("{replyId}")
+    public ResponseEntity<String> modify(@PathVariable Long replyId,@RequestBody ReplyDTO replyDTO) {
         try {
-            replyService.upate(replyDTO);
+            replyService.upate(replyId,replyDTO);
             return ResponseEntity.ok().body("수정 성공");
         } catch (PostNotActiveException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    @DeleteMapping
-    public ResponseEntity<String> delete(@RequestBody ReplyDTO replyDTO) {
+    @DeleteMapping("{replyId}")
+    public ResponseEntity<String> delete(@PathVariable Long replyId, @RequestBody Long postId) {
         try {
-            replyService.delete(replyDTO);
+            replyService.delete(replyId,postId);
             return ResponseEntity.ok().body("삭제 성공");
         } catch (PostNotActiveException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

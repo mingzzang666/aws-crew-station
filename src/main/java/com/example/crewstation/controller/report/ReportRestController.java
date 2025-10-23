@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/report/**")
@@ -23,11 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReportRestController {
     private final ReportService reportService;
 
-    @PostMapping
-    public ResponseEntity<String> reportPurchase(@RequestBody ReportDTO reportDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @PostMapping("{postId}")
+    public ResponseEntity<String> reportPost(@PathVariable Long postId, @RequestBody String reportContent, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try{
 
-            reportService.report(reportDTO,userDetails);
+            reportService.report(postId,reportContent,userDetails);
             return ResponseEntity.ok().body("신고 완료되었습니다.");
         }catch (PostNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -35,10 +32,10 @@ public class ReportRestController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
-    @PostMapping("replies")
-    public ResponseEntity<String> reportReply(@RequestBody ReportDTO reportDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @PostMapping("replies/{replyId}")
+    public ResponseEntity<String> reportReply(@PathVariable Long replyId, @RequestBody ReportDTO reportDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try{
-            reportService.reportReply(reportDTO,userDetails);
+            reportService.reportReply(replyId,reportDTO,userDetails);
             log.info(reportDTO.toString());
             return ResponseEntity.ok().body("신고 완료되었습니다.");
         }catch (PostNotFoundException e){

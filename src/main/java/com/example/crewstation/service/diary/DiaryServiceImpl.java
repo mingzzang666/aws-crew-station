@@ -584,14 +584,14 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @LogReturnStatus
-    public String changeSecret(DiaryDTO diaryDTO) {
-        Secret secret = diaryDTO.isCheck() ? Secret.PRIVATE : Secret.PUBLIC;
-        String message = diaryDTO.isCheck() ? "비공개 설정되었습니다." : "공개 설정되었습니다.";
+    public String changeSecret(Long diaryId,boolean check) {
+        Secret secret = check ? Secret.PRIVATE : Secret.PUBLIC;
+        String message = check ? "비공개 설정되었습니다." : "공개 설정되었습니다.";
 
-        if (!postDAO.isActivePost(diaryDTO.getPostId())) {
+        if (!postDAO.isActivePost(diaryId)) {
             throw new PostNotFoundException("이미 삭제된 게시글입니다.");
         }
-        diaryDAO.updateSecret(diaryDTO.getPostId(), secret);
+        diaryDAO.updateSecret(diaryId, secret);
         if(redisTemplate.opsForValue().get("diaries") != null){
             redisTemplate.delete("diaries");
         }

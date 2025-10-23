@@ -199,14 +199,14 @@ public class MemberServiceImpl implements MemberService {
     }
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Optional<MemberProfileDTO> getMemberProfile (Long memberId) {
-        MemberProfileDTO profiles = new MemberProfileDTO();
-        Optional<MemberProfileDTO> result = memberDAO.selectProfileById(memberId);
+    public Optional<MemberDTO> getMemberProfile (Long memberId) {
+        Optional<MemberDTO> result = memberDAO.selectProfileById(memberId);
 
-        result.ifPresent(profile -> {
-           if (profile.getProfileImage() != null) {
-               String filePath = profile.getProfileImage();
-               profile.setProfileImage(s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5)));
+        result.ifPresent(members -> {
+           if (members.getFilePath() != null) {
+               String filePath = members.getFilePath();
+               members.setFilePath(s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5)));
+
            }
         });
 
@@ -297,6 +297,7 @@ public class MemberServiceImpl implements MemberService {
             memberDTO.setFilePath(s3Service.getPreSignedUrl(memberDTO.getFilePath(), Duration.ofMinutes(10)));
         }else{memberDTO.setFilePath("https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c");}
         memberDTO.setDiaryCount(diaryDAO.countAllByMemberId(memberId));
+        log.info("profile"+memberDTO.toString());
         return memberDTO;
     }
 
@@ -306,12 +307,12 @@ public class MemberServiceImpl implements MemberService {
 
 //  별점 등록 시 케미점수 및 상태 갱신
     @Transactional
-    public void submitReview(Long sellerId, Long purchaseId, int rating) {
+    public void submitReview(Long sellerId, Long paymentStatusId, int rating) {
         // 판매자 케미 점수 갱신
         memberDAO.updateChemistryScore(sellerId, rating);
 
         // 주문 상태 reviewed 로 변경
-        paymentStatusMapper.updatePaymentStatus(purchaseId, PaymentPhase.REVIEWED);
+        paymentStatusMapper.updatePaymentStatus(paymentStatusId, PaymentPhase.REVIEWED);
     }
 
     // 나의 판매내역 목록 조회

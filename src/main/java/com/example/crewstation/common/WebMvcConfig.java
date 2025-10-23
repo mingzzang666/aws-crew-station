@@ -52,6 +52,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/diaries/detail/**",
+                        "/member/profile/**",
                         "/api/diaries",
                         "/api/replies/{postId:\\d+}",
                         "/gifts",

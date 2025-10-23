@@ -145,10 +145,10 @@ public class AdminRestController implements AdminRestControllerDocs{
         log.info("기프트 신고 reportId={}, postId={}, hidePost={}", reportId, postId, hidePost);
 
         if (hidePost && postId != null) {
-            reportService.hidePost(postId);
+            giftService.hidePost(postId);
         }
 
-        reportService.resolveReport(reportId);
+        giftService.resolveReport(reportId);
 
         return ResponseEntity.ok().build();
     }

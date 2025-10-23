@@ -150,6 +150,7 @@ window.inquiryInit = async function () {
 
     // 모달 닫기
     btnClose?.addEventListener('click', (e) => {
+        console.log("클락");
         e.preventDefault(); inquireLayout.closeModal();
     });
     modal?.addEventListener('click', (e) => {
@@ -170,7 +171,7 @@ window.inquiryInit = async function () {
         try {
             await inquireService.postReply(id, txt);
             inquireLayout.closeModal();
-            await loadList(); // 카운트/상태 갱신
+            await loadList();
         } catch (err) {
             console.error('답변 등록 실패', err);
             alert('답변 등록에 실패했습니다.');

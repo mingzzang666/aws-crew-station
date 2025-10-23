@@ -21,13 +21,12 @@ const diaryListService = (() => {
         }
     }
     const like = async (like,isLike)=>{
-        const method = isLike ? 'DELETE' : 'POST'
-        const url = isLike ? `/api/likes/${like.postId}` : `/api/likes`;
+        const method = isLike ? 'DELETE' : 'POST';
+        const url = `/api/likes/${like.postId}`;
         console.log(JSON.stringify(like))
         try {
             const response = await fetch(url,{
                 method: method,
-                body: JSON.stringify(like),
                 headers: {
                     'Content-Type': 'application/json'
                 }

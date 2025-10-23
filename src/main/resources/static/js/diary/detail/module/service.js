@@ -1,12 +1,11 @@
 const diaryDetailService = (() => {
     const like = async (like,isLike)=>{
         const method = isLike ? 'DELETE' : 'POST'
-        const url = isLike ? `/api/likes/${like.postId}` : `/api/likes`;
+        const url = `/api/likes/${like.postId}`
         console.log(JSON.stringify(like))
         try {
             const response = await fetch(url,{
                 method: method,
-                body: JSON.stringify(like),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -21,13 +20,12 @@ const diaryDetailService = (() => {
         let status = null;
         let message = null;
         let result = null;
-        const response = await fetch("/api/report", {
+        const response = await fetch(`/api/report/${report.postId}`, {
             method: 'POST',
-            body: JSON.stringify(report),
+            body: report.reportContent,
             headers: {
                 'Content-Type': 'application/json'
-            },
-            redirect: 'manual'
+            }
 
         });
         if (response.ok) {
@@ -46,9 +44,9 @@ const diaryDetailService = (() => {
         let status = null;
         let message = null;
         let result = null;
-        const response = await fetch("/api/diaries/secret", {
-            method: 'POST',
-            body: JSON.stringify(change),
+        const response = await fetch(`/api/diaries/secret/${change.diaryId}`, {
+            method: 'PUT',
+            body: JSON.stringify(change.check),
             headers: {
                 'Content-Type': 'application/json'
             }

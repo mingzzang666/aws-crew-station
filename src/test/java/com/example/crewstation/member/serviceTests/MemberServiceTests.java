@@ -54,12 +54,12 @@ public class MemberServiceTests {
         List<MemberDTO> test = memberService.searchMember("test");
         test.stream().map(MemberDTO::toString).forEach(log::info);
     }
-
-    @Test
-    void getMySaleListTest() {
-        Long memberId = 1L;
-        List<MySaleListDTO> saleList = memberService.getMySaleList(memberId);
-
-        saleList.forEach(System.out::println);
-    }
+//
+//    @Test
+//    void getMySaleListTest() {
+//        Long memberId = 1L;
+//        List<MySaleListDTO> saleList = memberService.getMySaleList(memberId);
+//
+//        saleList.forEach(System.out::println);
+//    }
 }

@@ -51,11 +51,13 @@
     </select>
     <!-- 멤버 프로필 조회용 -->
     <select id="selectProfileById">
-        SELECT id   AS memberId,
+        SELECT m.id   AS memberId,
                member_name AS memberName,
-               social_img_url AS socialImgUrl
-        FROM tbl_member
-        WHERE id = #{memberId}
+               social_img_url AS socialImgUrl,
+               vmf.file_path as filePath
+        FROM tbl_member m
+                 left join view_file_member_file vmf on m.id = vmf.member_id
+        WHERE m.id = #{memberId}
 
     </select>
 
@@ -285,6 +287,7 @@
         values (#{memberName}, #{memberEmail}, #{memberPassword}, #{memberRole})
     </insert>
 
+
     <!-- 내 정보 수정 정보 조회-->
     <select id="selectMyInfo">
     SELECT
@@ -325,5 +328,6 @@
         on m.id = vm.member_id
         where m.id = #{memberId} and m.member_role = 'member' and m.member_status = 'active'
     </select>
+
 
 </mapper>

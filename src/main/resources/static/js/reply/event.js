@@ -166,11 +166,14 @@ replyWrap.addEventListener("click",async (e)=>{
             // input과 버튼 제거하고 텍스트 복원
             replyFlexBox.innerHTML = "";
             replyFlexBox.appendChild(newTextDiv);
-            const {status}= await replyService.modify({"postId" :postId,"id":id,"replyContent": newText})
+            const {status}= await replyService.modify({"postId" :postId,"replyId":id,"replyContent": newText})
             if(status ===404){
                 location.href = "/diaries"
             }
-            await replyService.getList(postId,replyLayout.showList,1);
+
+            const repliesCriteria = await replyService.getList(postId,replyLayout.showList,1);
+            document.querySelector("span.total").textContent = repliesCriteria.criteria.total;
+            document.querySelector("span.go-reply-icon").nextElementSibling.textContent = repliesCriteria.criteria.total;
             modifyBtn = true;
         });
     }else if(delBtn){
@@ -193,10 +196,12 @@ removeNoButton.addEventListener("click", () => {
 // 확인 버튼 클릭 시 reply-item 삭제 후 모달 닫기
 removeOkButton.addEventListener("click", async () => {
 
-    const {status}=  await replyService.remove({"postId" :postId,"id":removeOkButton.dataset.id});
+    const {status}=  await replyService.remove({"postId" :postId,"replyId":removeOkButton.dataset.id});
     if(status ===404){
         location.href = "/diaries"
     }
-    await replyService.getList(postId,replyLayout.showList,1);
+    const repliesCriteria = await replyService.getList(postId,replyLayout.showList,1);
+    document.querySelector("span.total").textContent = repliesCriteria.criteria.total;
+    document.querySelector("span.go-reply-icon").nextElementSibling.textContent = repliesCriteria.criteria.total;
     removeModal.style.display = "none";
 });

@@ -21,4 +21,6 @@ public interface GiftService {
 
 //    게시글 숨김
     public void hidePost(Long postId);
+
+    public void resolveReport(Long reportId);
 }

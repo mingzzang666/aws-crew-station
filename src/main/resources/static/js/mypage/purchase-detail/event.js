@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 id: order.buyerMemberId,
                                 username: order.memberName,
                                 phone: order.memberPhone,
-                                email: order.memberEmail || "member@test.com"
+                                email: order.memberEmail || "example@email.com"
                             },
                             items: [
                                 {
