@@ -63,6 +63,7 @@ const showList = async (page = 1, keyword = "", index = 0) => {
     console.log("시작")
     purchases = await purchaseListService.getPurchases(purchaseListLayout.showPurchases, page, keyword);
     keyword = purchases.search.keyword;
+    checkMore = purchases.criteria.hasMore;
     console.log(purchases)
     console.log(keyword)
     console.log("종료")
