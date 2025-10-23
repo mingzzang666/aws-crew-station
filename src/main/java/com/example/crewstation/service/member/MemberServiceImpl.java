@@ -203,14 +203,14 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Optional<MemberProfileDTO> getMemberProfile(Long memberId) {
-        MemberProfileDTO profiles = new MemberProfileDTO();
-        Optional<MemberProfileDTO> result = memberDAO.selectProfileById(memberId);
+    public Optional<MemberDTO> getMemberProfile (Long memberId) {
+        Optional<MemberDTO> result = memberDAO.selectProfileById(memberId);
 
-        result.ifPresent(profile -> {
-            if (profile.getProfileImage() != null) {
-                String filePath = profile.getProfileImage();
-                profile.setProfileImage(s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5)));
+        result.ifPresent(members -> {
+            if (members.getFilePath() != null) {
+                String filePath = members.getFilePath();
+                members.setFilePath(s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5)));
+
             }
         });
 
