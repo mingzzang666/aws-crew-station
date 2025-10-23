@@ -347,4 +347,11 @@
         WHERE m.id = #{memberId}
     </select>
 
+    <!--  탈퇴하기  -->
+    <update id="updateMemberStatusInactive">
+        UPDATE tbl_member
+        SET member_status = 'inactive'
+        WHERE id = #{id}
+    </update>
+
 </mapper>

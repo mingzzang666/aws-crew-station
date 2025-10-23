@@ -1,6 +1,7 @@
 package com.example.crewstation.controller.mypage;
 
 import com.example.crewstation.auth.CustomUserDetails;
+import com.example.crewstation.auth.JwtTokenProvider;
 import com.example.crewstation.dto.member.ModifyDTO;
 import com.example.crewstation.dto.member.MySaleDetailDTO;
 import com.example.crewstation.dto.member.MySaleListCriteriaDTO;
@@ -11,13 +12,17 @@ import com.example.crewstation.service.purchase.PurchaseService;
 import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.ScrollCriteria;
 import com.example.crewstation.util.Search;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -29,6 +34,7 @@ public class MypageController {
 
     private final PurchaseService purchaseService;
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 마이페이지 -> 내가 좋아요한 일기 목록 화면 & 내가 댓글 단 일기 목록 화면
     @GetMapping("/my-activities")
@@ -124,7 +130,7 @@ public class MypageController {
             modifyDTO.setMemberId(user.getId());
             memberService.updateMyInfo(modifyDTO, profileFile);
             log.info("회원 정보 수정 완료 - memberId={}", user.getId());
-            return "redirect:/mypage/modify?success";
+            return "redirect:/mypage/modify";
         } catch (Exception e) {
             log.error("회원 정보 수정 실패", e);
             model.addAttribute("error", "정보 수정 중 오류가 발생했습니다.");
@@ -132,6 +138,65 @@ public class MypageController {
         }
     }
 
+//  회원 탈퇴(비활성화)
+    @GetMapping("/delete/confirm")
+    public RedirectView deleteMember(@AuthenticationPrincipal CustomUserDetails customUserDetails, HttpServletResponse response, @CookieValue(value = "accessToken", required = false) String token) {
+        log.info(token);
+        String username = jwtTokenProvider.getUserName(token);
+        String provider = (String) jwtTokenProvider.getClaims(token).get("provider");
+        if(provider == null){
+            jwtTokenProvider.deleteRefreshToken(username);
+            jwtTokenProvider.addToBlacklist(token);
+        }else{
+            jwtTokenProvider.deleteRefreshToken(username, provider);
+            jwtTokenProvider.addToBlacklist(token);
+        }
 
+        Cookie deleteAccessCookie = new Cookie("accessToken", null);
+        deleteAccessCookie.setHttpOnly(true);
+        deleteAccessCookie.setSecure(false);
+        deleteAccessCookie.setPath("/");
+        deleteAccessCookie.setMaxAge(0);
+
+        response.addCookie(deleteAccessCookie);
+
+        Cookie deleteRefreshCookie = new Cookie("refreshToken", null);
+        deleteRefreshCookie.setHttpOnly(true);
+        deleteRefreshCookie.setSecure(false);
+        deleteRefreshCookie.setPath("/");
+        deleteRefreshCookie.setMaxAge(0);
+
+        response.addCookie(deleteRefreshCookie);
+
+        Cookie memberEmailCookie = new Cookie("memberEmail", null);
+        memberEmailCookie.setHttpOnly(true);
+        memberEmailCookie.setSecure(false);
+        memberEmailCookie.setPath("/");
+        memberEmailCookie.setMaxAge(0);
+
+        response.addCookie(memberEmailCookie);
+
+
+        Cookie roleCookie = new Cookie("role", null);
+        roleCookie.setHttpOnly(true);
+        roleCookie.setSecure(false);
+        roleCookie.setPath("/");
+        roleCookie.setMaxAge(0);
+
+        response.addCookie(roleCookie);
+
+        Cookie deleteProviderCookie = new Cookie("provider", null);
+        deleteProviderCookie.setHttpOnly(true);
+        deleteProviderCookie.setSecure(false);
+        deleteProviderCookie.setPath("/");
+        deleteProviderCookie.setMaxAge(0);
+
+        response.addCookie(deleteProviderCookie);
+        if (customUserDetails != null) {
+            Long memberId = customUserDetails.getId();
+            memberService.deactivateMember(memberId);
+        }
+        return new RedirectView("/");
+    }
 
 }

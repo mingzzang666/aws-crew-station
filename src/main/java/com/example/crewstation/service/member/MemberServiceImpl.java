@@ -1,13 +1,10 @@
 package com.example.crewstation.service.member;
 
-import aj.org.objectweb.asm.TypeReference;
 import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.common.exception.MemberLoginFailException;
 import com.example.crewstation.common.exception.MemberNotFoundException;
-import com.example.crewstation.domain.address.AddressVO;
 import com.example.crewstation.domain.file.FileVO;
-import com.example.crewstation.domain.file.member.MemberFileVO;
 import com.example.crewstation.domain.member.MemberVO;
 import com.example.crewstation.dto.file.FileDTO;
 import com.example.crewstation.dto.file.member.MemberFileDTO;
@@ -23,11 +20,9 @@ import com.example.crewstation.repository.member.MemberFileDAO;
 import com.example.crewstation.service.s3.S3Service;
 import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.Search;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -516,7 +511,11 @@ public class MemberServiceImpl implements MemberService {
         return profile;
     }
 
-
+    //  탈퇴하기
+    @Override
+    public void deactivateMember(Long memberId) {
+        memberDAO.updateMemberStatusInactive(memberId);
+    }
 
 
 
