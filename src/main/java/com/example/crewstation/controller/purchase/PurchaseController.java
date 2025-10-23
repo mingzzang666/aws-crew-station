@@ -51,7 +51,7 @@ public class PurchaseController {
     public String detail(@PathVariable Long postId, Model model,@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
         PurchaseDTO purchase = purchaseService.getPurchase(postId);
-        log.info("purchase {}", purchase);
+        log.info("purchase {}:::::::::::", purchase);
         model.addAttribute("purchase", purchase);
         model.addAttribute("writer", customUserDetails != null && customUserDetails.getId().equals(purchase.getMemberId()));
         return "gift-shop/detail";

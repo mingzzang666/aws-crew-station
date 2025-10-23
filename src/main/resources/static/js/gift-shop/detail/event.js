@@ -19,11 +19,15 @@ function setupModal(modalId, openSelector, closeSelector, onClose) {
             if (modalId === "myModal") {
                 const postId = document.getElementById("postId").dataset.post;
                 console.log(123)
-                const {isGuest, message, status} = await purchaseDetailService.requestToSell({
+                const {isGuest, message, status,count} = await purchaseDetailService.requestToSell({
                     purchaseId: postId
                 })
                 console.log(isGuest)
+
                 if (!isGuest) {
+                    if(status === 200){
+                        document.querySelector("span.product-stock").textContent = `${count}개 남음`;
+                    }
                     toastModal(message);
                 } else {
                     e.stopPropagation();
@@ -184,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
             confirmYes.addEventListener("click", async () => {
                 const form = document.getElementById("requestForm");
                 const formData = new FormData(form);
-                const {message, status} = await purchaseDetailService.requestToSell({
+                const {message, status,count} = await purchaseDetailService.requestToSell({
                     guest: true,
                     purchaseId: document.getElementById("postId").dataset.post,
                     memberPhone: formData.get("phone"),
@@ -196,9 +200,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 confirmModal.style.display = "none";
                 document.getElementById("myModal").style.display = "none";
                 if (status === 200) {
+                    document.querySelector("span.product-stock").textContent = `${count}개 남음`;
                     alert("요청이 전송되었습니다. 임시 주문번호는 입력하신 휴대폰 번호로 발송됩니다.");
+
                 } else {
                     toastModal(message);
+
                 }
 
             });
@@ -236,9 +243,11 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(status)
         confirmReportModal.style.display = "none";
         document.getElementById("reportModal").style.display = "none";
-        toastModal(message);
+
         if (status === 404) {
             location.href = "/gifts"
+        }else{
+            toastModal(message);
         }
     });
 
@@ -450,7 +459,7 @@ function toastModal(text) {
         setTimeout(() => {
             toast.style.display = "none";
         }, 500);
-    }, 3000);
+    }, 2000);
 }
 
 shareButton.addEventListener("click", (e) => {

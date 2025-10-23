@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @Slf4j
 public class DaoTest {
@@ -74,5 +76,12 @@ public class DaoTest {
                 .purchaseProductCount(5)
                 .build();
         purchaseDAO.update(vo);
+    }
+
+    @Test
+//    @Transactional
+    public void testUpdatePurchaseProductCount(){
+        int a = purchaseDAO.updatePurchaseProductCount(1L,-1);
+        log.info("updatePurchaseProductCount {}", a);
     }
 }

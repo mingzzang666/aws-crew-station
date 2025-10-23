@@ -5,8 +5,6 @@ import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.dto.member.ModifyDTO;
 import com.example.crewstation.dto.member.MyPurchaseDetailDTO;
 import com.example.crewstation.dto.member.MySaleDetailDTO;
-import com.example.crewstation.dto.member.MySaleListDTO;
-import com.example.crewstation.service.guest.GuestService;
 import com.example.crewstation.service.member.MemberService;
 import com.example.crewstation.service.purchase.PurchaseService;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -46,23 +42,23 @@ public class MypageRestController {
     }
 
     // 결제 상태 업데이트
-    @PutMapping("/purchase-detail/{purchaseId}/status")
+    @PutMapping("/purchase-detail/{paymentStatusId}/status")
     public ResponseEntity<Void> updatePaymentStatus(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @PathVariable Long purchaseId,
+            @PathVariable Long paymentStatusId,
             @RequestParam PaymentPhase paymentPhase) {
 
         Long memberId = customUserDetails.getId();
-        log.info("PUT /purchase-detail/{}/status called by memberId={}, phase={}", purchaseId, memberId, paymentPhase);
+        log.info("PUT /purchase-detail/{}/status called by memberId={}, phase={}", paymentStatusId, memberId, paymentPhase);
 
-        MyPurchaseDetailDTO order = purchaseService.getMemberOrderDetails(memberId, purchaseId);
+        MyPurchaseDetailDTO order = purchaseService.getMemberOrderDetails(memberId, paymentStatusId);
         if (order == null) {
-            log.warn("Order not found for memberId={}, purchaseId={}", memberId, purchaseId);
+            log.warn("Order not found for memberId={}, paymentStatusId={}", memberId, paymentStatusId);
             return ResponseEntity.notFound().build();
         }
 
-        purchaseService.updatePaymentStatus(order.getPurchaseId(), paymentPhase);
-        log.info("Payment status updated for purchaseId={}, newStatus={}", order.getPurchaseId(), paymentPhase);
+        purchaseService.updatePaymentStatus(paymentStatusId, paymentPhase);
+        log.info("Payment status updated for paymentStatusId={}, newStatus={}", paymentStatusId, paymentPhase);
         return ResponseEntity.ok().build();
     }
 
@@ -84,15 +80,23 @@ public class MypageRestController {
         return ResponseEntity.ok().build();
     }
 
-//  마이페이지 - 판매 상세 조회
+    //  마이페이지 - 판매 상세 조회
     @GetMapping("/sale-detail/{paymentStatusId}")
-    public MySaleDetailDTO getMySaleDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                           @PathVariable("paymentStatusId") Long paymentStatusId) {
+    public ResponseEntity<MySaleDetailDTO> getMySaleDetail(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("paymentStatusId") Long paymentStatusId) {
 
         Long sellerId = customUserDetails.getId();
         log.info("판매 상세 요청 - sellerId={}, paymentStatusId={}", sellerId, paymentStatusId);
 
-        return memberService.getSellerOrderDetails(sellerId, paymentStatusId);
+        MySaleDetailDTO detail = memberService.getSellerOrderDetails(sellerId, paymentStatusId);
+
+        if (detail == null) {
+            log.warn("판매 상세 정보 없음 - sellerId={}, paymentStatusId={}", sellerId, paymentStatusId);
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(detail);
     }
 
     // 마이페이지 - 내 정보 조회

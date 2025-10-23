@@ -46,14 +46,16 @@ public class GuestRestController {
         String guestOrderNumber = customUserDetails.getGuestOrderNumber();
         log.info("PUT /order/status called by guestOrderNumber={}, phase={}", guestOrderNumber, paymentPhase);
 
+        // 비회원 주문번호로 주문 상세 조회
         GuestOrderDetailDTO order = guestService.getOrderDetail(guestOrderNumber);
         if (order == null) {
             log.warn("Order not found: {}", guestOrderNumber);
             return ResponseEntity.notFound().build();
         }
 
-        guestService.updatePaymentStatus(order.getPurchaseId(), paymentPhase);
-        log.info("Order status updated for purchaseId={}", order.getPurchaseId());
+        guestService.updatePaymentStatus(order.getPaymentStatusId(), paymentPhase);
+
+        log.info("Order status updated for paymentStatusId={}, phase={}", order.getPaymentStatusId(), paymentPhase);
         return ResponseEntity.ok().build();
     }
 

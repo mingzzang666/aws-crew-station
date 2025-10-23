@@ -6,7 +6,7 @@ import com.example.crewstation.dto.like.LikeDTO;
 
 public interface LikeService {
 
-    public void like(LikeDTO likeDTO, CustomUserDetails customUserDetails);
+    public void like(Long postId, CustomUserDetails customUserDetails);
 
     public void unlike(Long postId,CustomUserDetails customUserDetails);
 

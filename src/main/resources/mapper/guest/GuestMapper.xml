@@ -31,6 +31,7 @@
             g.address_detail                AS guest_address_detail,
             g.guest_order_number            AS guest_order_number,
 
+            ps.id                           AS payment_status_id,
             ps.payment_phase                AS payment_status,
             ps.created_datetime             AS created_datetime,
             ps.updated_datetime             AS updated_datetime,

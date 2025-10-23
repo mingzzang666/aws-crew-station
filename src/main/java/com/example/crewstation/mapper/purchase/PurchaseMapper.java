@@ -48,4 +48,9 @@ public interface PurchaseMapper {
     // 회원 주문 상세 조회
     public MyPurchaseDetailDTO selectMemberOrderDetails(@Param("memberId") Long memberId, @Param("paymentStatusId") Long paymentStatusId);
 
+
+//  판매 요청 시 상품 개수 줄이기
+    public boolean updatePurchaseProductCount(@Param("postId") Long postId, @Param("count") int count);
+
+    public int selectPurchaseProductCount(Long postId);
 }

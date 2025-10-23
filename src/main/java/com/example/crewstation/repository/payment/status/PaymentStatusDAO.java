@@ -25,7 +25,7 @@ public class PaymentStatusDAO {
         paymentStatusMapper.insert(paymentStatusDTO);
     }
 
-    // ✅ 결제 상태 ID로 조회 (추가)
+    // 결제 상태 ID로 조회 (추가)
     public PaymentStatusDTO findByPaymentStatusId(Long paymentStatusId) {
         return paymentStatusMapper.findByPaymentStatusId(paymentStatusId);
     }

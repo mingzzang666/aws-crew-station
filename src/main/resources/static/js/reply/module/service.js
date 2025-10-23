@@ -40,12 +40,12 @@ const replyService = (() => {
     }
 
     const modify = async (reply)  =>{
-        const response = await  fetch("/api/replies",{
+        const response = await  fetch(`/api/replies/${reply.replyId}`,{
             method:"PUT",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(reply)
+            body: JSON.stringify({postId: `${reply.postId}`, replyContent: `${reply.replyContent}`})
         });
         if(response.ok) {
             console.log("댓글 작성 성공");
@@ -56,12 +56,12 @@ const replyService = (() => {
         return {status : response.status}
     }
     const remove = async (reply)=>{
-        const response = await  fetch("/api/replies",{
+        const response = await  fetch(`/api/replies/${reply.replyId}`,{
             method:"DELETE",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(reply)
+            body: JSON.stringify(reply.postId)
         });
         if(response.ok) {
             console.log("댓글 삭제 성공");
@@ -75,13 +75,12 @@ const replyService = (() => {
         let status = null;
         let message = null;
         let result = null;
-        const response = await fetch("/api/report/replies", {
+        const response = await fetch(`/api/report/replies/${report.replyId}`, {
             method: 'POST',
-            body: JSON.stringify(report),
+            body: JSON.stringify({reportContent: `${report.reportContent}`, postId: `${report.postId}`}),
             headers: {
                 'Content-Type': 'application/json'
             },
-            redirect: 'manual'
         });
         if (response.ok) {
             console.log("기프트 존재")

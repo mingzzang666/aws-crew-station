@@ -29,19 +29,22 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @LogStatus
-    public void report(ReportDTO reportDTO, CustomUserDetails userDetails) {
-
-        boolean isExist = postDAO.isActivePost(reportDTO.getPostId());
+//    @LogStatus
+    public void report(Long postId, String reportContent, CustomUserDetails userDetails) {
+        ReportDTO reportDTO = new ReportDTO();
+        boolean isExist = postDAO.isActivePost(postId);
         log.info("{}",isExist);
-        log.info("{}",reportDTO.toString());
+        log.info("dasdjakdjaldjaldjasjd{}",reportContent);
+//        log.info("{}",reportDTO.toString());
 
         if(!isExist){
             throw new PostNotActiveException("이미 삭제된 상품입니다.");
         }
-        if(userDetails !=null){
+        if(userDetails == null){
             throw new MemberNotFoundException("로그인 후 사용 가능");
         }
+        reportDTO.setPostId(postId);
+        reportDTO.setReportContent(reportContent);
         reportDTO.setMemberId(userDetails.getId());
         reportDAO.saveReport(reportDTO);
 
@@ -51,7 +54,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @LogStatus
-    public void reportReply(ReportDTO reportDTO,CustomUserDetails userDetails) {
+    public void reportReply(Long replyId,ReportDTO reportDTO,CustomUserDetails userDetails) {
 
         boolean isExist = postDAO.isActivePost(reportDTO.getPostId());
         log.info("{}",isExist);
@@ -64,6 +67,7 @@ public class ReportServiceImpl implements ReportService {
             throw new MemberNotFoundException("로그인 후 사용 가능");
         }
         reportDTO.setMemberId(userDetails.getId());
+        reportDTO.setReplyId(replyId);
         reportDAO.saveReport(reportDTO);
         reportDAO.saveReportReply(toReportReplyVO(reportDTO));
     }

@@ -72,7 +72,8 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     @LogStatus
-    public void upate(ReplyDTO replyDTO) {
+    public void upate(Long replyId,ReplyDTO replyDTO) {
+        replyDTO.setId(replyId);
         if (!postDAO.isActivePost(replyDTO.getPostId())) {
             throw new PostNotFoundException("이미 삭제된 게시글입니다.");
         }
@@ -82,11 +83,11 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @LogStatus
     @Transactional(rollbackFor = Exception.class)
-    public void delete(ReplyDTO replyDTO) {
-        if (!postDAO.isActivePost(replyDTO.getPostId())) {
+    public void delete(Long replyId, Long postId) {
+        if (!postDAO.isActivePost(postId)) {
             throw new PostNotFoundException("이미 삭제된 게시글입니다.");
         }
-        replyDAO.softDelete(replyDTO.getId());
-        diaryDAO.changeReplyCount(-1, replyDTO.getPostId());
+        replyDAO.softDelete(replyId);
+        diaryDAO.changeReplyCount(-1, postId);
     }
 }

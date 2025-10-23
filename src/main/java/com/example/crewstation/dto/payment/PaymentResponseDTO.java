@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 public class PaymentResponseDTO {
     private String message;
     private boolean guest;
-
+    private int count;
 
 }

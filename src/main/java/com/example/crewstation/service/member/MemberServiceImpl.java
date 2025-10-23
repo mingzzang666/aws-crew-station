@@ -297,6 +297,7 @@ public class MemberServiceImpl implements MemberService {
             memberDTO.setFilePath(s3Service.getPreSignedUrl(memberDTO.getFilePath(), Duration.ofMinutes(10)));
         }else{memberDTO.setFilePath("https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c");}
         memberDTO.setDiaryCount(diaryDAO.countAllByMemberId(memberId));
+        log.info("profile"+memberDTO.toString());
         return memberDTO;
     }
 
@@ -306,12 +307,12 @@ public class MemberServiceImpl implements MemberService {
 
 //  별점 등록 시 케미점수 및 상태 갱신
     @Transactional
-    public void submitReview(Long sellerId, Long purchaseId, int rating) {
+    public void submitReview(Long sellerId, Long paymentStatusId, int rating) {
         // 판매자 케미 점수 갱신
         memberDAO.updateChemistryScore(sellerId, rating);
 
         // 주문 상태 reviewed 로 변경
-        paymentStatusMapper.updatePaymentStatus(purchaseId, PaymentPhase.REVIEWED);
+        paymentStatusMapper.updatePaymentStatus(paymentStatusId, PaymentPhase.REVIEWED);
     }
 
     // 나의 판매내역 목록 조회
@@ -354,10 +355,32 @@ public class MemberServiceImpl implements MemberService {
 
         log.info(" 판매 상태가 {} 로 변경되었습니다.", paymentPhase);
     }
-
+    
+    // 나의 판매내역 상세 조회
     @Override
     public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId) {
-        return memberDAO.selectSellerOrderDetails(sellerId, paymentStatusId);
+        // DB에서 판매 상세 데이터 조회
+        MySaleDetailDTO detail = memberDAO.selectSellerOrderDetails(sellerId, paymentStatusId);
+
+        if (detail == null) {
+            log.warn("판매 상세 데이터가 없습니다. sellerId={}, paymentStatusId={}", sellerId, paymentStatusId);
+            return null;
+        }
+
+        // 이미지 경로가 존재하면 S3 프리사인드 URL로 변환
+        try {
+            if (detail.getMainImage() != null && !detail.getMainImage().isBlank()) {
+                String preSignedUrl = s3Service.getPreSignedUrl(detail.getMainImage(), Duration.ofMinutes(5));
+                detail.setMainImage(preSignedUrl);
+                log.info("판매 상세 이미지 S3 프리사인드 URL 변환 성공: {}", preSignedUrl);
+            } else {
+                log.info("판매 상세 이미지 없음 (mainImage 필드 null 또는 공백)");
+            }
+        } catch (Exception e) {
+            log.error("S3 프리사인드 URL 변환 실패 - paymentStatusId={}, error={}", paymentStatusId, e.getMessage());
+        }
+
+        return detail;
     }
 
     @Override

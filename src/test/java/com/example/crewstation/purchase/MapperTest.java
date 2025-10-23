@@ -82,4 +82,11 @@ public class MapperTest {
                 .build();
         purchaseMapper.update(vo);
     }
+
+    @Test
+    @Transactional
+    public void testUpdatePurchaseProductCount(){
+
+        assertThat(purchaseMapper.updatePurchaseProductCount(1L,-1)).isNull();
+    }
 }

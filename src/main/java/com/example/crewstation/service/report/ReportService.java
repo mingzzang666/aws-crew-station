@@ -11,9 +11,9 @@ import java.util.List;
 public interface ReportService {
 
     //  신고하기
-    public void report(ReportDTO reportDTO, CustomUserDetails userDetails);
+    public void report(Long postId, String reportContent, CustomUserDetails userDetails);
 
-    public void reportReply(ReportDTO reportDTO,CustomUserDetails userDetails);
+    public void reportReply(Long replyId, ReportDTO reportDTO,CustomUserDetails userDetails);
 
     //    관리자 다이어리 신고 목록
     public List<ReportPostDTO> getReportDiaries(int page);

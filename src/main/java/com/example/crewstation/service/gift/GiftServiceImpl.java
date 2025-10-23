@@ -1,6 +1,7 @@
 package com.example.crewstation.service.gift;
 
 import com.example.crewstation.auth.CustomUserDetails;
+import com.example.crewstation.common.enumeration.ProcessStatus;
 import com.example.crewstation.common.enumeration.Status;
 import com.example.crewstation.dto.gift.GiftCriteriaDTO;
 import com.example.crewstation.dto.gift.GiftDTO;
@@ -59,6 +60,8 @@ public class GiftServiceImpl implements GiftService {
                     new TypeReference<List<GiftDTO>>() {}
             );
         }
+        log.info("obj {}::::::::",obj);
+        log.info("gifts {}::::::::",gifts);
 //        List<GiftDTO> gifts = (List<GiftDTO>) redisTemplate.opsForValue().get("gifts");
         if (gifts != null) {
             gifts.forEach(gift -> {
@@ -143,6 +146,13 @@ public class GiftServiceImpl implements GiftService {
     public void hidePost(Long postId) {
         log.info("게시글 숨김 postId={}", postId);
         reportDAO.updatePostStatus(postId, Status.INACTIVE.getValue());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void resolveReport(Long reportId) {
+        log.info("신고 처리 상태 변경 reportId={}", reportId);
+        reportDAO.updateReportProcessStatus(reportId, ProcessStatus.RESOLVED.getValue());
     }
 
 }
