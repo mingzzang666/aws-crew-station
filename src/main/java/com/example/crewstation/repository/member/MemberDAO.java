@@ -57,7 +57,7 @@ public class MemberDAO {
     }
 
     //  멤버 프로필 조회
-    public Optional<MemberProfileDTO> selectProfileById(Long memberId) {
+    public Optional<MemberDTO> selectProfileById(Long memberId) {
         return memberMapper.selectProfileById(memberId);
     }
 

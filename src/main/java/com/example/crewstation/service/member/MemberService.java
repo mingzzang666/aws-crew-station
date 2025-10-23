@@ -33,7 +33,7 @@ public interface MemberService {
     public void joinSns(MemberDTO memberDTO, MultipartFile multipartFile);
 
 //  멤버 프로필 조회
-    public Optional<MemberProfileDTO> getMemberProfile(Long memberId);
+    public Optional<MemberDTO> getMemberProfile(Long memberId);
 
 //  비밀번호 변경
     public void resetPassword(String memberEmail, String memberPassword);

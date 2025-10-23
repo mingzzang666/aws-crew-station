@@ -195,30 +195,50 @@ document.addEventListener("DOMContentLoaded", startCountdown);
 const likeBtns = document.querySelectorAll("button.card-item-action-btn.like");
 const toast = document.querySelector("div.toast");
 const toastText = document.querySelector("p.toast-text");
-let likeDoubleClick = true; // 광클 방지
+let likeDoubleClick = true;
+
 likeBtns.forEach((likeBtn) => {
-    likeBtn.addEventListener("click", (e) => {
+    likeBtn.addEventListener("click", async () => {
         if (!likeDoubleClick) return;
         likeDoubleClick = false;
+
+        const diaryId = likeBtn.dataset.diaryId;
+        const svg = likeBtn.querySelector("svg");
+        const countEl = likeBtn.querySelector(".count");
+        let count = parseInt(countEl.textContent || "0", 10);
+
+        const isActive = svg.classList.toggle("active");
+        countEl.textContent = isActive ? count + 1 : Math.max(0, count - 1);
+
+        try {
+            if (isActive) {
+                await likeService.addLike(diaryId);
+                toastText.textContent = "좋아요가 추가되었습니다.";
+            } else {
+                await likeService.removeLike(diaryId);
+                toastText.textContent = "좋아요가 취소되었습니다.";
+            }
+        } catch (err) {
+            svg.classList.toggle("active", !isActive);
+            countEl.textContent = count;
+            toastText.textContent = "잠시 후 다시 시도해주세요.";
+            console.error(err);
+        }
+
         toast.style.display = "block";
         toast.classList.remove("hide");
         toast.classList.add("show");
-        const svg = likeBtn.firstElementChild;
-        if (svg.classList.contains("active")) {
-            svg.classList.remove("active");
-            toastText.textContent = "좋아요가 취소되었습니다.";
-        } else {
-            svg.classList.add("active");
-            toastText.textContent = "좋아요가 추가되었습니다.";
-        }
+
         setTimeout(() => {
             toast.classList.remove("show");
             toast.classList.add("hide");
             setTimeout(() => {
-                likeDoubleClick = true;
                 toast.style.display = "none";
+                likeDoubleClick = true;
             }, 1000);
         }, 2000);
     });
 });
+
+
 

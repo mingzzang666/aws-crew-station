@@ -7,8 +7,10 @@
     <link rel="stylesheet" th:href="@{/css/font.css}">
     <link rel="shortcut icon" th:href="@{/images/crew-station-favicon.png}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/notice/notice-detail.css}">
+    <link rel="stylesheet" href="/css/fixed/web/header.css">
 </head>
 <body>
+<header th:replace="~{fixed/web/header :: header}"></header>
 <div class="notice-detail">
 
     <!-- 상단 메뉴 -->
@@ -48,5 +50,7 @@
 
 </div>
 <script th:src="@{/js/notice/notice-detail/event.js}"></script>
+<script src="/js/fixed/web/header/module/service.js"></script>
+<script src="/js/fixed/web/header/event.js"></script>
 </body>
 </html>

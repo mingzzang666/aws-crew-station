@@ -3,6 +3,7 @@ package com.example.crewstation.mapper.alarm;
 import com.example.crewstation.dto.alarm.AlarmDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -20,6 +21,9 @@ public interface AlarmMapper {
 
 //   댓글 알람 추가
     public void insertReplyAlarm(Long postId);
+
+//    멤버 알람 추가
+    public void insertMemberAlarm(@Param("memberId") Long memberId);
 
 //    안 읽은 알람 개수 조회
     public int selectUnreadCount(@Param("memberId") Long memberId);

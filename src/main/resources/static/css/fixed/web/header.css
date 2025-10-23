@@ -676,3 +676,31 @@ div.alarm-count{
 .banner-wrap::after {
     pointer-events: none; /* 필요 시 */
 }
+
+.alarm-btn {
+    position: relative;
+    display: inline-block;
+}
+
+.alarm-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff3b30;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 0개일 때 숨기기 */
+.alarm-count.hidden {
+    display: none;
+}
+
+

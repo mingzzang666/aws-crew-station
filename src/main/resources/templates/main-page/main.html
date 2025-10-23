@@ -136,7 +136,6 @@
 <!--                            </div>-->
 <!--                        </div>-->
                         <!-- 크루 리스트 종류 부분 -->
-                    </div>
                     <!-- 추천 크루 종료 부분 -->
 
                     <!-- 다이어리 시작 부분 -->
@@ -190,7 +189,7 @@
                                                     <div>오늘의 여행일지</div>
                                                 </div> -->
                                                 <div class="diary-img-count" th:text="${'+' + diary.fileCount}">+</div>
-                                                <a class="card-content-link" href="/diaries"></a>
+                                                <a class="card-content-link" href="/diaries/detail{postId}"></a>
                                             </div>
                                         </div>
                                         <a class="card-content-link" href=""></a>
@@ -202,7 +201,8 @@
                                         </div>
 
                                         <div class="card-item-action-list">
-                                            <button class="card-item-action-btn like">
+                                            <button class="card-item-action-btn like"
+                                                    th:attr="data-diary-id=${diary.postId}">
                                                 <svg class="icon icon--stroke" aria-label="좋아요" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet"><path d="M23.22 7.95c.4 4.94-2.92 9.71-10.92 13.85a.47.47 0 0 1-.42 0C3.88 17.66.56 12.9.96 7.93 1.54 2.48 8.28.3 12.1 4.7c3.8-4.4 10.55-2.22 11.13 3.25z"></path></svg>
                                                 <span class="count" th:text="${diary.diaryLikeCount}"></span>
                                             </button>
@@ -330,7 +330,7 @@
                                                      th:text="${gift.purchaseLimitTime + '남음'}">
                                                 </div>
                                                 <div class="gift-item-img">
-                                                    <a href="/gifts" class="today-gift-item-overlay"></a>
+                                                    <a href="/gifts/detail/{id}" class="today-gift-item-overlay"></a>
                                                     <img th:src="@{${gift.filePath}}" src="https://prs.ohousecdn.com/apne2/any/uploads/productions/v1-413232022855744.jpg?w=640&h=640&c=c&q=0.8&webp=1" alt="">
                                                     <div class="gift-item-image-dark-overlay">
                                                     </div>
@@ -359,7 +359,7 @@
 <!--                                                                <span>70케미지수</span>-->
                                                                 <div class="chemistry-div">
                                                                 <img class= "product-detail-header-manner-img" src="/images/manner.png" width="14" height="14">
-                                                                <a href="/gifts" class="product-detail-header-manner" th:text="${gift.chemistryScore + '케미지수'}">70케미지수</a>
+                                                                <a href="/gifts" class="product-detail-header-manner" th:text="${gift.chemistryScore + '케미지수'}">80케미지수</a>
                                                                 <svg class="product-detail-information-icon" width="14" height="14" viewBox="0 0 18 18" fill="none" preserveAspectRatio="xMidYMid meet"><path d="M9 15.2C5.57583 15.2 2.8 12.4242 2.8 9C2.8 5.57583 5.57583 2.8 9 2.8C12.4242 2.8 15.2 5.57583 15.2 9C15.2 12.4242 12.4242 15.2 9 15.2ZM9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z" fill="#828C94"></path><path d="M8.35 6.375V5.25H9.65V6.375H8.35Z" fill="#828C94"></path><path d="M8.35 12.75V7.125H9.65V12.75H8.35Z" fill="#828C94"></path></svg>
                                                                 <div class="prduct-info-wrap">
                                                                     <strong>케미지수란?</strong>
@@ -385,9 +385,10 @@
                                                     </span>
                                                     <div>
                                                         <div class="gift-tag badge-list-container delivery-method">
-                                                            <span class="gift-create-date" th:text="${gift.purchaseDeliveryMethod}">
-                                                                직접전달
+                                                            <span class="gift-create-date"
+                                                                  th:text="${gift.purchaseDeliveryMethod == 'direct' ? '직접전달' : '택배거래'}">
                                                             </span>
+
                                                         </div>
                                                         <div class="gift-tag badge-list-container">
                                                             <span class="gift-create-date" th:text="${gift.purchaseCountry}">
@@ -425,5 +426,6 @@
 </body>
 <script src="/js/fixed/web/header/module/service.js"></script>
 <script src="/js/fixed/web/header/event.js"></script>
+<script src="/js/main-page/main/module/service.js"></script>
 <script src="/js/main-page/main/event.js"></script>
 </html>

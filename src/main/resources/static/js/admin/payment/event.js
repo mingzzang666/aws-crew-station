@@ -97,9 +97,6 @@ window.paymentInit = async function () {
                 keyword: state.keyword,
             });
 
-            console.log(
-                Array.isArray(list) ? list.length : list?.content?.length || 0
-            );
 
             paymentLayout.showPayments(list);
 

@@ -34,7 +34,7 @@ public class AlarmRestController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/read")
+    @PutMapping("/read")
     public ResponseEntity<Void> markAsRead(@RequestParam String alarmType,
                                            @RequestParam Long alarmId) {
         alarmService.markAsRead(alarmType, alarmId);

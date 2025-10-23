@@ -34,7 +34,7 @@ public interface MemberMapper {
     public void insertGuest(MemberDTO memberDTO);
 
 //  멤버 프로필 조회용
-    public Optional<MemberProfileDTO> selectProfileById(@Param("memberId") Long memberId);
+    public Optional<MemberDTO> selectProfileById(@Param("memberId") Long memberId);
 
 //    비밀번호 업데이트
     public void updatePassword(@Param("memberEmail") String memberEmail,@Param("memberPassword") String memberPassword);
