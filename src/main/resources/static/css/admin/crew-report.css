@@ -73,9 +73,9 @@ body, html {
     background-color: hsla(0, 0%, 55%, .1);
 }
 
-head {
-    display: none;
-}
+/*head {*/
+/*    display: none;*/
+/*}*/
 
 body {
     font-family: Arial, NotoSansKr, Noto Sans, sans-serif;
@@ -1248,7 +1248,7 @@ a:-webkit-any-link {
 
 #bootpay-header .header-menu-group {
     padding: 20px 30px 0 0;
-    margin-left: 476% !important;
+    /*margin-left: 476% !important;*/
 }
 
 #bootpay-header .header-menu-btn {
@@ -1489,7 +1489,7 @@ a:-webkit-any-link {
 
   .tab-view .tab-view-header{
     position: relative;
-    z-index: 2;
+    z-index: 1;
     padding: 10px 20px 20px;
     border: 0;
     box-shadow: none;
@@ -1519,8 +1519,11 @@ a:-webkit-any-link {
     left: 0; right: 0; top: 0;
     height: 1px;
     background: #edf0f3;
-    z-index: 0;
+    z-index: 2;
   }
+.tab-view .tab-view-header .tab-switch-row .tab-switch:not(.active){
+    border-bottom: 2px solid #edf0f3;
+}
 
 
 .tab-view .tab-view-header,
@@ -1546,7 +1549,6 @@ a:-webkit-any-link {
 
 .tab-view .tab-view-header .tab-switch-row {
     box-shadow: none;
-    margin-bottom: -1px;
     padding-top: 10px;
     position: relative;
 }
@@ -1579,7 +1581,6 @@ dl, ol, ul {
     border-bottom: 2px solid transparent;
     color: #56626a;
     display: inline-block;
-    margin-bottom: -2px;
     padding: 8px 30px;
 }
 

@@ -2,27 +2,26 @@ const paymentLayout = (() => {
     const n = (v) => Number(v ?? 0).toLocaleString('ko-KR');
     const safe = (v, def = '-') => (v === null || v === undefined || v === '') ? def : String(v);
 
-    const $section = () => document.querySelector('#section-payment');
-    const $tbody   = () => $section()?.querySelector('#payment-tbody');
-    const $count   = () => $section()?.querySelector('.receipt-count .count-amount');
+    const section = () => document.querySelector('#section-payment');
+    const tbody   = () => section()?.querySelector('#payment-tbody');
+    const count   = () => section()?.querySelector('.receipt-count .count-amount');
     const getTbody = () => document.querySelector('#section-payment #payment-tbody');
 
     const clear = () => {
-        const tb = $tbody();
+        const tb = tbody();
         if (tb) tb.innerHTML = '';
-        const cnt = $count();
+        const cnt = count();
         if (cnt) cnt.textContent = '0';
     };
 
     const showEmpty = () => {
-        const tb = $tbody();
+        const tb = tbody();
         if (!tb) return;
         tb.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">조회된 결제가 없습니다.</td></tr>`;
-        const cnt = $count();
+        const cnt = count();
         if (cnt) cnt.textContent = '0';
     };
 
-    // 배열 또는 {content, totalCount} 모두 지원
     const normalizeList = (raw) => Array.isArray(raw) ? raw : (raw?.content || []);
     const getTotalCount = (raw, list) => {
         if (typeof raw?.totalCount === 'number') return raw.totalCount;
@@ -38,11 +37,10 @@ const paymentLayout = (() => {
     };
 
     const showPayments = (raw = []) => {
-        const tb = $tbody();
+        const tb = tbody();
         if (!tb) return;
 
         const list = normalizeList(raw);
-        // 🔁 덮어쓰기 모드
         tb.innerHTML = '';
 
         if (!list.length) {
@@ -92,7 +90,7 @@ const paymentLayout = (() => {
 
         tb.appendChild(frag);
 
-        const cnt = $count();
+        const cnt = count();
         if (cnt) cnt.textContent = String(getTotalCount(raw, list));
     };
 
