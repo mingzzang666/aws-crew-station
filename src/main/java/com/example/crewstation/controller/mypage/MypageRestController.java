@@ -2,6 +2,7 @@ package com.example.crewstation.controller.mypage;
 
 import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
+import com.example.crewstation.dto.member.MemberProfileDTO;
 import com.example.crewstation.dto.member.ModifyDTO;
 import com.example.crewstation.dto.member.MyPurchaseDetailDTO;
 import com.example.crewstation.dto.member.MySaleDetailDTO;
@@ -9,9 +10,11 @@ import com.example.crewstation.service.member.MemberService;
 import com.example.crewstation.service.purchase.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Slf4j
@@ -99,11 +102,9 @@ public class MypageRestController {
         return ResponseEntity.ok(detail);
     }
 
-    // 마이페이지 - 내 정보 조회
-    @GetMapping("/modify/info")
-    public ResponseEntity<ModifyDTO> getMemberInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        ModifyDTO dto = memberService.getMemberInfo(customUserDetails);
-        return ResponseEntity.ok(dto);
+    @GetMapping("/profile")
+    public MemberProfileDTO getMyPageProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return memberService.getMyPageProfile(customUserDetails);
     }
 
 }
