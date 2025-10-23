@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 public class MyDiaryDTO {
     private Long id;
     private Long postId;
-    private int fileCount;
-    private String diaryCountryPathId;
     private String postTitle;
     private Long diaryId;
     private String filePath;

@@ -199,4 +199,11 @@ public class MypageController {
         return new RedirectView("/");
     }
 
+//  마이페이지 - 나의 일기 목록 뷰
+    @GetMapping("/diary-list")
+    public String loadMyDiaryListPage() {
+        log.info("마이페이지 - 일기 목록 화면 요청");
+        return "mypage/my-diary/list";
+    }
+
 }

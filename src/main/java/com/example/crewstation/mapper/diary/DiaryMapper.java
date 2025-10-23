@@ -2,9 +2,7 @@ package com.example.crewstation.mapper.diary;
 
 import com.example.crewstation.common.enumeration.Secret;
 import com.example.crewstation.domain.diary.DiaryVO;
-import com.example.crewstation.dto.diary.DiaryDTO;
-import com.example.crewstation.dto.diary.LikedDiaryDTO;
-import com.example.crewstation.dto.diary.ReplyDiaryDTO;
+import com.example.crewstation.dto.diary.*;
 import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.ScrollCriteria;
 import com.example.crewstation.util.Search;
@@ -74,4 +72,11 @@ public interface DiaryMapper {
     public int selectCountDiaryAllByMemberId(Long memberId);
 //    memberId로 다이어리  조회
     public List<DiaryDTO>  selectDiaryAllByMemberId(Long memberId);
+
+//  나의 다이어리 목록 조회
+    public List<MyDiaryDTO> selectMyDiaryListByCriteria(Long memberId, ScrollCriteria criteria);
+
+    // 나의 다이어리 총 개수 조회
+    public int countMyDiariesByMemberId(Long memberId);
+
 }

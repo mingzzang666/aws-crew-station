@@ -302,4 +302,35 @@
                  left join tbl_crew tc on tcd.crew_id = tc.id
         where tm.id=#{memberId} and vpd.diary_secret = 'public'
     </select>
+
+    <!-- 나의 다이어리 목록 조회 -->
+    <select id="selectMyDiaryListByCriteria">
+        SELECT
+            d.id,
+            d.post_id AS postId,
+            p.post_title AS postTitle,
+            d.diary_id AS diaryId,
+            d.file_path AS filePath,
+            d.member_id AS memberId,
+            p.post_content AS postContent,
+            d.created_datetime AS createdDatetime,
+            d.updated_datetime AS updatedDatetime
+        FROM
+            tbl_diary d
+                JOIN tbl_post p ON d.post_id = p.id
+        WHERE
+            d.member_id = #{criteria.memberId}
+        ORDER BY
+            d.created_datetime DESC
+        LIMIT #{criteria.size} OFFSET #{criteria.offset}
+    </select>
+
+    <!-- 나의 다이어리 총 개수 조회 -->
+    <select id="countMyDiariesByMemberId">
+        SELECT COUNT(*)
+        FROM
+            tbl_diary d
+                JOIN tbl_post p ON d.post_id = p.id
+        WHERE member_id = #{memberId}
+    </select>
 </mapper>
