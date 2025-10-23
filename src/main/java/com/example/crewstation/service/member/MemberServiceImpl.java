@@ -5,7 +5,9 @@ import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.common.exception.MemberLoginFailException;
 import com.example.crewstation.common.exception.MemberNotFoundException;
+import com.example.crewstation.domain.address.AddressVO;
 import com.example.crewstation.domain.file.FileVO;
+import com.example.crewstation.domain.file.member.MemberFileVO;
 import com.example.crewstation.domain.member.MemberVO;
 import com.example.crewstation.dto.file.FileDTO;
 import com.example.crewstation.dto.file.member.MemberFileDTO;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -67,7 +70,7 @@ public class MemberServiceImpl implements MemberService {
         AddressDTO addressDTO = new AddressDTO();
 
 
-        log.info("memberId: {}",memberId);
+        log.info("memberId: {}", memberId);
 
         addressDTO.setMemberId(memberId);
         addressDTO.setAddressDetail(memberDTO.getAddressDTO().getAddressDetail());
@@ -76,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
 
         addressDAO.save(toVO(addressDTO));
 
-        if(multipartFile.getOriginalFilename().equals("")){
+        if (multipartFile.getOriginalFilename().equals("")) {
             return;
         }
         FileDTO fileDTO = new FileDTO();
@@ -87,7 +90,7 @@ public class MemberServiceImpl implements MemberService {
             String originalFileName = multipartFile.getOriginalFilename();
             String extension = "";
 
-            if(originalFileName != null && originalFileName.contains(".")){
+            if (originalFileName != null && originalFileName.contains(".")) {
                 extension = originalFileName.substring(originalFileName.lastIndexOf("."));
             }
 
@@ -132,7 +135,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Cacheable(value="member", key="#memberEmail")
+    @Cacheable(value = "member", key = "#memberEmail")
     public MemberDTO getMember(String memberEmail, String provider) {
         return (provider == null ? memberDAO.findByMemberEmail(memberEmail)
                 : memberDAO.findBySnsEmail(memberEmail)).orElseThrow(MemberNotFoundException::new);
@@ -197,19 +200,20 @@ public class MemberServiceImpl implements MemberService {
         memberDAO.saveSns(toVO(memberDTO));
 
     }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Optional<MemberProfileDTO> getMemberProfile (Long memberId) {
+    public Optional<MemberProfileDTO> getMemberProfile(Long memberId) {
         MemberProfileDTO profiles = new MemberProfileDTO();
         Optional<MemberProfileDTO> result = memberDAO.selectProfileById(memberId);
 
         result.ifPresent(profile -> {
-           if (profile.getProfileImage() != null) {
-               String filePath = profile.getProfileImage();
-               profile.setProfileImage(s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5)));
-           }
+            if (profile.getProfileImage() != null) {
+                String filePath = profile.getProfileImage();
+                profile.setProfileImage(s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5)));
+            }
         });
-
+        log.info("result: {}", result);
         return result;
     }
 
@@ -223,8 +227,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberDTO> searchMember(String search) {
         List<MemberDTO> searchMember = memberDAO.findSearchMember(search);
-        searchMember.forEach(member->{
-            if(member.getFilePath() != null) {
+        searchMember.forEach(member -> {
+            if (member.getFilePath() != null) {
                 member.setFilePath(s3Service.getPreSignedUrl(member.getFilePath(), Duration.ofMinutes(5)));
             }
 
@@ -232,7 +236,8 @@ public class MemberServiceImpl implements MemberService {
 //        return memberDAO.findSearchMember(search);
         return searchMember;
     }
-// 관리자 회원 목록
+
+    // 관리자 회원 목록
     @Override
     public MemberCriteriaDTO getMembers(Search search) {
         int page = Optional.ofNullable(search.getPage()).orElse(1);
@@ -252,7 +257,7 @@ public class MemberServiceImpl implements MemberService {
         return dto;
     }
 
-//관리자 회원 상세
+    //관리자 회원 상세
     @Override
     @Transactional(rollbackFor = Exception.class)
     public MemberDTO getMemberDetail(Long memberId) {
@@ -293,11 +298,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDTO getProfileMember(Long memberId) {
         MemberDTO memberDTO = memberDAO.findMemberById(memberId);
-        if(memberDTO.getFilePath() != null) {
+        if (memberDTO.getFilePath() != null) {
             memberDTO.setFilePath(s3Service.getPreSignedUrl(memberDTO.getFilePath(), Duration.ofMinutes(10)));
-        }else{memberDTO.setFilePath("https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c");}
+        } else {
+            memberDTO.setFilePath("https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c");
+        }
         memberDTO.setDiaryCount(diaryDAO.countAllByMemberId(memberId));
-        log.info("profile"+memberDTO.toString());
+        log.info("profile" + memberDTO.toString());
         return memberDTO;
     }
 
@@ -305,7 +312,7 @@ public class MemberServiceImpl implements MemberService {
         return Optional.empty();
     }
 
-//  별점 등록 시 케미점수 및 상태 갱신
+    //  별점 등록 시 케미점수 및 상태 갱신
     @Transactional
     public void submitReview(Long sellerId, Long paymentStatusId, int rating) {
         // 판매자 케미 점수 갱신
@@ -355,7 +362,7 @@ public class MemberServiceImpl implements MemberService {
 
         log.info(" 판매 상태가 {} 로 변경되었습니다.", paymentPhase);
     }
-    
+
     // 나의 판매내역 상세 조회
     @Override
     public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId) {
@@ -386,37 +393,109 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ModifyDTO getMemberInfo(CustomUserDetails customUserDetails) {
-        String memberEmail = customUserDetails.getUserEmail();
+        Long memberId = customUserDetails.getId();
+        log.info("🔹 로그인된 사용자 ID : {}", memberId);
 
-        // email이 null이면 socialEmail로 대체
-        if (memberEmail == null || memberEmail.isEmpty()) {
-            memberEmail = customUserDetails.getMemberSocialEmail();
-        }
+        ModifyDTO dto = memberDAO.selectMemberInfo(memberId);
 
-        System.out.println("🔹 로그인된 사용자 이메일 (자동보정): " + memberEmail);
-
-        // email 기준으로 DB 조회
-        ModifyDTO dto = memberDAO.selectMemberInfo(memberEmail);
-
-        // 회원이 없으면 처리
         if (dto == null) {
-            System.out.println("⚠️ 회원 정보를 찾을 수 없습니다. 이메일: " + memberEmail);
-            throw new RuntimeException("회원 정보를 찾을 수 없습니다. 이메일=" + memberEmail);
+            log.warn("회원 정보를 찾을 수 없습니다. memberId={}", memberId);
+            throw new RuntimeException("회원 정보를 찾을 수 없습니다. memberId=" + memberId);
         }
 
-        // 프로필 이미지 세팅
-        String imageUrl;
-        if (dto.getFilePath() != null && dto.getFileName() != null) {
-            imageUrl = dto.getFilePath() + dto.getFileName();
-        } else if (dto.getProfileImageUrl() != null && !dto.getProfileImageUrl().isEmpty()) {
-            imageUrl = dto.getProfileImageUrl();
-        } else {
-            imageUrl = "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
+        try {
+            String imageUrl;
+
+            if (dto.getFilePath() != null && !dto.getFilePath().isEmpty()) {
+                imageUrl = s3Service.getPreSignedUrl(dto.getFilePath(), Duration.ofMinutes(5));
+            } else if (dto.getSocialImgUrl() != null && !dto.getSocialImgUrl().isEmpty()) {
+                imageUrl = dto.getSocialImgUrl();
+            } else {
+                imageUrl = "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
+            }
+
+            dto.setMemberProfileImg(imageUrl);
+        } catch (Exception e) {
+            log.warn("S3 프로필 이미지 변환 실패: {}", e.getMessage());
+            dto.setMemberProfileImg("https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c");
         }
 
-        dto.setProfileImageUrl(imageUrl);
         return dto;
     }
+    
+    
+    //  내 정보 수정
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateMyInfo(ModifyDTO modifyDTO, MultipartFile multipartFile) {
+        MemberVO memberVO = toVO(modifyDTO);
+
+
+        // 기본 회원 정보 수정
+        memberDAO.updateMember(memberVO);
+
+        // 주소 수정
+        AddressDTO addressDTO = new AddressDTO();
+        addressDTO.setAddressZipCode(modifyDTO.getZipCode());
+        addressDTO.setAddress(modifyDTO.getAddress());
+        addressDTO.setAddressDetail(modifyDTO.getAddressDetail());
+        addressDTO.setMemberId(modifyDTO.getMemberId());
+
+        addressDAO.update(toVO(addressDTO));
+
+        // 프로필 이미지 수정
+        if (multipartFile == null || multipartFile.isEmpty()) return;
+
+        try {
+            FileDTO existingFile = fileDAO.findProfileByMemberId(memberVO.getId());
+
+            if (existingFile != null) {
+                // S3에서 기존 파일 삭제
+                if (existingFile.getFilePath() != null) {
+                    s3Service.deleteFile(existingFile.getFilePath());
+                }
+
+                // DB에서 기존 파일 관계 및 파일 삭제
+                memberFileDAO.deleteMemberFile(memberVO.getId(), existingFile.getId());
+                fileDAO.delete(existingFile.getId());
+            }
+
+            // 새 파일 업로드 (S3)
+            String path = getPath();
+            String s3Key = s3Service.uploadPostFile(multipartFile, path);
+            String uuid = UUID.randomUUID().toString();
+
+            // 파일 정보 DB 등록
+            FileDTO fileDTO = new FileDTO();
+            fileDTO.setFileOriginName(multipartFile.getOriginalFilename());
+            fileDTO.setFilePath(s3Key);
+            fileDTO.setFileName(uuid);
+            fileDTO.setFileSize(String.valueOf(multipartFile.getSize()));
+            FileVO fileVO = toVO(fileDTO);
+
+            fileDAO.save(fileVO);
+
+            // 회원-파일 관계 등록
+            Long fileId = fileVO.getId();
+
+            MemberFileDTO memberFileDTO = new MemberFileDTO();
+            memberFileDTO.setMemberId(memberVO.getId());
+            memberFileDTO.setFileId(fileId);
+
+            memberFileDAO.save(toVO(memberFileDTO));
+
+            log.info("프로필 이미지 수정 완료: memberId={}, s3Key={}", memberVO.getId(), s3Key);
+
+        } catch (IOException e) {
+            log.error("S3 업로드 중 IOException 발생", e);
+            throw new RuntimeException("S3 업로드 실패", e);
+        } catch (Exception e) {
+            log.error("프로필 수정 중 예외 발생", e);
+            throw new RuntimeException("프로필 수정 실패", e);
+        }
+    }
+
+
 
 
 }

@@ -1,12 +1,9 @@
 package com.example.crewstation.repository.member;
 
-import com.example.crewstation.common.enumeration.MemberRole;
 import com.example.crewstation.domain.member.MemberVO;
 import com.example.crewstation.dto.member.*;
-import com.example.crewstation.dto.purchase.PurchaseListDTO;
 import com.example.crewstation.mapper.member.MemberMapper;
 import com.example.crewstation.util.Criteria;
-import com.example.crewstation.util.ScrollCriteria;
 import com.example.crewstation.util.Search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -127,10 +124,14 @@ public class MemberDAO {
 
 
 //  내 정보 수정 정보조회
-    public ModifyDTO selectMemberInfo(String memberEmail) {
-        return memberMapper.selectMyInfo(memberEmail);
+    public ModifyDTO selectMemberInfo(Long memberId) {
+        return memberMapper.selectMyInfo(memberId);
     }
 
+//  내 정보 수정 업데이트
+    public void updateMember(MemberVO memberVO) {
+        memberMapper.updateMember(memberVO);
+    }
 
 
 //    id로 멤버 조회

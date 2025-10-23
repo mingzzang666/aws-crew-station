@@ -51,11 +51,13 @@
     </select>
     <!-- 멤버 프로필 조회용 -->
     <select id="selectProfileById">
-        SELECT id   AS memberId,
+        SELECT m.id   AS memberId,
                member_name AS memberName,
-               social_img_url AS socialImgUrl
-        FROM tbl_member
-        WHERE id = #{memberId}
+               social_img_url AS socialImgUrl,
+               vmf.file_path as filePath
+        FROM tbl_member m
+                 left join view_file_member_file vmf on m.id = vmf.member_id
+        WHERE m.id = #{memberId}
 
     </select>
 
@@ -285,13 +287,12 @@
         values (#{memberName}, #{memberEmail}, #{memberPassword}, #{memberRole})
     </insert>
 
-
     <!-- 내 정보 수정 정보 조회-->
     <select id="selectMyInfo">
         SELECT
             m.id                    AS memberId,
             m.member_name           AS memberName,
-            m.member_email          AS memberEmail,
+            COALESCE(m.member_email, m.member_social_email) AS memberEmail,
             m.member_phone          AS memberPhone,
             m.member_birth          AS memberBirth,
             m.member_social_url     AS memberSocialUrl,
@@ -305,9 +306,19 @@
                  LEFT JOIN tbl_address a ON m.id = a.member_id
                  LEFT JOIN tbl_member_file mf ON m.id = mf.member_id
                  LEFT JOIN tbl_file f ON mf.file_id = f.id
-        WHERE m.member_email = #{memberEmail}
-           OR m.member_social_email = #{memberEmail}
+        WHERE m.id = #{memberId};
     </select>
+
+    <!-- 회원 정보 수정 -->
+    <update id="updateMember">
+        UPDATE tbl_member
+        SET
+            member_phone = #{memberPhone},
+            member_social_url = #{memberSocialUrl},
+            social_img_url = #{socialImgUrl},
+            updated_datetime = NOW()
+        WHERE id = #{id};
+    </update>
 
     <select id="selectMemberById">
         select

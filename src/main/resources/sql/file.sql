@@ -20,3 +20,6 @@ select * from tbl_file;
 
 delete from tbl_file
 where id = 19;
+
+SELECT * FROM tbl_file WHERE id = 8;
+SELECT * FROM tbl_member_file WHERE member_id = 8;

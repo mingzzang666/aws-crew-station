@@ -9,9 +9,11 @@ import com.example.crewstation.service.member.MemberService;
 import com.example.crewstation.service.purchase.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Slf4j
@@ -97,13 +99,6 @@ public class MypageRestController {
         }
 
         return ResponseEntity.ok(detail);
-    }
-
-    // 마이페이지 - 내 정보 조회
-    @GetMapping("/modify/info")
-    public ResponseEntity<ModifyDTO> getMemberInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        ModifyDTO dto = memberService.getMemberInfo(customUserDetails);
-        return ResponseEntity.ok(dto);
     }
 
 }
