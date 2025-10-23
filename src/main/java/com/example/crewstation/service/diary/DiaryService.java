@@ -64,6 +64,12 @@ public interface DiaryService {
 //    memberId로 다이어리  조회
     public List<DiaryDTO> findDiaryById(Long diaryId);
 
+    // 나의 다이어리 목록 조회
+    public MyDiaryCriteriaDTO getMyDiaryListByCriteria(CustomUserDetails customUserDetails, ScrollCriteria criteria);
+
+    // 나의 다이어리 총 개수
+    public int getCountMyDiariesByMemberId(CustomUserDetails customUserDetails);
+
 
     public void deleteDiary(Long postId);
     default DiaryVO toDiaryVO(PostDTO postDTO) {

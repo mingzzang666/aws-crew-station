@@ -97,6 +97,9 @@ public interface MemberMapper {
     //    마이페이지에서 프로필 조회용
     public MemberProfileDTO selectMyPageProfileById(Long memberId);
 
+    //  탈퇴하기
+    public void updateMemberStatusInactive(Long memberId);
+
 
 }
 

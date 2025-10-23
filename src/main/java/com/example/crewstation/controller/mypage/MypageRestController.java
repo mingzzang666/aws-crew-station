@@ -2,12 +2,16 @@ package com.example.crewstation.controller.mypage;
 
 import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
+import com.example.crewstation.dto.diary.MyDiaryCriteriaDTO;
+import com.example.crewstation.dto.diary.MyDiaryDTO;
 import com.example.crewstation.dto.member.MemberProfileDTO;
 import com.example.crewstation.dto.member.ModifyDTO;
 import com.example.crewstation.dto.member.MyPurchaseDetailDTO;
 import com.example.crewstation.dto.member.MySaleDetailDTO;
+import com.example.crewstation.service.diary.DiaryService;
 import com.example.crewstation.service.member.MemberService;
 import com.example.crewstation.service.purchase.PurchaseService;
+import com.example.crewstation.util.ScrollCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -24,6 +30,8 @@ public class MypageRestController {
 
     private final MemberService memberService;
     private final PurchaseService purchaseService;
+    private final DiaryService diaryService;
+
 
     // 구매 상세 조회
     @GetMapping("/purchase-detail/{postId}")
@@ -105,6 +113,33 @@ public class MypageRestController {
     @GetMapping("/profile")
     public MemberProfileDTO getMyPageProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return memberService.getMyPageProfile(customUserDetails);
+    }
+
+    //  마이페이지 - 일기 목록 조회
+    @GetMapping("/list")
+    public ResponseEntity<MyDiaryCriteriaDTO> getMyDiaries(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+    log.info("[나의 다이어리 조회 요청] memberId={}, page={}, size={}",
+            customUserDetails.getId(), page, size);
+
+    ScrollCriteria criteria = new ScrollCriteria(page, size);
+
+    MyDiaryCriteriaDTO dto = diaryService.getMyDiaryListByCriteria(customUserDetails,criteria);
+
+    return ResponseEntity.ok(dto);
+
+    }
+
+    //  나의 다이어리 총 개수
+    @GetMapping("/diary/count")
+    public ResponseEntity<Integer> getMyDiaryCount(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        int count = diaryService.getCountMyDiariesByMemberId(customUserDetails);
+        return ResponseEntity.ok(count);
     }
 
 }
