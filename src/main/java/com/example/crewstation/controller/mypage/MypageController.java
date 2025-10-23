@@ -1,6 +1,7 @@
 package com.example.crewstation.controller.mypage;
 
 import com.example.crewstation.auth.CustomUserDetails;
+import com.example.crewstation.dto.member.ModifyDTO;
 import com.example.crewstation.dto.member.MySaleDetailDTO;
 import com.example.crewstation.dto.member.MySaleListCriteriaDTO;
 import com.example.crewstation.dto.member.MySaleListDTO;
@@ -15,10 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -107,10 +106,32 @@ public class MypageController {
         return "mypage/sale-detail";
     }
 
-    //  마이페이지 - 내 정보 수정 페이지 로드
+    //  내 정보 수정 페이지 조회
     @GetMapping("/modify")
-    public String loadMyInfoPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public String loadMyInfoPage(@AuthenticationPrincipal CustomUserDetails user, Model model) {
+        ModifyDTO modifyDTO = memberService.getMemberInfo(user);
+        model.addAttribute("modifyDTO", modifyDTO);
         return "mypage/modify";
     }
+
+    //  내 정보 수정 페이지에서 수정
+    @PostMapping("/modify")
+    public String modify(@AuthenticationPrincipal CustomUserDetails user,
+                         @ModelAttribute ModifyDTO modifyDTO,
+                         @RequestParam(value = "profileFile", required = false) MultipartFile profileFile,
+                         Model model) {
+        try {
+            modifyDTO.setMemberId(user.getId());
+            memberService.updateMyInfo(modifyDTO, profileFile);
+            log.info("회원 정보 수정 완료 - memberId={}", user.getId());
+            return "redirect:/mypage/modify?success";
+        } catch (Exception e) {
+            log.error("회원 정보 수정 실패", e);
+            model.addAttribute("error", "정보 수정 중 오류가 발생했습니다.");
+            return "mypage/modify";
+        }
+    }
+
+
 
 }

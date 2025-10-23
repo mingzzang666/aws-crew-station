@@ -68,9 +68,14 @@ public interface MemberService {
 //  내 정보 수정 정보조회
     public ModifyDTO getMemberInfo(CustomUserDetails customUserDetails);
 
+//  내 정보 수정 업데이트
+    public void updateMyInfo(ModifyDTO modifyDTO,MultipartFile multipartFile);
+
 //    id로 멤버 조회
     public MemberDTO getProfileMember(Long memberId);
 
+//  마이페이지에서 내 프로필 조회용
+    public MemberProfileDTO getMyPageProfile(CustomUserDetails customUserDetails);
 
     default MemberVO toVO(MemberDTO memberDTO) {
         return MemberVO.builder()
@@ -122,6 +127,15 @@ public interface MemberService {
         return MemberFileVO.builder()
                 .fileId(memberfileDTO.getFileId())
                 .memberId(memberfileDTO.getMemberId())
+                .build();
+    }
+
+    default MemberVO toVO(ModifyDTO modifyDTO) {
+        return MemberVO.builder()
+                .id(modifyDTO.getMemberId())
+                .memberEmail(modifyDTO.getMemberEmail())
+                .memberPhone(modifyDTO.getMemberPhone())
+                .memberSocialUrl(modifyDTO.getMemberSocialUrl())
                 .build();
     }
 }

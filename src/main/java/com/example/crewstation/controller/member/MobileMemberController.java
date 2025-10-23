@@ -84,7 +84,7 @@ public class MobileMemberController {
         jwtTokenProvider.createAccessToken(memberDTO.getMemberSocialEmail(), provider);
         jwtTokenProvider.createRefreshToken(memberDTO.getMemberSocialEmail(), provider);
 
-        return new RedirectView("/");
+        return new RedirectView("/gifts");
     }
 
 

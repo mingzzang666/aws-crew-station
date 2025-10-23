@@ -97,16 +97,21 @@
                         <div class="address-wrap form-wrap">
                             <div class="input-group address-input">
                                 <span class="address-input-local form-input-local">
-                                    <input type="text" name="addressZipCode" class="form-control essential address memberZipCode" size="1" placeholder="우편번호" readonly th:field="*{addressDTO.addressZipCode}">
-                                    <button type="button" class="phone-certification" id="addressBtn">주소찾기</button>
+                                    <input type="text" id="sample3_postcode" name="addressZipCode" class="form-control essential address memberZipCode" size="1" placeholder="우편번호" readonly th:field="*{addressDTO.addressZipCode}">
+                                    <button type="button" onclick="sample3_execDaumPostcode()" class="phone-certification" id="addressBtn">주소찾기</button>
+                                    <!--                                    <input type="button" onclick="sample3_execDaumPostcode()" value="우편번호 찾기"><br>-->
                                     <br>
-                                    <input type="text" name="address" class="form-control essential memberAddress" size="1" placeholder="주소" readonly th:field="*{addressDTO.address}">
+                                    <input type="text" id="sample3_address" name="address" class="form-control essential memberAddress" size="1" placeholder="주소" readonly th:field="*{addressDTO.address}">
                                     <br>
-                                    <input type="text" name="addressDetail" class="form-control essential memberAddressDetail" size="1" placeholder="상세주소" th:field="*{addressDTO.addressDetail}">
+                                    <input type="text" id="sample3_extraAddress" name="addressDetail" class="form-control essential memberAddressDetail" size="1" placeholder="상세주소" th:field="*{addressDTO.addressDetail}">
+                                    <div id="wrap" style="display:none;border:1px solid;width: 352px;height:300px;margin:5px 0;position:relative">
+                                        <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor:pointer;position:absolute;right:0px;top:-1px;z-index:1" onclick="foldDaumPostcode()" alt="접기 버튼">
+                                    </div>
                                 </span>
                             </div>
                             <div class="error-text-wrap error-text-phone">
                                 <span>필수 입력 항목입니다.</span>
+
                             </div>
                         </div>
                     </div>
@@ -143,7 +148,7 @@
         </section>
     </div>
 </body>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="/js/member/mobile/sns/join/module/service.js"></script>
 <script src="/js/member/mobile/sns/join/event.js"></script>
 </html>
