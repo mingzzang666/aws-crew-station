@@ -287,31 +287,38 @@
         values (#{memberName}, #{memberEmail}, #{memberPassword}, #{memberRole})
     </insert>
 
-
     <!-- 내 정보 수정 정보 조회-->
     <select id="selectMyInfo">
-    SELECT
-        m.id                    AS memberId,
-        m.member_name           AS memberName,
-        m.member_email          AS memberEmail,
-        m.member_phone          AS memberPhone,
-        m.member_birth          AS memberBirth,
-        m.member_social_url     AS memberSocialUrl,
-        m.social_img_url        AS socialImgUrl,
-        a.address_zip_code      AS zipCode,
-        a.address               AS address,
-        a.address_detail        AS addressDetail,
-        f.file_path             AS filePath,
-        f.file_name             AS fileName
-    FROM tbl_member m
-             LEFT JOIN tbl_address a
-                       ON m.id = a.member_id
-             LEFT JOIN tbl_member_file mf
-                       ON m.id = mf.member_id
-             LEFT JOIN tbl_file f
-                       ON mf.file_id = f.id
-    WHERE m.id = #{memberId}
+        SELECT
+            m.id                    AS memberId,
+            m.member_name           AS memberName,
+            COALESCE(m.member_email, m.member_social_email) AS memberEmail,
+            m.member_phone          AS memberPhone,
+            m.member_birth          AS memberBirth,
+            m.member_social_url     AS memberSocialUrl,
+            m.social_img_url        AS socialImgUrl,
+            a.address_zip_code      AS zipCode,
+            a.address               AS address,
+            a.address_detail        AS addressDetail,
+            f.file_path             AS filePath,
+            f.file_name             AS fileName
+        FROM tbl_member m
+                 LEFT JOIN tbl_address a ON m.id = a.member_id
+                 LEFT JOIN tbl_member_file mf ON m.id = mf.member_id
+                 LEFT JOIN tbl_file f ON mf.file_id = f.id
+        WHERE m.id = #{memberId};
     </select>
+
+    <!-- 회원 정보 수정 -->
+    <update id="updateMember">
+        UPDATE tbl_member
+        SET
+            member_phone = #{memberPhone},
+            member_social_url = #{memberSocialUrl},
+            social_img_url = #{socialImgUrl},
+            updated_datetime = NOW()
+        WHERE id = #{id};
+    </update>
 
     <select id="selectMemberById">
         select
