@@ -2,6 +2,7 @@ package com.example.crewstation.controller.mypage;
 
 import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
+import com.example.crewstation.dto.member.MemberProfileDTO;
 import com.example.crewstation.dto.member.ModifyDTO;
 import com.example.crewstation.dto.member.MyPurchaseDetailDTO;
 import com.example.crewstation.dto.member.MySaleDetailDTO;
@@ -99,6 +100,11 @@ public class MypageRestController {
         }
 
         return ResponseEntity.ok(detail);
+    }
+
+    @GetMapping("/profile")
+    public MemberProfileDTO getMyPageProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return memberService.getMyPageProfile(customUserDetails);
     }
 
 }

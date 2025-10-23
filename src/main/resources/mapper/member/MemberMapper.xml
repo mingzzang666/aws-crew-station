@@ -336,5 +336,15 @@
         where m.id = #{memberId} and m.member_role = 'member' and m.member_status = 'active'
     </select>
 
+    <!-- 마이페이지 멤버 프로필 조회용 -->
+    <select id="selectMyPageProfileById">
+        SELECT m.id   AS memberId,
+               member_name AS memberName,
+               social_img_url AS socialImgUrl,
+               vmf.file_path as filePath
+        FROM tbl_member m
+                 left join view_file_member_file vmf on m.id = vmf.member_id
+        WHERE m.id = #{memberId}
+    </select>
 
 </mapper>

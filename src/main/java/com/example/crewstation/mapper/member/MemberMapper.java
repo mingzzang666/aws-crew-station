@@ -94,6 +94,9 @@ public interface MemberMapper {
     //    id로 멤버 조회
     public MemberDTO selectMemberById(Long memberId);
 
+    //    마이페이지에서 프로필 조회용
+    public MemberProfileDTO selectMyPageProfileById(Long memberId);
+
 
 }
 

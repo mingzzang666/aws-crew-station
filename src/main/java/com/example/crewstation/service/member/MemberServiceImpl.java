@@ -495,6 +495,28 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 마이페이지 프로필 조회 (로그인 유저 기준)
+    @Override
+    public MemberProfileDTO getMyPageProfile(CustomUserDetails customUserDetails) {
+        Long memberId = customUserDetails.getId();
+        MemberProfileDTO profile = memberDAO.selectMyPageProfileById(memberId);
+
+        try {
+            if (profile.getFilePath() != null && !profile.getFilePath().isBlank()) {
+                String preSignedUrl = s3Service.getPreSignedUrl(profile.getFilePath(), Duration.ofMinutes(5));
+                profile.setFilePath(preSignedUrl);
+                log.info("프로필 이미지 S3 프리사인드 URL 변환 성공: {}", preSignedUrl);
+            } else {
+                log.info("프로필 이미지 없음 (filePath 필드 null 또는 공백)");
+            }
+        } catch (Exception e) {
+            log.error("S3 프리사인드 URL 변환 실패 - memberId={}, error={}", memberId, e.getMessage());
+        }
+
+        return profile;
+    }
+
+
 
 
 

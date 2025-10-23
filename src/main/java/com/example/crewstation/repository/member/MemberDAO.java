@@ -133,6 +133,10 @@ public class MemberDAO {
         memberMapper.updateMember(memberVO);
     }
 
+    public MemberProfileDTO selectMyPageProfileById(Long memberId) {
+        return memberMapper.selectMyPageProfileById(memberId);
+    }
+
 
 //    id로 멤버 조회
     public MemberDTO findMemberById(Long memberId){

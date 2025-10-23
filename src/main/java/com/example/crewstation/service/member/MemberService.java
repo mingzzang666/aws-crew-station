@@ -74,6 +74,8 @@ public interface MemberService {
 //    id로 멤버 조회
     public MemberDTO getProfileMember(Long memberId);
 
+//  마이페이지에서 내 프로필 조회용
+    public MemberProfileDTO getMyPageProfile(CustomUserDetails customUserDetails);
 
     default MemberVO toVO(MemberDTO memberDTO) {
         return MemberVO.builder()
