@@ -199,3 +199,17 @@ logoutLink.addEventListener("click", async (e) => {
     location.href = "/member/login";
 });
 
+// 알람 갯수
+
+document.addEventListener("DOMContentLoaded", () => {
+    memberService.alarmService.updateCount();
+    setInterval(memberService.alarmService.updateCount, 30000);
+});
+
+
+
+
+
+
+
+

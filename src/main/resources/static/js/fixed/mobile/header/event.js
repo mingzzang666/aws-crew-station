@@ -245,15 +245,26 @@ if (menuModal) {
         if (profileWrap) profileWrap.style.display = '';
         if (logoutLink)  logoutLink.style.display  = '';
 
-        if (profileImgEl) {
-            const fallback = 'https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c';
-            const imgUrl =
-                (member.filePath && member.filePath.trim()) ||
-                (member.socialImgUrl && member.socialImgUrl.trim()) ||
-                fallback;
-            profileImgEl.src = imgUrl;
-            profileImgEl.alt = (member.memberName || member.memberEmail || '사용자') + ' 프로필';
-        }
+        // 프로필가져오기
+        memberService.info(async (member) => {
+            if (!member) return;
+            const id = member.id;
+            let imgUrl;
+
+            if (member.socialImgUrl && member.socialImgUrl.trim() !== "") {
+                imgUrl = member.socialImgUrl;
+            } else if (id) {
+                const profile = await memberService.profile(id);
+                imgUrl = profile?.filePath || "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
+            } else {
+                imgUrl = "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
+            }
+
+            if (profileImg) {
+                profileImg.src = imgUrl;
+            }
+        });
+
 
         if (profileNameEl) {
             profileNameEl.textContent = member.memberName || member.memberEmail || '사용자';

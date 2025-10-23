@@ -54,9 +54,18 @@ const memberService = (() => {
         }
     }
 
+    const profile = async (memberId) => {
+        const response = await fetch(`/api/member/${memberId}`);
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Fetch error");
+        }
+        return await response.json();
+    };
 
 
-    return {login: login, refresh: refresh, logout: logout, info: info};
+
+    return {login: login, refresh: refresh, logout: logout, info: info, profile:profile};
 })();
 
 

@@ -1315,4 +1315,6 @@ values (2);
 insert into tbl_banner_file(file_id, banner_id)
 values (34, 11);
 
+select * from tbl_member;
+
 

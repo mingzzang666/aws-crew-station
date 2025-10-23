@@ -9,7 +9,7 @@ alarms.forEach(alarm => {
 
         try {
             const response = await fetch(`/api/alarms/read?alarmType=${alarmType}&alarmId=${alarmId}`, {
-                method: "POST"
+                method: "PUT"
             });
 
             if (response.ok) {

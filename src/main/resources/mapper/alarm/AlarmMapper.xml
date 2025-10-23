@@ -21,6 +21,11 @@
         values (#{postId})
     </insert>
 
+    <insert id="insertMemberAlarm">
+        insert into tbl_member_alarm (member_id)
+        values (#{memberId})
+    </insert>
+
     <select id="selectUnreadCount">
         select
             (
@@ -32,19 +37,25 @@
                 (select count(*)
                  from tbl_diary_alarm da
                           join tbl_diary d on d.post_id = da.diary_id
-                          join tbl_post p on p.id = d.post_id
+                          join tbl_post  p on p.id = d.post_id
                  where p.member_id = #{memberId}
                    and da.alarm_status = 'unread')
                     +
                 (select count(*)
                  from tbl_like_alarm la
-                          join tbl_like l on l.id = la.like_id
-                          join tbl_post p on p.id = l.post_id
+                          join tbl_like  l on l.id = la.like_id
+                          join tbl_post  p on p.id = l.post_id
                  where p.member_id = #{memberId}
                    and la.alarm_status = 'unread')
+                    +
+                (select count(*)
+                 from tbl_payment_status_alarm psa
+                          join tbl_payment_status ps on ps.id = psa.payment_status_id
+                 where ps.member_id = #{memberId}
+                   and psa.alarm_status = 'unread')
                 ) as unread_count
-
     </select>
+
 
     <select id="selectLatestAlarms">
         (
@@ -96,31 +107,45 @@
 
     <update id="markAlarmAsRead">
         <choose>
-            <when test="alarmType == 'MEMBER'">
+            <when test="alarmType != null and alarmType.equals('member')">
                 update tbl_member_alarm
-                set alarm_status = 'read', updated_datetime = now()
-                where id = #{alarmId} and alarm_status = 'unread'
+                set alarm_status = 'read',
+                updated_datetime = now()
+                where id = #{alarmId}
+                and alarm_status = 'unread'
             </when>
 
-            <when test="alarmType == 'DIARY'">
+            <when test="alarmType != null and alarmType.equals('diary')">
                 update tbl_diary_alarm
-                set alarm_status = 'read', updated_datetime = now()
-                where id = #{alarmId} and alarm_status = 'unread'
+                set alarm_status = 'read',
+                updated_datetime = now()
+                where id = #{alarmId}
+                and alarm_status = 'unread'
             </when>
 
-            <when test="alarmType == 'LIKE'">
+            <when test="alarmType != null and alarmType.equals('like')">
                 update tbl_like_alarm
-                set alarm_status = 'read', updated_datetime = now()
-                where id = #{alarmId} and alarm_status = 'unread'
+                set alarm_status = 'read',
+                updated_datetime = now()
+                where id = #{alarmId}
+                and alarm_status = 'unread'
             </when>
 
-            <when test="alarmType == 'PAYMENT'">
+            <when test="alarmType != null and alarmType.equals('payment')">
                 update tbl_payment_status_alarm
-                set alarm_status = 'read', updated_datetime = now()
-                where id = #{alarmId} and alarm_status = 'unread'
+                set alarm_status = 'read',
+                updated_datetime = now()
+                where id = #{alarmId}
+                and alarm_status = 'unread'
             </when>
+
+            <otherwise>
+                update tbl_member_alarm set id = id where 1=0
+            </otherwise>
         </choose>
     </update>
+
+
 
 
 </mapper>
