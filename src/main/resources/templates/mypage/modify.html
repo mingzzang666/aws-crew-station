@@ -18,12 +18,9 @@
         <nav class="page-navigation">
             <ul>
                 <li class="page-navigation__item"><a href="/mypage/diary-list">나의 다이어리</a></li>
-                <li class="page-navigation__item"><a href="/mypage/findMyCrew">나의 크루 구하기</a></li>
-                <li class="page-navigation__item"><a href="/mypage/crew-list">나의 크루 목록</a></li>
                 <li class="page-navigation__item"><a href="/mypage/my-activities">나의 활동</a></li>
                 <li class="page-navigation__item"><a href="/mypage/purchase-list">나의 구매 내역</a></li>
                 <li class="page-navigation__item"><a href="/mypage/sale-list">나의 판매 내역</a></li>
-                <li class="page-navigation__item"><a href="/mypage/inquiries">나의 문의</a></li>
                 <li class="page-navigation__item"><a href="/mypage/modify" class="active">나의 프로필</a></li>
             </ul>
         </nav>
@@ -139,12 +136,25 @@
 
             <!-- 탈퇴 버튼 -->
             <div class="inactive">
-                <a href="/member/delete" class="delete-link">탈퇴하기</a>
+                <button id="deleteBtn" type="button" class="delete-link">탈퇴하기</button>
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" fill="currentColor" viewBox="0 0 12 12">
                     <path fill-rule="evenodd"
                           d="M3.551 1.151a.6.6 0 0 0 .05.847l4.496 3.996L3.6 9.99a.6.6 0 0 0 .798.897l4.58-4.07a1.1 1.1 0 0 0 0-1.645l-4.58-4.07a.6.6 0 0 0-.848.05"
                           clip-rule="evenodd"></path>
                 </svg>
+            </div>
+
+            <!-- 탈퇴 모달 -->
+            <div class="modal" id="deleteModal">
+                <div class="modal-content">
+                    <h3>정말 크루스테이션을 탈퇴하시겠어요?</h3>
+                    <p>탈퇴 시 회원 정보가 삭제되며,<br>
+                    작성하신 글과 댓글은 자동으로 삭제되지 않습니다.</p>
+                    <div class="modal-buttons">
+                        <a href="/mypage/delete/confirm" class="confirm">예, 탈퇴합니다</a>
+                        <button type="button" class="cancel">취소</button>
+                    </div>
+                </div>
             </div>
 
             <button type="submit" class="submit">완료</button>

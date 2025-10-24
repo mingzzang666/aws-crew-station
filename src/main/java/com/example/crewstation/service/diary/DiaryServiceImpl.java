@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -74,6 +75,7 @@ public class DiaryServiceImpl implements DiaryService {
     private final FilePostSectionDAO filePostSectionDAO;
     private final PostFileTagDAO postFileTagDAO;
     private final CrewDiaryDAO crewDiaryDAO;
+
 
 
     @Override
@@ -613,5 +615,43 @@ public class DiaryServiceImpl implements DiaryService {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         return today.format(formatter);
+    }
+
+    @Override
+    public MyDiaryCriteriaDTO getMyDiaryListByCriteria(CustomUserDetails customUserDetails, ScrollCriteria criteria) {
+        Long memberId = customUserDetails.getId();
+        log.info("나의 다이어리 목록 조회 - memberId={}, page={}, size={}", memberId, criteria.getPage(), criteria.getSize());
+
+        // 목록 조회
+        List<MyDiaryDTO> diaries = diaryDAO.findMyDiaryListByCriteria(memberId, criteria);
+
+        // S3 presigned URL
+        diaries.forEach(diary -> {
+            try {
+                if (diary.getMainImage() != null && !diary.getMainImage().isBlank()) {
+                    String preSignedUrl = s3Service.getPreSignedUrl(diary.getMainImage(), Duration.ofMinutes(5));
+                    diary.setMainImage(preSignedUrl);
+                }
+            } catch (Exception e) {
+                log.warn("S3 presigned URL 변환 실패 (postId={}): {}", diary.getPostId(), e.getMessage());
+            }
+        });
+
+        int totalCount = diaryDAO.countMyDiariesByMemberId(memberId);
+        criteria.setTotal(totalCount);
+
+        MyDiaryCriteriaDTO dto = new MyDiaryCriteriaDTO();
+        dto.setMyDiaryDTOs(diaries);
+        dto.setCriteria(criteria);
+
+        return dto;
+    }
+
+    // 나의 다이어리 총 개수 반환
+    @Override
+    public int getCountMyDiariesByMemberId(CustomUserDetails customUserDetails) {
+        Long memberId = customUserDetails.getId();
+        log.info("나의 다이어리 총 개수 조회 - memberId={}", memberId);
+        return diaryDAO.countMyDiariesByMemberId(memberId);
     }
 }

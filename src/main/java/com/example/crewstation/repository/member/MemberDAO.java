@@ -143,4 +143,9 @@ public class MemberDAO {
        return memberMapper.selectMemberById(memberId);
     };
 
+//  탈퇴하기
+    public void updateMemberStatusInactive(Long memberId)  {
+        memberMapper.updateMemberStatusInactive(memberId);
+    }
+
 }

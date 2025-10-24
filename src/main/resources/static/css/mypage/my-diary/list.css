@@ -224,7 +224,7 @@ a {
     color: rgb(47, 52, 56);
 }
 
-.sticky-container {
+.m-sticky-container {
     position: sticky;
     top: 81px;
     transition: top 0.1s;

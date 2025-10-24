@@ -2,9 +2,7 @@ package com.example.crewstation.repository.diary;
 
 import com.example.crewstation.common.enumeration.Secret;
 import com.example.crewstation.domain.diary.DiaryVO;
-import com.example.crewstation.dto.diary.DiaryDTO;
-import com.example.crewstation.dto.diary.LikedDiaryDTO;
-import com.example.crewstation.dto.diary.ReplyDiaryDTO;
+import com.example.crewstation.dto.diary.*;
 import com.example.crewstation.mapper.diary.DiaryMapper;
 import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.ScrollCriteria;
@@ -108,4 +106,15 @@ public class DiaryDAO {
     public List<DiaryDTO>  findDiaryAllByMemberId(Long memberId){
         return diaryMapper.selectDiaryAllByMemberId(memberId);
     }
+
+    // 나의 다이어리 목록 조회 (무한스크롤)
+    public List<MyDiaryDTO> findMyDiaryListByCriteria(Long memberId, ScrollCriteria criteria) {
+        return diaryMapper.selectMyDiaryListByCriteria(memberId,criteria);
+    }
+
+    //  나의 다이어리 개수
+    public int countMyDiariesByMemberId(Long memberId) {
+        return diaryMapper.countMyDiariesByMemberId(memberId);
+    }
+
 }
