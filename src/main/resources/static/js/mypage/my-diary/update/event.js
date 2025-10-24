@@ -960,6 +960,10 @@ complteBtn.addEventListener("click", (e) => {
             fileInput.name = `oldImages[${oldCount}].fileId`;
             fileInput.value = ids ? ids : -1;
             form.appendChild(fileInput);
+            const inputSectionId = document.createElement("input");
+            inputSectionId.value = fileId;
+            inputSectionId.name = `oldImages[${oldCount}].postSectionId`;
+            form.appendChild(inputSectionId);
             const tags = imgItem.querySelectorAll(".img-tag-container.tag");
             tags.forEach((tag, tagIndex) => {
                 console.log(tag.dataset.tagId);
@@ -969,9 +973,8 @@ complteBtn.addEventListener("click", (e) => {
                 const inputTagX = document.createElement("input");
                 const inputTagY = document.createElement("input");
                 const inputTagMemberId = document.createElement("input");
-                const inputSectionId = document.createElement("input");
-                inputSectionId.value = fileId;
-                inputSectionId.name = `oldImages[${oldCount}].postSectionId`;
+
+
                 inputTagX.name = `oldImages[${oldCount}].tags[${tagCount}].tagLeft`;
                 inputTagY.name = `oldImages[${oldCount}].tags[${tagCount}].tagTop`;
                 inputTagMemberId.name = `oldImages[${oldCount}].tags[${tagCount}].memberId`;
@@ -980,7 +983,7 @@ complteBtn.addEventListener("click", (e) => {
                 inputTagMemberId.value = tag.dataset.memberId;
                 console.log(inputTagX.value);
                 console.log(inputTagY.value);
-                form.appendChild(inputSectionId);
+
                 form.appendChild(inputTagX);
                 form.appendChild(inputTagY);
                 form.appendChild(inputTagMemberId);
