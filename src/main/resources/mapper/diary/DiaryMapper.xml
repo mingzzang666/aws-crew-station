@@ -33,8 +33,10 @@
         from tbl_member tm
         join view_post_diary vpd on tm.id = vpd.member_id
         join tbl_post_section tps
-        on vpd.id = tps.post_id and vpd.post_status = 'active' and vpd.diary_secret = 'public'
-        join view_file_post_section_file vfps on tps.id = vfps.post_section_id and vfps.image_type = 'main'
+        on vpd.id = tps.post_id and vpd.post_status = 'active'
+               and vpd.diary_secret = 'public'
+        join view_file_post_section_file vfps on tps.id = vfps.post_section_id
+                                                     and vfps.image_type = 'main'
         left join view_file_member_file vfmf on vfmf.member_id = tm.id
         left join tbl_crew_diary tcd on tcd.diary_id = vpd.id
         left join tbl_crew tc on tcd.crew_id = tc.id
