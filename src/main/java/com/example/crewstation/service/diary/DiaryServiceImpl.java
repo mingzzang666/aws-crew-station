@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -73,6 +74,7 @@ public class DiaryServiceImpl implements DiaryService {
     private final FilePostSectionDAO filePostSectionDAO;
     private final PostFileTagDAO postFileTagDAO;
     private final CrewDiaryDAO crewDiaryDAO;
+
 
 
     @Override
@@ -618,5 +620,34 @@ public class DiaryServiceImpl implements DiaryService {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         return today.format(formatter);
+    }
+
+    //  나의 다이어리 목록 조회
+    @Override
+    public MyDiaryCriteriaDTO getMyDiaryListByCriteria(CustomUserDetails customUserDetails, ScrollCriteria criteria) {
+        Long memberId = customUserDetails.getId();
+        log.info("나의 다이어리 목록 조회 - memberId={}, page={}, size={}", memberId, criteria.getPage(), criteria.getSize());
+
+        // 목록 조회
+        List<MyDiaryDTO> diaries = diaryDAO.findMyDiaryListByCriteria(memberId, criteria);
+
+        // 전체 개수 (hasMore 계산용)
+        int totalCount = diaryDAO.countMyDiariesByMemberId(memberId);
+        criteria.setTotal(totalCount);
+
+        // DTO 조립
+        MyDiaryCriteriaDTO dto = new MyDiaryCriteriaDTO();
+        dto.setMyDiaryDTOs(diaries);
+        dto.setCriteria(criteria);
+
+        return dto;
+    }
+
+    // 나의 다이어리 총 개수 반환
+    @Override
+    public int getCountMyDiariesByMemberId(CustomUserDetails customUserDetails) {
+        Long memberId = customUserDetails.getId();
+        log.info("나의 다이어리 총 개수 조회 - memberId={}", memberId);
+        return diaryDAO.countMyDiariesByMemberId(memberId);
     }
 }

@@ -27,7 +27,7 @@ public class ServiceTest {
         LikeDTO likeDTO = new LikeDTO();
         likeDTO.setPostId(30L);
         likeDTO.setMemberId(1L);
-        likeService.like(likeDTO,userDetails);
+        likeService.like(1L,userDetails);
     }
 
     @Test

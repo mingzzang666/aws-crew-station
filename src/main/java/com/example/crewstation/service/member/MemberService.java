@@ -77,6 +77,9 @@ public interface MemberService {
 //  마이페이지에서 내 프로필 조회용
     public MemberProfileDTO getMyPageProfile(CustomUserDetails customUserDetails);
 
+    // 회원 비활성화 처리
+    public void deactivateMember(Long memberId);
+
     default MemberVO toVO(MemberDTO memberDTO) {
         return MemberVO.builder()
                 .id(memberDTO.getId())

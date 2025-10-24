@@ -1,8 +1,9 @@
-//  마이페이지 내 정보 수정 페이지 이벤트 스크립트
 document.addEventListener("DOMContentLoaded", () => {
     initModifyEvents();
+    initDeleteModalEvents();
 });
 
+ // 회원 정보 수정 관련 이벤트
 function initModifyEvents() {
     const fileInput = document.querySelector("#profile");
     const profileImg = document.querySelector(".modify-label img");
@@ -61,7 +62,35 @@ function initModifyEvents() {
             e.preventDefault();
 
             if (confirm("회원 정보를 수정하시겠습니까?")) {
-                form.submit(); // 서버의 @PostMapping("/modify")로 전송
+                form.submit();
+            }
+        });
+    }
+}
+
+ // 회원 탈퇴 모달 이벤트
+function initDeleteModalEvents() {
+    const deleteBtn = document.getElementById("deleteBtn");
+    const modal = document.getElementById("deleteModal");
+    const cancelBtn = modal ? modal.querySelector(".cancel") : null;
+
+    if (deleteBtn && modal) {
+        deleteBtn.addEventListener("click", () => {
+            modal.style.display = "flex";
+        });
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+    }
+
+    // 모달 바깥 클릭 시 닫기
+    if (modal) {
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.style.display = "none";
             }
         });
     }

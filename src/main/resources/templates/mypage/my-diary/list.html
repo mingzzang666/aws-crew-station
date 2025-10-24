@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crew Station</title>
-    <link rel="shortcut icon" href="/static/images/crew-station-favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="shortcut icon" href="/images/crew-station-favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/font.css">
     <link rel="stylesheet" href="/static/css/mypage/my-diary/list.css">
-    <link rel="stylesheet" href="/css/fixed/web/header.css">
-    <link rel="stylesheet" href="/css/fixed/web/footer.css">
+    <link rel="stylesheet" href="/static/css/fixed/web/header.css">
+    <link rel="stylesheet" href="/static/css/fixed/web/footer.css">
 </head>
 <body>
 <header th:replace="~{fixed/web/header :: header}"></header>
@@ -16,41 +16,14 @@
         <div class="myhome-nav">
             <nav class="page-navigation">
                 <ul>
-                    <li class="page-navigation__item">
-                        <a href=""  class="active">
-                            나의 다이어리
-                        </a>
-                    </li>
-                    <li class="page-navigation__item">
-                        <a href="">
-                            나의 크루 구하기
-                        </a>
-                    </li>
-                    <li class="page-navigation__item">
-                        <a href="">
-                            나의 크루 목록
-                        </a>
-                    </li>
-                    <li class="page-navigation__item">
-                        <a href="">
-                            나의 활동
-                        </a>
-                    </li>
-                    <li class="page-navigation__item">
-                        <a href="">
-                            나의 구매 내역
-                        </a>
-                    </li>
-                    <li class="page-navigation__item">
-                        <a href="">
-                            나의 판매 내역
-                        </a>
-                    </li>
-                    <li class="page-navigation__item">
-                        <a href="">
-                            나의 문의
-                        </a>
-                    </li>
+                    <li class="page-navigation__item"><a href="/mypage/diary-list" class="active">나의 다이어리</a></li>
+                    <li class="page-navigation__item"><a href="/mypage/findMyCrew">나의 크루 구하기</a></li>
+                    <li class="page-navigation__item"><a href="/mypage/crew-list">나의 크루 목록</a></li>
+                    <li class="page-navigation__item"><a href="/mypage/my-activities">나의 활동</a></li>
+                    <li class="page-navigation__item"><a href="/mypage/purchase-list">나의 구매 내역</a></li>
+                    <li class="page-navigation__item"><a href="/mypage/sale-list">나의 판매 내역</a></li>
+                    <li class="page-navigation__item"><a href="/mypage/inquiries">나의 문의</a></li>
+                    <li class="page-navigation__item"><a href="/mypage/modify">나의 프로필</a></li>
                 </ul>
             </nav>
         </div>
@@ -73,7 +46,7 @@
                     </a>
                 </div>
             </div>
-            <div class="sticky-container">
+            <div class="m-sticky-container">
                 <div style="position: relative;">
                     <div class="nav-wrap">
                         <nav>
@@ -100,22 +73,22 @@
             <div class="sticky-container">
                 <div style="position: relative;">
                     <div class="nav-footer">
-                        <div class="update">
-                            <span class="total">
-                                <span class="check-number">0 </span>
-                                / 
-                                <span class="total-number"> 5</span>
-                            </span>
-                            <div class="button-wrap">
-                                <button class="update-button">
-                                    편집
-                                </button>
-                                <div class="update-div">
-                                    <button class="remove" disabled>삭제</button>
-                                    <button class="cancle">취소</button>
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="update">-->
+<!--                            <span class="total">-->
+<!--                                <span class="check-number">0 </span>-->
+<!--                                / -->
+<!--                                <span class="total-number"> 5</span>-->
+<!--                            </span>-->
+<!--                            <div class="button-wrap">-->
+<!--                                <button class="update-button">-->
+<!--                                    편집-->
+<!--                                </button>-->
+<!--                                <div class="update-div">-->
+<!--                                    <button class="remove" disabled>삭제</button>-->
+<!--                                    <button class="cancle">취소</button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>
