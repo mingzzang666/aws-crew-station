@@ -275,7 +275,7 @@ a.social-img > svg{
     color: #828C94;
 }
 
-footer, header, main { position: static; z-index: 2000 }
+footer, header, main { position: static; }
 footer.footer-container {
     position: static;
     z-index: auto;

@@ -1,26 +1,3 @@
-// 크루 리스트 슬라이드 부분
-const crewList = document.querySelector(".crew-items");
-const crewRightBtn = document.querySelector(".crew-arrow-btn-wrap-right");
-const crewLeftBtn = document.querySelector(".crew-arrow-btn-wrap-left");
-
-console.log(crewLeftBtn);
-const displayBtn = (displayTag, noneTag) => {
-    displayTag.style.display = "block";
-    noneTag.style.display = "none";
-};
-crewRightBtn.addEventListener("click", (e) => {
-    crewList.style.transition = `transform 0.5s`;
-    crewList.style.transform = "translate(-750px)";
-    displayBtn(crewLeftBtn, crewRightBtn);
-    // crewList.style.transition = `transform 0s`;
-});
-
-crewLeftBtn.addEventListener("click", (e) => {
-    crewList.style.transition = `transform 0.5s`;
-    crewList.style.transform = "translate(0px)";
-    displayBtn(crewRightBtn, crewLeftBtn);
-    // crewList.style.transition = `transform 0s`;
-});
 
 // 여행 경로에서 경계선 주기
 const color = [
