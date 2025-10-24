@@ -622,7 +622,6 @@ public class DiaryServiceImpl implements DiaryService {
         return today.format(formatter);
     }
 
-    //  나의 다이어리 목록 조회
     @Override
     public MyDiaryCriteriaDTO getMyDiaryListByCriteria(CustomUserDetails customUserDetails, ScrollCriteria criteria) {
         Long memberId = customUserDetails.getId();
@@ -631,11 +630,21 @@ public class DiaryServiceImpl implements DiaryService {
         // 목록 조회
         List<MyDiaryDTO> diaries = diaryDAO.findMyDiaryListByCriteria(memberId, criteria);
 
-        // 전체 개수 (hasMore 계산용)
+        // S3 presigned URL
+        diaries.forEach(diary -> {
+            try {
+                if (diary.getMainImage() != null && !diary.getMainImage().isBlank()) {
+                    String preSignedUrl = s3Service.getPreSignedUrl(diary.getMainImage(), Duration.ofMinutes(5));
+                    diary.setMainImage(preSignedUrl);
+                }
+            } catch (Exception e) {
+                log.warn("S3 presigned URL 변환 실패 (postId={}): {}", diary.getPostId(), e.getMessage());
+            }
+        });
+
         int totalCount = diaryDAO.countMyDiariesByMemberId(memberId);
         criteria.setTotal(totalCount);
 
-        // DTO 조립
         MyDiaryCriteriaDTO dto = new MyDiaryCriteriaDTO();
         dto.setMyDiaryDTOs(diaries);
         dto.setCriteria(criteria);
