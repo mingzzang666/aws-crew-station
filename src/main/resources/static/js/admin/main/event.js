@@ -1,4 +1,5 @@
 function showSection(name) {
+    closeAllModals();
     const container = document.getElementById('page-container');
     if (!container) return;
 
@@ -7,7 +8,6 @@ function showSection(name) {
     let target = container.querySelector(`#${CSS.escape(targetId)}`);
 
     if (!target) {
-        console.warn('[showSection] target not found:', targetId);
         return;
     }
 
@@ -41,9 +41,11 @@ function showSection(name) {
         'notice'      : window.noticeInit,
         'diary-report': window.diaryReportInit,
         'gift-report' : window.giftReportInit,
+        'crew-report' : window.crewReportInit,
         'payment'     : window.paymentInit,
         'inquiry'     : window.inquiryInit,
         'banner'      : window.bannerInit,
+
     };
     const init = initMap[name];
     if (typeof init === 'function' && !showSection.inited[name]) {
@@ -51,6 +53,15 @@ function showSection(name) {
         catch (e) { console.error(`[showSection] init error (${name})`, e); }
     }
 }
+
+function closeAllModals() {
+    document.querySelectorAll('.report-modal.show, .member-modal.show').forEach((m) => {
+        m.classList.remove('show');
+        m.style.display = 'none';
+        m.setAttribute('aria-hidden', 'true');
+    });
+}
+
 
 
 
@@ -107,6 +118,7 @@ function showSection(name) {
         const subLink = e.target.closest(".menu-sub-list .boot-link");
         if (subLink && side.contains(subLink)) {
             e.preventDefault();
+            closeAllModals();
             if (subLink.dataset.section) showSection(subLink.dataset.section); // 라우팅
 
             const ul = subLink.closest(".menu-sub-list");
@@ -123,6 +135,7 @@ function showSection(name) {
 
         if (btnTop.dataset.section) {
             e.preventDefault();
+            closeAllModals();
             showSection(btnTop.dataset.section);
             return;
         }

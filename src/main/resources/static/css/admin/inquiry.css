@@ -1412,3 +1412,5 @@ table.info-table td, table.info-table th {
     .mdi-check-all :before {
         content: "\F012C";
     }
+
+.modal.show { display:block; }
