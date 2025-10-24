@@ -116,11 +116,11 @@ public class MypageRestController {
     }
 
     //  마이페이지 - 일기 목록 조회
-    @GetMapping("/list")
+    @GetMapping("/diary/list")
     public ResponseEntity<MyDiaryCriteriaDTO> getMyDiaries(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "8") int size) {
 
     log.info("[나의 다이어리 조회 요청] memberId={}, page={}, size={}",
             customUserDetails.getId(), page, size);

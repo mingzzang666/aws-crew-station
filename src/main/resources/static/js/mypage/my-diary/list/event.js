@@ -1,10 +1,41 @@
-// /static/js/mypage/my-diary/list/event.js
 
 document.addEventListener("DOMContentLoaded", async () => {
     let page = 1;
-    const size = 5;
+    const size = 8;
     let hasMore = true;
     let checkScroll = true;
+    const profileWrap = document.querySelector(".profile-wrap");
+    const PROFILE_EDIT_URL = "/mypage/modify";
+    const DEFAULT_IMG = "/images/crew-station-icon-profile.png";
+
+    // ===================== 프로필 처리 =====================
+    if (profileWrap) {
+        const a = profileWrap.querySelector("a");
+        if (a) a.href = PROFILE_EDIT_URL;
+
+        try {
+            const member = await memberProfileService.getMyPageProfile();
+
+            if (member) {
+                const imgEl = profileWrap.querySelector(".profile-img");
+                const nameEl = profileWrap.querySelector(".profile-name");
+
+                if (imgEl) {
+                    if (member.filePath) {
+                        imgEl.src = member.filePath;
+                    } else if (member.socialImgUrl) {
+                        imgEl.src = member.socialImgUrl;
+                    } else {
+                        imgEl.src = DEFAULT_IMG;
+                    }
+                }
+
+                if (nameEl) nameEl.textContent = member.memberName || "";
+            }
+        } catch (e) {
+            console.error("프로필 불러오기 실패:", e);
+        }
+    }
 
     // 첫 로드 시 다이어리 목록 및 총 개수 표시
     const totalCount = await DiaryService.getMyDiaryCount();
@@ -38,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await DiaryService.getMyDiaryList(page, size);
 
         if (data && data.myDiaryDTOs) {
-            DiaryLayout.renderDiaryList(data.myDiaryDTOs);
+            DiaryLayout.renderDiaryList(data.myDiaryDTOs, page > 1);
             hasMore = data.criteria.total > page * size;
             return data.criteria;
         } else {
