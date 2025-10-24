@@ -34,7 +34,7 @@
             </div>
             <!-- 프로필 -->
             <div class="profile-container">
-                <a class="profile-a">
+                <a class="profile-a" th:href="@{/member/profile/{id}(id=${diary.diary.memberId})}">
                     <div class="profile-img">
                         <th:block th:if="${diary.diary.memberFilePath != null}">
                             <img class="product-seller-profile-img" th:src="@{${diary.diary.memberFilePath}}">
