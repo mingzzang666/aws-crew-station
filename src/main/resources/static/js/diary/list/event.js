@@ -82,7 +82,8 @@ likeBtns.forEach((likeBtn) => {
 });
 
 let page = 1;
-let keyword = "";
+const urlParams = new URLSearchParams(window.location.search);
+let keyword = urlParams.get('keyword') || "";
 let orderType = "최신순"
 let category = "total"
 let checkMore = true;

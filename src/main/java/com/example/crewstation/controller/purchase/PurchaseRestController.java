@@ -23,14 +23,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/gifts/**")
 public class PurchaseRestController {
     private final PurchaseService purchaseService;
-    //    임시 로그인
-    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping
-    public ResponseEntity<PurchaseCriteriaDTO> getPurchases(@RequestParam int page,@RequestParam String keyword) {
-        Search search = new Search();
-        search.setPage(page);
-        search.setKeyword(keyword);
+    public ResponseEntity<PurchaseCriteriaDTO> getPurchases(Search search) {
         PurchaseCriteriaDTO purchases = purchaseService.getPurchases(search);
         return ResponseEntity.ok().body(purchases);
     }
