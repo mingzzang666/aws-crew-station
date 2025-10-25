@@ -1322,6 +1322,7 @@ select * from tbl_report;
 select * from tbl_accompany_path;
 select * from tbl_accompany;
 select * from tbl_country;
+select * from tbl_diary_country;
 
 -- 동행 신고
 
