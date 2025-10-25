@@ -1347,6 +1347,5 @@ values ('50','short','20');
 insert into tbl_accompany_path (country_start_date, country_end_date, accompany_id, country_id)
 values ('2014-10-8', '2025-10-10', '35', '26');
 
-delete from tbl_country;
 
 
