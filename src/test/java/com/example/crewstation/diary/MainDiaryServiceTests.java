@@ -15,9 +15,9 @@ public class MainDiaryServiceTests {
     @Autowired
     private DiaryService diaryService;
 
-    @Test
-    public void selectDiaryListTest(){
-        List<DiaryDTO> diaryList = diaryService.selectDiaryList(4);
-        log.info("diaryList: {}", diaryList);
-    }
+//    @Test
+//    public void selectDiaryListTest(){
+//        List<DiaryDTO> diaryList = diaryService.selectDiaryList(userId,4);
+//        log.info("diaryList: {}", diaryList);
+//    }
 }

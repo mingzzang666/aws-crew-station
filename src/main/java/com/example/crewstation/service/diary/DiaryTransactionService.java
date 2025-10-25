@@ -45,7 +45,7 @@ public class DiaryTransactionService {
     private final PostFileTagDAO postFileTagDAO;
 
     @Transactional(rollbackFor = Exception.class)
-    public List<DiaryDTO> selectDiaryList (int limit) {
+    public List<DiaryDTO> selectDiaryList (Long userId ,int limit) {
         List<DiaryDTO> diaries = diaryDAO.selectDiaryList(limit);
         diaries.forEach(diary -> {
             String filePath = diary.getDiaryFilePath();
