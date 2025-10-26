@@ -23,9 +23,9 @@ public class DiaryDAO {
     private final DiaryMapper diaryMapper;
 
     //    다이어리 목록 조회
-    public List<DiaryDTO> selectDiaryList(@Param("limit") int limit)
+    public List<DiaryDTO> selectDiaryList(Long memberId ,int limit)
     {
-        return diaryMapper.selectDiaryList(limit);
+        return diaryMapper.selectDiaryList(memberId ,limit);
     }
 
     // 특정 회원이 좋아요한 일기 목록 조회

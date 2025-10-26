@@ -80,36 +80,22 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<DiaryDTO> selectDiaryList(int limit) {
-        List<DiaryDTO> diaries = null;
-         Object obj = redisTemplate.opsForValue().get("diaries");
-        if (obj != null) {
-            ObjectMapper mapper = new ObjectMapper();
-            diaries = mapper.convertValue(
-                    obj,
-                    new TypeReference<List<DiaryDTO>>() {}
-            );
-        }
+    public List<DiaryDTO> selectDiaryList(Long memberId,int limit) {
+        List<DiaryDTO> diaries = diaryDAO.selectDiaryList(memberId, limit);
 
-        if (diaries != null) {
-            diaries.forEach(diary -> {
-                String filePath = diary.getDiaryFilePath();
-//                String presignedUrl = s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5));
-//                if(diary.getMemberFilePath() != null){
-//                    diary.setMemberFilePath(s3Service.getPreSignedUrl(diary.getMemberFilePath(), Duration.ofMinutes(5)));
-//                }
-                diary.setFileCount(sectionDAO.findSectionFileCount(diary.getPostId()));
-//
-//                log.info("Diary ID={}, 원본 filePath={}, 발급된 presignedUrl={}",
-//                        diary, filePath, presignedUrl);
-//                diary.setDiaryFilePath(presignedUrl);
-            });
-            redisTemplate.opsForValue().set("diaries",diaries,Duration.ofMinutes(5));
-            log.info("diaries: {}", diaries);
-            return diaries;
+        diaries.forEach(d -> {
+            d.setFileCount(sectionDAO.findSectionFileCount(d.getPostId()));
 
-        }
-        return diaryTransactionService.selectDiaryList(limit);
+            String memberFile = d.getMemberFilePath();
+            if (memberFile != null && !memberFile.isEmpty()) {
+                d.setMemberFilePath(s3Service.getPreSignedUrl(memberFile, Duration.ofMinutes(5)));
+            }
+            String diaryFile = d.getDiaryFilePath();
+            if (diaryFile != null && !diaryFile.isEmpty()) {
+                d.setDiaryFilePath(s3Service.getPreSignedUrl(diaryFile, Duration.ofMinutes(5)));
+            }
+        });
+        return diaries;
     }
 
     @Override
