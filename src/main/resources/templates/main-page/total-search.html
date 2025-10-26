@@ -300,10 +300,11 @@
                                             <a class="today-gift-item-overlay" th:href="@{/gifts/{id}(id=${gift.postId})}"></a>
                                             <div class="today-gift-item-img">
                                                 <div class="gift-limit-time"
-                                                     th:attr="data-endtime=${gift.limitDateTime}"
-                                                     th:text="${gift.purchaseLimitTime + '남음'}">
-                                                    02:03:22 남음
+                                                     th:if="${gift.limitDateTime != null}"
+                                                     th:attr="data-endtime=${gift.limitDateTime}">
+                                                    --:--:-- 남음
                                                 </div>
+
 
                                                 <div class="gift-item-img">
 <!--                                                    <a class="today-gift-item-overlay"></a>-->
@@ -319,14 +320,13 @@
                                                         <div class="gift-detail-text-wrap">
                                                             <div class="gift-profile-block">
                                                                 <th:block th:if="${gift.memberFilePath != null}">
-                                                                    <img th:src="${gift.memberFilePath}" alt="프로필">
+                                                                    <img th:src="@{${gift.memberFilePath}}">
                                                                 </th:block>
-                                                                <th:block th:if="${gift.memberFilePath == null and gift.socialImgUrl != null}">
-                                                                    <img th:src="${gift.socialImgUrl}" alt="소셜 프로필">
+                                                                <th:block th:if="${gift.memberFilePath == null and gift.socialImgUrl !=null}">
+                                                                    <img th:src="@{${gift.socialImgUrl}}">
                                                                 </th:block>
-                                                                <th:block th:if="${gift.memberFilePath == null and gift.socialImgUrl == null}">
-                                                                    <img src="https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c"
-                                                                         alt="기본 프로필">
+                                                                <th:block th:if="${gift.memberFilePath == null and gift.socialImgUrl ==null}">
+                                                                    <img src="https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c">
                                                                 </th:block>
                                                             </div>
 
