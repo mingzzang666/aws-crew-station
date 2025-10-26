@@ -80,7 +80,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<DiaryDTO> selectDiaryList(Long userId, int limit) {
+    public List<DiaryDTO> selectDiaryList(int limit) {
         List<DiaryDTO> diaries = null;
          Object obj = redisTemplate.opsForValue().get("diaries");
         if (obj != null) {
@@ -109,7 +109,7 @@ public class DiaryServiceImpl implements DiaryService {
             return diaries;
 
         }
-        return diaryTransactionService.selectDiaryList(userId ,limit);
+        return diaryTransactionService.selectDiaryList(limit);
     }
 
     @Override
