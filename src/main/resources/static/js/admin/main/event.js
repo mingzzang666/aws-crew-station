@@ -119,7 +119,7 @@ function closeAllModals() {
         if (subLink && side.contains(subLink)) {
             e.preventDefault();
             closeAllModals();
-            if (subLink.dataset.section) showSection(subLink.dataset.section); // 라우팅
+            if (subLink.dataset.section) showSection(subLink.dataset.section);
 
             const ul = subLink.closest(".menu-sub-list");
             ul.querySelectorAll(".boot-link.active").forEach((a) => a.classList.remove("active"));
@@ -131,12 +131,16 @@ function closeAllModals() {
         }
 
         const btnTop = e.target.closest(".menu-item > .menu-btn");
-        if (!btnTop || !side.contains(btnTop)) return;
+        if (!btnTop || !side.contains(btnTop)) {
+            return;
+        }
 
         if (btnTop.dataset.section) {
             e.preventDefault();
-            closeAllModals();
-            showSection(btnTop.dataset.section);
+            closeAllModals?.();
+            closeAllMenus();
+            showSection?.(btnTop.dataset.section);
+            btnTop.classList.add("active", "current");
             return;
         }
 
@@ -157,7 +161,6 @@ function closeAllModals() {
                     panel.querySelectorAll('.boot-link.active').forEach(a => a.classList.remove('active'));
                     first.classList.add('active');
                     showSection(first.dataset.section);
-                    console.log('[sidebar] auto route ->', first.dataset.section);
                 }, 0);
             }
         } else {
