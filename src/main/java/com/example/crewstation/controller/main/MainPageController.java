@@ -1,5 +1,6 @@
 package com.example.crewstation.controller.main;
 
+import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.dto.accompany.AccompanyDTO;
 import com.example.crewstation.dto.banner.BannerDTO;
 import com.example.crewstation.dto.crew.CrewDTO;
@@ -13,6 +14,7 @@ import com.example.crewstation.service.gift.GiftService;
 import com.example.crewstation.util.Search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
