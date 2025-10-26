@@ -38,7 +38,7 @@ public interface DiaryService {
     public void cancelLike (CustomUserDetails customUserDetails, Long diaryId);
 
     //    다이어리 목록 조회
-    public List<DiaryDTO> selectDiaryList(int limit);
+    public List<DiaryDTO> selectDiaryList(Long memberId ,int limit);
     //    내가 댓글 쓴 일기 조회
     public ReplyDiaryCriteriaDTO getReplyDiariesByMemberId(CustomUserDetails customUserDetails, ScrollCriteria criteria);
 
