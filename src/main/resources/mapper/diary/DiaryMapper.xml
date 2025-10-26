@@ -15,8 +15,7 @@
         </where>
     </sql>
     <select id="selectDiaryList">
-        select
-        vpd.id as post_id,
+        select vpd.id as post_id,
         vpd.created_datetime,
         vpd.updated_datetime,
         vpd.post_read_count,
@@ -24,39 +23,24 @@
         vpd.diary_reply_count,
         vfps.file_path as diary_file_path,
         tm.member_name,
+
         tm.id as member_id,
         tm.member_description,
         tm.social_img_url,
         tps.post_content,
         vfmf.file_path as member_file_path,
         tc.crew_name,
-        tc.id as crew_id,
-        (select count(*) from tbl_like where post_id = vpd.id) as diary_like_count,
-        case
-        when #{userId} is not null
-        and exists (
-        select 1
-        from tbl_like
-        where post_id = vpd.id
-        and member_id = #{userId}
-        )
-        then true
-        else false
-        end as check
+        tc.id as crew_id
         from tbl_member tm
         join view_post_diary vpd on tm.id = vpd.member_id
         join tbl_post_section tps
-        on vpd.id = tps.post_id
-        and vpd.post_status = 'active'
-        and vpd.diary_secret = 'public'
-        join view_file_post_section_file vfps
-        on tps.id = vfps.post_section_id
-        and vfps.image_type = 'main'
+        on vpd.id = tps.post_id and vpd.post_status = 'active' and vpd.diary_secret = 'public'
+        join view_file_post_section_file vfps on tps.id = vfps.post_section_id and vfps.image_type = 'main'
         left join view_file_member_file vfmf on vfmf.member_id = tm.id
         left join tbl_crew_diary tcd on tcd.diary_id = vpd.id
         left join tbl_crew tc on tcd.crew_id = tc.id
-        where vpd.diary_secret = 'public'
-        order by vpd.created_datetime desc
+        <include refid="diarySearch"/>
+        order by ${search.orderType} desc
         limit 4;
     </select>
 
