@@ -34,10 +34,12 @@ public class MainPageController {
     private final AccompanyService accompanyService;
 
     @GetMapping
-    public String getMainPage(Model model) {
+    public String getMainPage(Model model, @AuthenticationPrincipal CustomUserDetails user) {
+
+        Long memberId = (user != null) ? user.getId() : null;
 
 //        List<CrewDTO> crews = crewService.getCrews();
-        List<DiaryDTO> diaries = diaryService.selectDiaryList(4);
+        List<DiaryDTO> diaries = diaryService.selectDiaryList(memberId,4);
         List<BannerDTO> banners = bannerService.getBanners(5);
         List<GiftDTO> gifts = giftService.getGift(4);
         log.info("{}:::::::",gifts);

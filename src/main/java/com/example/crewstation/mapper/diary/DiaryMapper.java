@@ -19,7 +19,7 @@ import java.util.Optional;
 public interface DiaryMapper {
 
     //    다이러리 목록 (메인)
-    public List<DiaryDTO> selectDiaryList(@Param("limit") int limit);
+    public List<DiaryDTO> selectDiaryList( @Param("memberId") Long memberId ,@Param("limit") int limit);
 
 //   다이어리 이미지 개수
     public int countDiaryImg(@Param("postId") Long postId);
