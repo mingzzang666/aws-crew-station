@@ -112,8 +112,7 @@
                                 </a>
                             </div>
                             <div class="diary-more-btn">
-                                <button class="more btn"
-                                        th:onclick="|location.href='@{/diary/search(keyword=${param.keyword})}'|">
+                                <button class="more btn" onclick="location.href='/diaries'">
                                     더보기
                                 </button>
                             </div>
@@ -286,10 +285,12 @@
                                 </a>
                             </div>
                             <div class="gift-more-btn">
-                                <button class="more btn"
-                                        th:onclick="|location.href='@{/gifts/search(keyword=${param.keyword})}'|">
-                                    더보기
-                                </button>
+                                <div class="gift-more-btn">
+                                    <button class="more btn" onclick="location.href='/gifts'">
+                                        더보기
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                         <div class="gift-list-container">
