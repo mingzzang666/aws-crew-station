@@ -1,3 +1,11 @@
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof startCountdown === "function") {
+        startCountdown();
+    } else {
+        console.warn("⚠️ startCountdown() not found!");
+    }
+});
+
 
 // 여행 경로에서 경계선 주기
 const color = [
@@ -70,3 +78,41 @@ likeBtns.forEach((likeBtn) => {
         }, 2000);
     });
 });
+
+function startCountdown() {
+    const timers = document.querySelectorAll("div.gift-limit-time");
+
+    timers.forEach((timer) => {
+        const endTime = new Date(timer.dataset.endtime);
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = endTime - now;
+
+            if (diff <= 0) {
+                timer.textContent = "마감";
+                return;
+            }
+
+            const totalSeconds = Math.floor(diff / 1000);
+
+            const days = Math.floor(totalSeconds / (3600 * 24));
+            const hours = String(
+                Math.floor((totalSeconds % (3600 * 24)) / 3600)
+            ).padStart(2, "0");
+            const minutes = String(
+                Math.floor((totalSeconds % 3600) / 60)
+            ).padStart(2, "0");
+            const seconds = String(totalSeconds % 60).padStart(2, "0");
+
+            if (days > 0) {
+                timer.textContent = `${days}일 ${hours}:${minutes}:${seconds} 남음`;
+            } else {
+                timer.textContent = `${hours}:${minutes}:${seconds} 남음`;
+            }
+        }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    });
+}

@@ -48,19 +48,24 @@ function showSection(name) {
 
     };
     const init = initMap[name];
-    if (typeof init === 'function' && !showSection.inited[name]) {
-        try { init(); showSection.inited[name] = true; }
+    if (typeof init === 'function') {
+        try { init(); }
         catch (e) { console.error(`[showSection] init error (${name})`, e); }
     }
+
 }
 
 function closeAllModals() {
-    document.querySelectorAll('.report-modal.show, .member-modal.show').forEach((m) => {
+    document.querySelectorAll('.modal.show, .report-modal.show, .member-modal.show').forEach((m) => {
         m.classList.remove('show');
         m.style.display = 'none';
         m.setAttribute('aria-hidden', 'true');
     });
+
+    // body 클래스도 정리
+    document.body.classList.remove('modal-open');
 }
+
 
 
 
@@ -373,10 +378,10 @@ function drawPie(staticsData) {
 
   // 로그인 정보/로그아웃
 async function fetchWithRefresh(url, opts = {}) {
-    let res = await fetch(url, { credentials: 'include'});
+    let res = await fetch(url, { ...opts, credentials: 'include' });
     if (res.status === 401) {
         const r = await fetch('/api/admin/auth/refresh', { method: 'GET', credentials: 'include' });
-        if (r.ok) res = await fetch(url, { credentials: 'include'});
+        if (r.ok) res = await fetch(url, { ...opts, credentials: 'include' });
     }
     return res;
 }

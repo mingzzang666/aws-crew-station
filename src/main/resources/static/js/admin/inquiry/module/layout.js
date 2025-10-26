@@ -69,6 +69,8 @@ const inquireLayout = (function () {
             tbody.appendChild(tr);
         });
 
+        tbody.closest('#section-inquiry').style.display = 'block';
+
         const count = document.querySelector('#section-inquiry .count-amount');
         const pill1 = document.querySelectorAll('#section-inquiry .pill-row .span-amount')[0];
         const pill2 = document.querySelectorAll('#section-inquiry .pill-row .span-amount')[1];
@@ -76,15 +78,17 @@ const inquireLayout = (function () {
         if (count) count.textContent = String(list.length);
         if (pill1) pill1.textContent = String(answered);
         if (pill2) pill2.textContent = String(unanswered);
+
+        tbody.offsetHeight;
     }
 
     // 상세 보기
     function showDetail(data) {
-        const modal = document.getElementById('modal');
+        const modal = document.getElementById('inquiry-modal');
         if (!modal) return;
 
-        // 문의 ID 저장
-        modal.dataset.inquiryId = data.id;
+        modal.dataset.inquiryId = data.id || data.inquiryId || data.askId || '';
+        console.log('[inquiry] modal.dataset.inquiryId =', modal.dataset.inquiryId);
 
         // 상단 상태
         const badge = modal.querySelector('.modal-title .badge-label');
@@ -99,33 +103,33 @@ const inquireLayout = (function () {
         const infoTables = modal.querySelectorAll('.detail-info .info-table');
         if (infoTables[0]) {
             infoTables[0].querySelector('tbody').innerHTML = `
-        <tr><th>문의번호</th><td>${data.id}</td></tr>
-        <tr><th>문의시간</th><td>${data.createdDatetime || ''}</td></tr>
-      `;
+            <tr><th>문의번호</th><td>${data.id || data.inquiryId || ''}</td></tr>
+            <tr><th>문의시간</th><td>${data.createdDatetime || ''}</td></tr>
+        `;
         }
         if (infoTables[1]) {
             infoTables[1].querySelector('tbody').innerHTML = `
-        <tr><th>문의 유형</th><td>-</td></tr>
-        <tr><th>회원ID</th><td>${data.memberId || ''}</td></tr>
-      `;
+            <tr><th>문의 유형</th><td>-</td></tr>
+            <tr><th>회원ID</th><td>${data.memberId || ''}</td></tr>
+        `;
         }
 
         // 문의내용
         const contentTable = modal.querySelectorAll('.detail-info .info-table')[2];
         if (contentTable) {
             contentTable.querySelector('tbody').innerHTML = `
-        <tr><th>문의내용</th><td>${data.inquiryContent || ''}</td></tr>
-      `;
+            <tr><th>문의내용</th><td>${data.inquiryContent || ''}</td></tr>
+        `;
         }
 
-        // 답변 입력창 초기화
         const replyInput = modal.querySelector('.inquiry-reply input, .inquiry-reply textarea');
         if (replyInput) replyInput.value = '';
     }
 
+
     // 모달 열기
     function openModal() {
-        const modal = document.getElementById('modal');
+        const modal = document.getElementById('inquiry-modal');
         if (!modal) return;
         modal.style.display = 'block';
         modal.classList.add('show');
@@ -134,20 +138,19 @@ const inquireLayout = (function () {
 
     // 모달 닫기
     function closeModal() {
-        const modal = document.getElementById('modal');
+        const modal = document.getElementById('inquiry-modal');
         if (!modal) return;
         modal.classList.remove('show');
         document.body.classList.remove('modal-open');
         modal.style.display = 'none';
     }
 
-    // 외부에서 쓰는 함수들
     return {
-        clear: clear,
-        showEmpty: showEmpty,
-        showList: showList,
-        showDetail: showDetail,
-        openModal: openModal,
-        closeModal: closeModal
+        clear,
+        showEmpty,
+        showList,
+        showDetail,
+        openModal,
+        closeModal
     };
 })();
