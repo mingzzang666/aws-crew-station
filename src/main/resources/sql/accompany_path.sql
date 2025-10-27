@@ -10,12 +10,3 @@ create table tbl_accompany_path
     constraint fk_accompany_path_country foreign key (country_id)
         references tbl_country (id)
 );
-
-
-create table test_day
-(
-    id int,
-    day timestamp(0) default now()
-);
-
-insert into test_day(id) values(1);

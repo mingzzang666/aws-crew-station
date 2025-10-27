@@ -106,7 +106,7 @@ menuBtns.forEach((menuBtn) => {
         } else {
             // 그 외 버튼
             document.querySelector("div.product-list-wrapper").style.marginTop= "50px";
-            crewBtn.style.height = "0px"; // 보이는 크루 소카부분들 다 닫아주기
+            // crewBtn.style.height = "0px"; // 보이는 크루 소카부분들 다 닫아주기
             clickCheck.removeAttribute("style"); // 선택된 영역 없애주기 (배경색 다시 흰색으로)
             modalDown.classList.remove("open"); // 모달 닫아주기 소카 있는 부분은 소카 눌러야 닫기 밑에서 해결
             subCategories[0].style.top = "-41px"; // 밖에 소카 닫아주기

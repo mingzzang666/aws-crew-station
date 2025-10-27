@@ -20,8 +20,6 @@ alter table tbl_guest
     add column  created_datetime timestamp       default now();
 alter table tbl_guest
     add column  updated_datetime timestamp       default now();
-alter table tbl_guest
-    add column  guest_password varchar(255) not null default '';
 
 ALTER TABLE tbl_guest
     ADD CONSTRAINT uq_guest_order_number UNIQUE (guest_order_number);

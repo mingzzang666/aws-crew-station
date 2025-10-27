@@ -26,8 +26,6 @@ ALTER TABLE tbl_payment
 ALTER TABLE tbl_payment
     RENAME COLUMN amount TO payment_amount;
 
-select * from tbl_payment;
-select * from tbl_payment_status;
 
 
 

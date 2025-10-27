@@ -11,10 +11,6 @@ create type phase as enum ('request','pending','refund','success');
 create type image_type as enum ('main','sub');
 create type process_status as enum ('pending','reject','resolved');
 
-drop type gender;
-drop type member_provider;
-drop type member_role;
-drop type procee;
 
 ALTER TYPE phase ADD VALUE 'received';
 ALTER TYPE phase ADD VALUE 'reviewed';
