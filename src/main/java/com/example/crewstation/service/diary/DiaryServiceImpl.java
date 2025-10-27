@@ -83,16 +83,16 @@ public class DiaryServiceImpl implements DiaryService {
     public List<DiaryDTO> selectDiaryList(Long memberId,int limit) {
         List<DiaryDTO> diaries = diaryDAO.selectDiaryList(memberId, limit);
 
-        diaries.forEach(d -> {
-            d.setFileCount(sectionDAO.findSectionFileCount(d.getPostId()));
+        diaries.forEach(diary -> {
+            diary.setFileCount(sectionDAO.findSectionFileCount(diary.getPostId()));
 
-            String memberFile = d.getMemberFilePath();
+            String memberFile = diary.getMemberFilePath();
             if (memberFile != null && !memberFile.isEmpty()) {
-                d.setMemberFilePath(s3Service.getPreSignedUrl(memberFile, Duration.ofMinutes(5)));
+                diary.setMemberFilePath(s3Service.getPreSignedUrl(memberFile, Duration.ofMinutes(5)));
             }
-            String diaryFile = d.getDiaryFilePath();
+            String diaryFile = diary.getDiaryFilePath();
             if (diaryFile != null && !diaryFile.isEmpty()) {
-                d.setDiaryFilePath(s3Service.getPreSignedUrl(diaryFile, Duration.ofMinutes(5)));
+                diary.setDiaryFilePath(s3Service.getPreSignedUrl(diaryFile, Duration.ofMinutes(5)));
             }
         });
         return diaries;

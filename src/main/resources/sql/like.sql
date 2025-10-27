@@ -9,4 +9,3 @@ create table tbl_like
         references tbl_member (id)
 );
 
-select * from tbl_like;

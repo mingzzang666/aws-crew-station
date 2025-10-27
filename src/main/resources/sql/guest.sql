@@ -13,7 +13,6 @@ create table tbl_guest
 );
 
 
-select * from tbl_guest;
 
 
 alter table tbl_guest

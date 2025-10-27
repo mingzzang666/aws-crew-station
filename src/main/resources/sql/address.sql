@@ -11,8 +11,3 @@ create table tbl_address
         references tbl_member (id)
 );
 
-
-select * from tbl_address;
-
-delete from tbl_address
-where id = 33;

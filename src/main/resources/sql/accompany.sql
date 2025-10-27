@@ -7,4 +7,3 @@ create table tbl_accompany
         references tbl_post (id)
 );
 
-select * from tbl_member;
