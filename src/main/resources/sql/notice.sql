@@ -11,7 +11,3 @@ create table tbl_notice
 );
 
 
-insert into tbl_notice (notice_title, notice_content, member_id) VALUES
-   ('업데이트 일정 공지','업데이트 일정 공지합니다. 10월 16일부터 홈페이지가 대폭 수정되어 업데이트 됩니다. 많은 관심 부탁드립니다.','1');
-
-select * from tbl_notice;

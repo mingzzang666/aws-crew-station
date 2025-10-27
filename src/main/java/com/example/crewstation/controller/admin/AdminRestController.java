@@ -54,9 +54,9 @@ public class AdminRestController implements AdminRestControllerDocs{
     private final PaymentStatusDAO paymentStatusDAO;
     private final AdminAskService adminAskService;
     private static final Map<String, String> PHASE_MAP = Map.of(
-            "PAY_PROGRESS", "PENDING",
-            "PAY_SUCCESS",  "SUCCESS",
-            "PAY_CANCEL",   "REFUND"
+            "결제 진행중", "PROGRESS",
+            "결제완료", "SUCCESS",
+            "결제취소", "CANCEL"
     );
     private final BannerTransactionService bannerTransactionService;
     private final BannerService bannerService;

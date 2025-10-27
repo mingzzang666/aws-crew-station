@@ -20,18 +20,14 @@ create table tbl_member
     updated_datetime    timestamp       default now()
 );
 
-insert into tbl_member (member_name, member_phone, member_email)
-VALUES ('정이랑','01088888888','a@gmail.com');
+
 
 
 alter table tbl_member add column member_description varchar(255);
 
-select * from tbl_member;
 
 alter table tbl_member
     add column  chemistry_score int default 70;
 
 ALTER TABLE tbl_member RENAME COLUMN kakao_img_url TO social_img_url;
 
-delete from tbl_member
-where id = 57;
