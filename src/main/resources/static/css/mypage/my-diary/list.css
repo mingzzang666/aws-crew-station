@@ -656,14 +656,6 @@ nav {
 }
 
 .diary-div:hover::before {
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 회색 */
+    background-color: rgba(0, 0, 0, 0.7); /* 반투명 회색 */
 }
 
-/* hover 시 글씨가 위로 오도록 z-index 조정 */
-.diary-div .diary-title,
-.diary-div .diary-content {
-    position: absolute;
-    z-index: 2;
-    color: white;
-    transition: color 0.3s ease;
-}
