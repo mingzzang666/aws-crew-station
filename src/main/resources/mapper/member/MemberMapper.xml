@@ -148,24 +148,24 @@
 
     <select id="findAdminMemberDetail">
         select
-            tm.id,
-            tm.member_name,
-            tm.member_phone,
-            tm.member_email,
-            tm.member_social_url,
-            tm.member_birth,
-            tm.member_gender,
-            tm.member_mbti,
-            tm.member_password,
-            tm.member_status,
-            tm.member_provider,
-            tm.social_img_url,
-            tm.member_social_email,
-            tm.member_description,
-            tm.member_role,
-            tm.created_datetime,
-            tm.updated_datetime,
-            tm.chemistry_score
+            tm.id                            as id,
+            tm.member_name                   as memberName,
+            tm.member_phone                  as memberPhone,
+            tm.member_email                  as memberEmail,
+            tm.member_social_url             as memberSocialUrl,
+            tm.member_birth                  as memberBirth,
+            tm.member_gender                 as memberGender,
+            tm.member_mbti                   as memberMbti,
+            tm.member_password               as memberPassword,
+            tm.member_status                 as memberStatus,
+            tm.member_provider               as memberProvider,
+            tm.social_img_url                 as socialImgUrl,
+            tm.member_social_email           as memberSocialEmail,
+            tm.member_description            as memberDescription,
+            tm.member_role                   as memberRole,
+            tm.created_datetime              as createdDatetime,
+            tm.updated_datetime              as updatedDatetime,
+            tm.chemistry_score               as chemistryScore
         from tbl_member tm
         where tm.id = #{memberId}
     </select>
