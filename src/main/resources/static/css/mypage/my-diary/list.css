@@ -639,3 +639,23 @@ nav {
     font-size: 15px;
     color: #757575;
 }
+
+.diary-div {
+    position: relative;
+    overflow: hidden;
+}
+
+/* hover 시 배경 반투명 회색 */
+.diary-div::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color 0.3s ease;
+    z-index: 1;
+}
+
+.diary-div:hover::before {
+    background-color: rgba(0, 0, 0, 0.7); /* 반투명 회색 */
+}
+
