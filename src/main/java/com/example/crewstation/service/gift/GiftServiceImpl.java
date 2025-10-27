@@ -119,6 +119,16 @@ public class GiftServiceImpl implements GiftService {
             if (gift.getCreatedDatetime() != null) {
                 gift.setRelativeDate(DateUtils.toRelativeTime(gift.getCreatedDatetime()));
             }
+            if (gift.getMemberFilePath() != null) {
+                gift.setMemberFilePath(
+                        s3Service.getPreSignedUrl(gift.getMemberFilePath(), Duration.ofMinutes(5))
+                );
+            }
+            if (gift.getCreatedDatetime() != null && gift.getPurchaseLimitTime() != null) {
+                gift.setLimitDateTime(
+                        DateUtils.calcLimitDateTime(gift.getCreatedDatetime(), gift.getPurchaseLimitTime())
+                );
+            }
 
         });
 

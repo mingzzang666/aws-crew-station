@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/font.css">
     <link rel="stylesheet" href="/css/main-page/total-search.css">
     <link rel="stylesheet" href="/css/fixed/web/header.css">
+    <link rel="stylesheet" href="/css/fixed/web/footer.css">
     <link rel="shortcut icon" href="/images/crew-station-favicon.png" type="image/x-icon">
 </head>
 <body>
@@ -15,60 +16,60 @@
         <div class="page-container">
             <div class="layout">
                 <main class="main-container">
-                    
+
                     <!-- 추천 크루 시작 부분 -->
-                    <div class="crew-container">
-                        <div class="crew-header">
-                            <div class="crew-title">
-                                <a>
-                                    <div class="crew-sub-title">
-                                        <strong>크루</strong>
-                                        <div class="crew-search-count">
-                                            <span th:text="${crews.totalCount}">123</span>
-                                        </div>
-                                    </div>
-                                    
-                                </a>
-                                
-                            </div>
-                            <div class="crew-more-btn">
-                                <button class="more btn" type="button" th:onclick="|location.href='@{/crew/list(keyword=${crews.search?.keyword})}'|">
-                                    더보기
-                                </button>
-                            </div>
-                        </div>
+<!--                    <div class="crew-container">-->
+<!--                        <div class="crew-header">-->
+<!--                            <div class="crew-title">-->
+<!--                                <a>-->
+<!--                                    <div class="crew-sub-title">-->
+<!--                                        <strong>크루</strong>-->
+<!--                                        <div class="crew-search-count">-->
+<!--                                            <span th:text="${crews.totalCount}">123</span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
-                        <!-- 크루 리스트 시작 부분 -->
-                        <div class="crew-list-container">
-                            <div class="crew-list-wrap">
-                                <div class="crew-list-group">
-                                    <ul class="crew-items">
-                                        <li class="crew-item-card" th:each="crew : ${crews.crewDTOs}">
-                                            <div class="crew-item-wrap">
-                                                <div class="crew-img-wrap">
-                                                    <img th:src="@{${crew.filePath}}" alt="crew">
-                                                    <span class="crew-top-text" th:text="${'크루인원' + crew.crewMemberCount}"></span>
-                                                    <div class="crew-short-description crew-info-cnt-wrap">
+<!--                                </a>-->
 
-                                                    </div>
-                                                    <div class="crew-short-description" th:text="${crew.crewDescription}">
-                                                        <span>같이 즐기고, 같이 성장하는 우리 크루를 소개합니다!</span>
-                                                    </div>
-                                                    <div class="crew-profile-wrap">
-                                                        <div class="crew-detail-text-wrap">
-                                                            <div class="crew-profile-block">
-                                                                <img th:src="${crew.socialImgUrl}" alt="">
-                                                            </div>
-                                                            <span class="crew-name" th:text="${crew.crewName}">
-                                                                크루 이름
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <a href="/crews" class="crew-detail-a"></a>
-                                                </div>
+<!--                            </div>-->
+<!--                            <div class="crew-more-btn">-->
+<!--                                <button class="more btn" type="button" th:onclick="|location.href='@{/crew/list(keyword=${crews.search?.keyword})}'|">-->
+<!--                                    더보기-->
+<!--                                </button>-->
+<!--                            </div>-->
+<!--                        </div>-->
 
-                                            </div>
-                                        </li>
+<!--                        &lt;!&ndash; 크루 리스트 시작 부분 &ndash;&gt;-->
+<!--                        <div class="crew-list-container">-->
+<!--                            <div class="crew-list-wrap">-->
+<!--                                <div class="crew-list-group">-->
+<!--                                    <ul class="crew-items">-->
+<!--                                        <li class="crew-item-card" th:each="crew : ${crews.crewDTOs}">-->
+<!--                                            <div class="crew-item-wrap">-->
+<!--                                                <div class="crew-img-wrap">-->
+<!--                                                    <img th:src="@{${crew.filePath}}" alt="crew">-->
+<!--                                                    <span class="crew-top-text" th:text="${'크루인원' + crew.crewMemberCount}"></span>-->
+<!--                                                    <div class="crew-short-description crew-info-cnt-wrap">-->
+
+<!--                                                    </div>-->
+<!--                                                    <div class="crew-short-description" th:text="${crew.crewDescription}">-->
+<!--                                                        <span>같이 즐기고, 같이 성장하는 우리 크루를 소개합니다!</span>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="crew-profile-wrap">-->
+<!--                                                        <div class="crew-detail-text-wrap">-->
+<!--                                                            <div class="crew-profile-block">-->
+<!--                                                                <img th:src="${crew.socialImgUrl}" alt="">-->
+<!--                                                            </div>-->
+<!--                                                            <span class="crew-name" th:text="${crew.crewName}">-->
+<!--                                                                크루 이름-->
+<!--                                                            </span>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                    <a href="/crews" class="crew-detail-a"></a>-->
+<!--                                                </div>-->
+
+<!--                                            </div>-->
+<!--                                        </li>-->
 <!--                                        <li class="crew-item-card">-->
 <!--                                            <a  href="/crews" class="crew-item-last">-->
 <!--                                                <div class="crew-list-mv-btn">-->
@@ -77,8 +78,8 @@
 <!--                                                <div>더보기</div>-->
 <!--                                            </a>-->
 <!--                                        </li>-->
-                                    </ul>
-                                </div>
+<!--                                    </ul>-->
+<!--                                </div>-->
 <!--                                <div class="crew-arrow-btn-wrap-left">-->
 <!--                                    <button class="arrow-btn">-->
 <!--                                        <span class="crew-left"></span>-->
@@ -89,12 +90,12 @@
 <!--                                        <span class="crew-right"></span>-->
 <!--                                    </button>-->
 <!--                                </div>-->
-                            </div>
-                        </div>
-                        <!-- 크루 리스트 종류 부분 -->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; 크루 리스트 종류 부분 &ndash;&gt;-->
 
-                        <hr class="horizon" style="margin-top: 30px; margin-bottom: -16px; ">
-                    </div>
+<!--                        <hr class="horizon" style="margin-top: 30px; margin-bottom: -16px; ">-->
+<!--                    </div>-->
                     <!-- 추천 크루 종료 부분 -->
 
                     <!-- 다이어리 시작 부분 -->
@@ -111,8 +112,7 @@
                                 </a>
                             </div>
                             <div class="diary-more-btn">
-                                <button class="more btn"
-                                        th:onclick="|location.href='@{/diary/search(keyword=${param.keyword})}'|">
+                                <button class="more btn" onclick="location.href='/diaries'">
                                     더보기
                                 </button>
                             </div>
@@ -131,7 +131,7 @@
                                                         </div>
                                                         <p class="card-item-writer-introduction" th:text="${diary.memberDescription}">시간이 쌓여 취향이 되는 집 | 인스타그램 @bebeyul 제품문의는 DM이 빨라요🫶🏻</p>
                                                     </a>
-                                                    
+
                                                 </div>
                                         </div>
                                     </div>
@@ -141,7 +141,7 @@
                                                 <img th:src="@{${diary.diaryFilePath}}" alt="" class="image">
                                                 <div class="diary-img-count" th:text="${'+' + diary.fileCount}">+5</div>
                                                 <a class="card-content-link" href="/diaries"></a>
-                                                
+
                                             </div>
                                         </div>
                                         <a class="card-content-link" href="/"></a>
@@ -151,7 +151,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="card-item-action-list">
                                             <button class="card-item-action-btn like">
                                                 <svg class="icon icon--stroke" aria-label="좋아요" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet"><path d="M23.22 7.95c.4 4.94-2.92 9.71-10.92 13.85a.47.47 0 0 1-.42 0C3.88 17.66.56 12.9.96 7.93 1.54 2.48 8.28.3 12.1 4.7c3.8-4.4 10.55-2.22 11.13 3.25z"></path></svg>
@@ -166,110 +166,110 @@
                                 </article>
                             </div>
                         </div>
-                        
+
                     <hr class="horizon">
                     </div>
                     <!-- 다이어리 종료 부분 -->
 
                     <!-- 여행 동행 시작 부분 -->
-                    <div class="together-container">
-                        <div class="together-header">
-                            <div class="together-title-wrap">
-                                <a>
-                                    <div class="together-title">
-                                        <strong>동행 모집</strong>
-                                        <div class="together-search-count">
-                                            <span th:text="${accompanies.totalCount}">10</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="together-more-btn">
-                                <button class="more btn" th:onclick="|location.href='@{/accompany/search(keyword=${param.keyword})}'|">
-                                    더보기
-                                </button>
-                            </div>
-                        </div>
-                        <div class="together-post-container">
-                            <div class="together-post-wrap">
-                                <div class="together-post-item-wrap" th:each="acc : ${accompanies.accompanyDTOs}">
-                                    <div class="together-post-item">
-                                        <div class="together-post">
-                                            <a href="/accompanies">
-                                                <div class="together-post-content">
-                                                    <div>
-                                                        <div class="together-category-wrap"
-                                                             >
-                                                            <div class="together-category-post long">
-                                                                <span class="category-name long"
-                                                                      th:classappend="${acc.accompanyStatus == 'short'} ? ' short' : ' long'"
-                                                                      th:text="${acc.accompanyStatus == 'short'} ? '숏크루' : '롱크루'">
-                                                                    롱 크루
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="together-content-info">
-                                                            <div class="together-info-section">
-                                                                <div class="together-post-title">
-                                                                    <span th:text="${acc.postTitle}">제목</span>
-                                                                </div>
-                                                                <div class="together-body-content">
-                                                                    <span th:text="${acc.postContent}"></span>
-                                                                </div>
-                                                                <div class="together-date">
-                                                                    <span th:text="${acc.countryStartDate}">25.08.15</span>
-                                                                    <span th:text="${acc.countryEndDate}">25.08.19</span>
-                                                                </div>
-                                    <div class="trip-path-wrap">
-                                        <div class="trip-path">
-                                            <div class="marker-circle last"></div>
-                                            <div class="marker">
-                                                <div class="marker-circle first"></div>
-                                                <div class="marker-country" th:text="${acc.countryName}">프랑스</div>
-                                            </div>
-                                            <div class="marker">    
-                                                <div class="marker-circle"></div>
-                                                <div class="marker-country" th:text="${acc.countryName}">캄보디아</div>
-                                            </div>    
-                                            <div class="marker">    
-                                                <div class="marker-circle"></div>
-                                                <div class="marker-country" th:text="${acc.countryName}">오스트레일리아</div>
-                                            </div>    
-                                            <div class="marker">    
-                                                <div class="marker-circle"></div>
-                                                <div class="marker-country" th:text="${acc.countryName}">뉴욕</div>
-                                            </div>    
-                                        </div>
-                                    </div>
-                                                                <div class="together-action-button">
-                                                                    <div class="together-post-writer-info">
-                                                                        <span class="info info-name" th:text="${acc.memberName}">에스프레소말차라떼</span>
-                                                                        <span class="info-split"></span>
-                                                                        <span class="info info-date" th:text="${acc.relativeDate}">15분 전</span>
-                                                                        <span class="info-split"></span>
-<!--                                                                        <span class="info info-cnt">7</span>-->
-                                                                        
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="together-post-img">
-                                                                <img th:src="@{${acc.filePath}}" src="https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/productions/160082304124619462.jpg?w=144" alt="">
-                                                                <div class="diary-img-count"
-                                                                     th:if="${acc.fileCount != null and acc.fileCount > 1}"
-                                                                     th:text="${'+' + (acc.fileCount - 1)}"
-                                                                >+5</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <hr class="horizon">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div class="together-container">-->
+<!--                        <div class="together-header">-->
+<!--                            <div class="together-title-wrap">-->
+<!--                                <a>-->
+<!--                                    <div class="together-title">-->
+<!--                                        <strong>동행 모집</strong>-->
+<!--                                        <div class="together-search-count">-->
+<!--                                            <span th:text="${accompanies.totalCount}">10</span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="together-more-btn">-->
+<!--                                <button class="more btn" th:onclick="|location.href='@{/accompany/search(keyword=${param.keyword})}'|">-->
+<!--                                    더보기-->
+<!--                                </button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="together-post-container">-->
+<!--                            <div class="together-post-wrap">-->
+<!--                                <div class="together-post-item-wrap" th:each="acc : ${accompanies.accompanyDTOs}">-->
+<!--                                    <div class="together-post-item">-->
+<!--                                        <div class="together-post">-->
+<!--                                            <a href="/accompanies">-->
+<!--                                                <div class="together-post-content">-->
+<!--                                                    <div>-->
+<!--                                                        <div class="together-category-wrap"-->
+<!--                                                             >-->
+<!--                                                            <div class="together-category-post long">-->
+<!--                                                                <span class="category-name long"-->
+<!--                                                                      th:classappend="${acc.accompanyStatus == 'short'} ? ' short' : ' long'"-->
+<!--                                                                      th:text="${acc.accompanyStatus == 'short'} ? '숏크루' : '롱크루'">-->
+<!--                                                                    롱 크루-->
+<!--                                                                </span>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="together-content-info">-->
+<!--                                                            <div class="together-info-section">-->
+<!--                                                                <div class="together-post-title">-->
+<!--                                                                    <span th:text="${acc.postTitle}">제목</span>-->
+<!--                                                                </div>-->
+<!--                                                                <div class="together-body-content">-->
+<!--                                                                    <span th:text="${acc.postContent}"></span>-->
+<!--                                                                </div>-->
+<!--                                                                <div class="together-date">-->
+<!--                                                                    <span th:text="${acc.countryStartDate}">25.08.15</span>-->
+<!--                                                                    <span th:text="${acc.countryEndDate}">25.08.19</span>-->
+<!--                                                                </div>-->
+<!--                                    <div class="trip-path-wrap">-->
+<!--                                        <div class="trip-path">-->
+<!--                                            <div class="marker-circle last"></div>-->
+<!--                                            <div class="marker">-->
+<!--                                                <div class="marker-circle first"></div>-->
+<!--                                                <div class="marker-country" th:text="${acc.countryName}">프랑스</div>-->
+<!--                                            </div>-->
+<!--                                            <div class="marker">-->
+<!--                                                <div class="marker-circle"></div>-->
+<!--                                                <div class="marker-country" th:text="${acc.countryName}">캄보디아</div>-->
+<!--                                            </div>-->
+<!--                                            <div class="marker">-->
+<!--                                                <div class="marker-circle"></div>-->
+<!--                                                <div class="marker-country" th:text="${acc.countryName}">오스트레일리아</div>-->
+<!--                                            </div>-->
+<!--                                            <div class="marker">-->
+<!--                                                <div class="marker-circle"></div>-->
+<!--                                                <div class="marker-country" th:text="${acc.countryName}">뉴욕</div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                                                <div class="together-action-button">-->
+<!--                                                                    <div class="together-post-writer-info">-->
+<!--                                                                        <span class="info info-name" th:text="${acc.memberName}">에스프레소말차라떼</span>-->
+<!--                                                                        <span class="info-split"></span>-->
+<!--                                                                        <span class="info info-date" th:text="${acc.relativeDate}">15분 전</span>-->
+<!--                                                                        <span class="info-split"></span>-->
+<!--&lt;!&ndash;                                                                        <span class="info info-cnt">7</span>&ndash;&gt;-->
+
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                            <div class="together-post-img">-->
+<!--                                                                <img th:src="@{${acc.filePath}}" src="https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/productions/160082304124619462.jpg?w=144" alt="">-->
+<!--                                                                <div class="diary-img-count"-->
+<!--                                                                     th:if="${acc.fileCount != null and acc.fileCount > 1}"-->
+<!--                                                                     th:text="${'+' + (acc.fileCount - 1)}"-->
+<!--                                                                >+5</div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </a>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <hr class="horizon">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <!-- 여행 동행 종료 부분 -->
                     <!-- 기프트 시작 부분 -->
                     <div class="gift-container">
@@ -285,10 +285,12 @@
                                 </a>
                             </div>
                             <div class="gift-more-btn">
-                                <button class="more btn"
-                                        th:onclick="|location.href='@{/gifts/search(keyword=${param.keyword})}'|">
-                                    더보기
-                                </button>
+                                <div class="gift-more-btn">
+                                    <button class="more btn" onclick="location.href='/gifts'">
+                                        더보기
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                         <div class="gift-list-container">
@@ -299,12 +301,16 @@
                                             <a class="today-gift-item-overlay" th:href="@{/gifts/{id}(id=${gift.postId})}"></a>
                                             <div class="today-gift-item-img">
                                                 <div class="gift-limit-time"
-                                                     th:attr="data-endtime=${gift.purchaseLimitTime}"
-                                                     th:text="${gift.purchaseLimitTime + '남음'}"
-                                                >02:03:22 남음</div>
+                                                     th:if="${gift.limitDateTime != null}"
+                                                     th:attr="data-endtime=${gift.limitDateTime}">
+                                                    --:--:-- 남음
+                                                </div>
+
+
                                                 <div class="gift-item-img">
 <!--                                                    <a class="today-gift-item-overlay"></a>-->
-                                                    <img th:src="@{${gift.filePath}}" alt="gift">
+                                                    <img th:src="${gift.filePath}" alt="gift">
+
                                                     <div class="gift-item-image-dark-overlay">
                                                     </div>
                                                 </div>
@@ -314,14 +320,23 @@
                                                     <div class="gift-writer-img-wrap">
                                                         <div class="gift-detail-text-wrap">
                                                             <div class="gift-profile-block">
-                                                                <img th:src="@{${gift.socialImgUrl}}" alt="">
+                                                                <th:block th:if="${gift.memberFilePath != null}">
+                                                                    <img th:src="@{${gift.memberFilePath}}">
+                                                                </th:block>
+                                                                <th:block th:if="${gift.memberFilePath == null and gift.socialImgUrl !=null}">
+                                                                    <img th:src="@{${gift.socialImgUrl}}">
+                                                                </th:block>
+                                                                <th:block th:if="${gift.memberFilePath == null and gift.socialImgUrl ==null}">
+                                                                    <img src="https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c">
+                                                                </th:block>
                                                             </div>
+
                                                             <span class="gift-name" th:text="${gift.memberName}">
                                                                 판매자 이름
                                                             </span>
                                                             <span class="gift-name chemistry-pt">
                                                                 <div class="chemistry-div">
-                                                                <img class= "product-detail-header-manner-img" src="/static/images/manner.png" width="14" height="14">
+                                                                <img class= "product-detail-header-manner-img" src="/images/manner.png" width="14" height="14">
                                                                 <a class="product-detail-header-manner"
                                                                    th:text="${gift.chemistryScore + '케미지수'}">70케미지수</a>
                                                                 <svg class="product-detail-information-icon" width="14" height="14" viewBox="0 0 18 18" fill="none" preserveAspectRatio="xMidYMid meet"><path d="M9 15.2C5.57583 15.2 2.8 12.4242 2.8 9C2.8 5.57583 5.57583 2.8 9 2.8C12.4242 2.8 15.2 5.57583 15.2 9C15.2 12.4242 12.4242 15.2 9 15.2ZM9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z" fill="#828C94"></path><path d="M8.35 6.375V5.25H9.65V6.375H8.35Z" fill="#828C94"></path><path d="M8.35 12.75V7.125H9.65V12.75H8.35Z" fill="#828C94"></path></svg>
@@ -351,7 +366,7 @@
                                                     </span>
                                                     <div>
                                                         <div class="gift-tag badge-list-container delivery-method">
-                                                            <span class="gift-create-date" th:text="${gift.purchaseDeliveryMethod}">
+                                                            <span class="gift-create-date"  th:text="${gift.purchaseDeliveryMethod == 'direct' ? '직접전달' : '택배거래'}">
                                                                 직접전달
                                                             </span>
                                                         </div>
@@ -363,7 +378,7 @@
                                                     </div>
                                                     </div>
                                                     <div class="gift-date">
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -388,10 +403,10 @@
         </div>
     </div>
             </div>
-            
+
         </div>
     </div>
-    
+<footer th:replace="~{fixed/web/footer :: footer}"></footer>
 </body>
 <script src="/js/main-page/total-search/event.js"></script>
 <script src="/js/fixed/web/header/module/service.js"></script>

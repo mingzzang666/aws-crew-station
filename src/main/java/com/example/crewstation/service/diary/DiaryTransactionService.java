@@ -45,8 +45,8 @@ public class DiaryTransactionService {
     private final PostFileTagDAO postFileTagDAO;
 
     @Transactional(rollbackFor = Exception.class)
-    public List<DiaryDTO> selectDiaryList (int limit) {
-        List<DiaryDTO> diaries = diaryDAO.selectDiaryList(limit);
+    public List<DiaryDTO> selectDiaryList (int limit, Long memberId) {
+        List<DiaryDTO> diaries = diaryDAO.selectDiaryList(memberId ,limit);
         diaries.forEach(diary -> {
             String filePath = diary.getDiaryFilePath();
             String presignedUrl = s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5));
@@ -58,7 +58,7 @@ public class DiaryTransactionService {
                     diary, filePath, presignedUrl);
             diary.setDiaryFilePath(presignedUrl);
         });
-        redisTemplate.opsForValue().set("diaries", diaries, Duration.ofMinutes(5));
+//        redisTemplate.opsForValue().set("diaries", diaries, Duration.ofMinutes(5));
         return diaries;
     }
 

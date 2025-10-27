@@ -35,7 +35,7 @@ const crewReportLayout = (() => {
             </div>
           </td>
           <td class="text-center">
-            <span class="badge badge-label reason-badge">${reason}</span>
+            <span class="badge badge-label reason-badge text-danger">${d.reportContent}</span>
           </td>
           <td>
             <div>reporter: <b>${reporter.split("@")[0]}</b></div>
