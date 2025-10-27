@@ -15,34 +15,74 @@
         </where>
     </sql>
     <select id="selectDiaryList">
-        select vpd.id as post_id,
-        vpd.created_datetime,
-        vpd.updated_datetime,
-        vpd.post_read_count,
-        vpd.diary_like_count,
-        vpd.diary_reply_count,
-        vfps.file_path as diary_file_path,
-        tm.member_name,
-        tm.id as member_id,
-        tm.member_description,
-        tm.social_img_url,
-        tps.post_content,
-        vfmf.file_path as member_file_path,
-        tc.crew_name,
-        tc.id as crew_id
-        from tbl_member tm
-        join view_post_diary vpd on tm.id = vpd.member_id
-        join tbl_post_section tps
-        on vpd.id = tps.post_id and vpd.post_status = 'active' and vpd.diary_secret = 'public'
-        join view_file_post_section_file vfps on tps.id = vfps.post_section_id and vfps.image_type = 'main'
-        left join view_file_member_file vfmf on vfmf.member_id = tm.id
-        left join tbl_crew_diary tcd on tcd.diary_id = vpd.id
-        left join tbl_crew tc on tcd.crew_id = tc.id
+        select
+            x.post_id,
+            x.created_datetime,
+            x.updated_datetime,
+            x.post_read_count,
+            x.diary_like_count,
+            x.diary_reply_count,
+            x.diary_file_path,
+            x.member_name,
+            x.member_id,
+            x.member_description,
+            x.social_img_url,
+            x.post_content,
+            x.member_file_path,
+            x.crew_name,
+            x.crew_id,
+            x.check
+        from (
+                 select
+                     vpd.id as post_id,
+                     vpd.created_datetime,
+                     vpd.updated_datetime,
+                     vpd.post_read_count,
+                     vpd.diary_like_count,
+                     vpd.diary_reply_count,
+                     vfps.file_path as diary_file_path,
+                     tm.member_name,
+                     tm.id as member_id,
+                     tm.member_description,
+                     tm.social_img_url,
+                     tps.post_content,
+                     vfmf.file_path as member_file_path,
+                     tc.crew_name,
+                     tc.id as crew_id,
 
-        where vpd.diary_secret = 'public'
-        order by vpd.created_datetime desc
-        limit 4;
+                     exists (
+                         select 1
+                         from tbl_like me
+                         where me.post_id  = vpd.id
+                           and me.member_id = #{memberId}
+                     ) as check,
+          row_number() over (
+              partition by tm.id
+              order by vpd.created_datetime desc, vpd.id desc, tps.id asc
+          ) as rn
+                 from tbl_member tm
+                     join view_post_diary vpd on tm.id = vpd.member_id
+                     join tbl_post_section tps
+                     on vpd.id = tps.post_id
+                     and vpd.post_status = 'active'
+                     and vpd.diary_secret = 'public'
+                     join view_file_post_section_file vfps
+                     on tps.id = vfps.post_section_id
+                     and vfps.image_type = 'main'
+                     left join view_file_member_file vfmf on vfmf.member_id = tm.id
+                     left join tbl_crew_diary tcd on tcd.diary_id = vpd.id
+                     left join tbl_crew tc on tcd.crew_id = tc.id
+                 where vpd.diary_secret = 'public'
+             ) x
+        where x.rn = 1
+        order by x.created_datetime desc
+        limit 4
     </select>
+
+
+
+
+
 
     <!-- 내가 좋아요 한 일기 -->
     <select id="findDiariesLikedByMemberId">

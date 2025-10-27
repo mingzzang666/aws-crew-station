@@ -221,6 +221,7 @@ if (menuModal) {
     const profileWrap   = menuModal.querySelector('.login-profile-wrap');       // 로그인 전용
     const profileImgEl  = profileWrap ? profileWrap.querySelector('img') : null;
     const profileNameEl = profileWrap ? profileWrap.querySelector('p')   : null;
+    const profileImg = document.querySelector('.login-profile-wrap img');
 
     const guestWrap     = menuModal.querySelector('.login-logout-container');   // 비로그인 전용
     const logoutLink    = menuModal.querySelector('.logout-menu-footer');       // 로그아웃 링크
@@ -232,6 +233,7 @@ if (menuModal) {
 
     // 로그인 정보 불러오기
     memberService.info(async (member) => {
+        console.log("로그인 정인정보")
         if (!member) {
             // 비로그인 유지
             if (profileWrap) profileWrap.style.display = 'none';
@@ -255,7 +257,7 @@ if (menuModal) {
                 imgUrl = member.socialImgUrl;
             } else if (id) {
                 const profile = await memberService.profile(id);
-                imgUrl = profile?.filePath || "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
+                imgUrl = profile.filePath || "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
             } else {
                 imgUrl = "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
             }

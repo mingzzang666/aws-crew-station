@@ -62,6 +62,7 @@ public class DiaryServiceImpl implements DiaryService {
     private final SectionDAO sectionDAO;
     private final DiaryTransactionService diaryTransactionService;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, DiaryDetailDTO> diaryRedisTemplate;
     private final RedisTemplate<String, Map<String, Long>> countryRedisTemplate;
     private final LikeDAO likeDAO;
     private final TagTransactionService tagTransactionService;
@@ -79,36 +80,22 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<DiaryDTO> selectDiaryList(int limit) {
-        List<DiaryDTO> diaries = null;
-         Object obj = redisTemplate.opsForValue().get("diaries");
-        if (obj != null) {
-            ObjectMapper mapper = new ObjectMapper();
-            diaries = mapper.convertValue(
-                    obj,
-                    new TypeReference<List<DiaryDTO>>() {}
-            );
-        }
+    public List<DiaryDTO> selectDiaryList(Long memberId,int limit) {
+        List<DiaryDTO> diaries = diaryDAO.selectDiaryList(memberId, limit);
 
-        if (diaries != null) {
-            diaries.forEach(diary -> {
-                String filePath = diary.getDiaryFilePath();
-//                String presignedUrl = s3Service.getPreSignedUrl(filePath, Duration.ofMinutes(5));
-//                if(diary.getMemberFilePath() != null){
-//                    diary.setMemberFilePath(s3Service.getPreSignedUrl(diary.getMemberFilePath(), Duration.ofMinutes(5)));
-//                }
-                diary.setFileCount(sectionDAO.findSectionFileCount(diary.getPostId()));
-//
-//                log.info("Diary ID={}, 원본 filePath={}, 발급된 presignedUrl={}",
-//                        diary, filePath, presignedUrl);
-//                diary.setDiaryFilePath(presignedUrl);
-            });
-            redisTemplate.opsForValue().set("diaries",diaries,Duration.ofMinutes(5));
-            log.info("diaries: {}", diaries);
-            return diaries;
+        diaries.forEach(d -> {
+            d.setFileCount(sectionDAO.findSectionFileCount(d.getPostId()));
 
-        }
-        return diaryTransactionService.selectDiaryList(limit);
+            String memberFile = d.getMemberFilePath();
+            if (memberFile != null && !memberFile.isEmpty()) {
+                d.setMemberFilePath(s3Service.getPreSignedUrl(memberFile, Duration.ofMinutes(5)));
+            }
+            String diaryFile = d.getDiaryFilePath();
+            if (diaryFile != null && !diaryFile.isEmpty()) {
+                d.setDiaryFilePath(s3Service.getPreSignedUrl(diaryFile, Duration.ofMinutes(5)));
+            }
+        });
+        return diaries;
     }
 
     @Override
@@ -338,6 +325,7 @@ public class DiaryServiceImpl implements DiaryService {
             diaryCountryVOs = toDiaryCountryVO(request);
             diaryCountryVOs.forEach(diaryCountryDAO::save);
         }
+
 //        postDAO.savePost(post);
 //        request.setPostId(post.getPostId());
 //        diaryDAO.save(toDiaryVO(post));
@@ -421,6 +409,8 @@ public class DiaryServiceImpl implements DiaryService {
         Optional.ofNullable(request.getOldImages()).orElse(Collections.emptyList())
                 .forEach(image -> {
 //                    image.getPostSectionId()
+                    log.info(":::::::::::::{}", image);
+                    log.info(":::::::::::::{}", toPostSectionVO(image).toString());
             sectionDAO.update(toPostSectionVO(image));
             if (image.getTags() != null) {
 //                log.info("태그가 없어");
@@ -439,6 +429,10 @@ public class DiaryServiceImpl implements DiaryService {
         }
         if(redisTemplate.opsForValue().get("diaries") != null){
             redisTemplate.delete("diaries");
+        }
+        if(diaryRedisTemplate.opsForValue().get("diary::diary_" +request.getPostId()) != null){
+            log.info("askladamdakldamlkdalmd");
+            redisTemplate.delete("diary::diary_" +request.getPostId());
         }
 
     }
@@ -543,45 +537,32 @@ public class DiaryServiceImpl implements DiaryService {
     @LogReturnStatus
     @Transactional(rollbackFor = Exception.class)
     public DiaryDetailDTO getDiary(Long postId, CustomUserDetails customUserDetails) {
-        DiaryDetailDTO diaryDetailDTO = new DiaryDetailDTO();
-        postDAO.updateReadCount(postId);
-        List<CountryDTO> countries = diaryCountryDAO.findCountryByPostId(postId);
-        Optional<DiaryDTO> byPostId = diaryDAO.findByPostId(postId);
-        List<SectionDTO> sections = sectionDAO.findSectionsByPostId(postId);
-        byPostId.ifPresent(diaryDTO -> {
-            if(diaryDTO.getMemberFilePath() != null){
-                diaryDTO.setMemberFilePath(s3Service.getPreSignedUrl(diaryDTO.getMemberFilePath(), Duration.ofMinutes(5)));
-            }
-            diaryDTO.setRelativeDate(DateUtils.toRelativeTime(diaryDTO.getCreatedDatetime()));
+        DiaryDetailDTO cached = diaryRedisTemplate.opsForValue().get("diary::diary_" + postId);
 
-            if (customUserDetails != null) {
-                diaryDTO.setUserId(Objects.equals(customUserDetails.getId(), diaryDTO.getMemberId()) ? customUserDetails.getId() : null);
-                Long likeId = likeDAO.isLikeByPostIdAndMemberId(diaryDTO);
-                diaryDTO.setLikeId(likeId);
-            }
-            log.info("유저 아이디{}",diaryDTO.getUserId());
-        });
-        diaryDetailDTO.setCountries(countries);
-        sections.forEach(section -> {
-            log.info("{}", section.getFileId());
-            List<PostFileTagDTO> tags = postFileTagDAO.findByFileId(section.getFileId());
-            log.info("{}:::::::::::::::::::::::::", tags);
-            section.setTags(tags);
-            if (section.getFilePath() != null) {
-                section.setFilePath(s3Service.getPreSignedUrl(section.getFilePath(), Duration.ofMinutes(5)));
-            }
-            tags.forEach((tag) -> {
-                log.info("tag가 존재하나 :{}", tag);
-                if (tag.getFilePath() != null) {
-                    tag.setFilePath(s3Service.getPreSignedUrl(tag.getFilePath(), Duration.ofMinutes(5)));
+        if(cached != null) {
+            List<SectionDTO> sections = sectionDAO.findSectionsByPostId(postId);
+            sections.forEach(section -> {
+                log.info("{}", section.getFileId());
+                List<PostFileTagDTO> tags = postFileTagDAO.findByFileId(section.getFileId());
+                log.info("{}:::::::::::::::::::::::::", tags);
+                section.setTags(tags);
+                if (section.getFilePath() != null) {
+                    section.setFilePath(s3Service.getPreSignedUrl(section.getFilePath(), Duration.ofMinutes(5)));
                 }
+                tags.forEach((tag) -> {
+                    log.info("tag가 존재하나 :{}", tag);
+                    if (tag.getFilePath() != null) {
+                        tag.setFilePath(s3Service.getPreSignedUrl(tag.getFilePath(), Duration.ofMinutes(5)));
+                    }
+                });
+
             });
+            cached.setSections(sections);
+            return cached;
+        }
 
-        });
 
-        diaryDetailDTO.setDiary(byPostId.orElseThrow(DiaryNotFoundException::new));
-        diaryDetailDTO.setSections(sections);
-        return diaryDetailDTO;
+        return diaryTransactionService.getDiary(postId, customUserDetails);
     }
 
     @Override

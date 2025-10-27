@@ -55,7 +55,8 @@ function startCountdown() {
 }
 
 let page = 1;
-let keyword = "";
+const urlParams = new URLSearchParams(window.location.search);
+let keyword = urlParams.get('keyword') || "";
 let timerIndex = 0;
 let checkMore = true;
 let checkScroll = true;
