@@ -318,7 +318,6 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     //  나의 구매내역 상세 조회
     @Override
-    @Cacheable(value = "memberOrderDetails", key = "#memberId + '-' + #paymentStatusId")
     public MyPurchaseDetailDTO getMemberOrderDetails(Long memberId, Long paymentStatusId) {
         MyPurchaseDetailDTO detail = purchaseDAO.selectMemberOrderDetails(memberId, paymentStatusId);
 

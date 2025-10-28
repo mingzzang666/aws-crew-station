@@ -7,3 +7,4 @@ create table tbl_banner_file
     constraint fk_banner_file_file foreign key (file_id)
         references tbl_file (id)
 );
+

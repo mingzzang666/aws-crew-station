@@ -359,7 +359,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     // 나의 판매내역 상세 조회
-    @Cacheable(value = "sellerOrderDetails", key = "#sellerId + '-' + #paymentStatusId")
     @Override
     public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId) {
         // DB에서 판매 상세 데이터 조회

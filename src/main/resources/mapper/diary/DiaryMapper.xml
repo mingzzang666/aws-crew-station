@@ -91,8 +91,8 @@
         p.post_title,
         m.id             AS memberId,
         m.member_name    AS memberName,
-        m.social_img_url AS memberProfileImage,
-        f.file_path      AS mainImage,
+        COALESCE(fm.file_path, m.social_img_url) AS memberProfileImage,
+        pf.file_path      AS mainImage,
         (SELECT ps.post_content
         FROM tbl_post_section ps
         WHERE ps.post_id = p.id
@@ -105,6 +105,12 @@
         JOIN tbl_post  p ON l.post_id = p.id
         JOIN tbl_diary d ON d.post_id = p.id
         JOIN tbl_member m ON p.member_id = m.id
+
+        <!-- 회원이 직접 업로드한 프로필 이미지 -->
+        LEFT JOIN tbl_member_file mf ON m.id = mf.member_id
+        LEFT JOIN tbl_file fm ON mf.file_id = fm.id
+
+        <!-- 다이어리의 메인 이미지 -->
         LEFT JOIN (
         SELECT ps.post_id, COALESCE(main.file_id, sub.first_file_id) AS first_file_id
         FROM tbl_post_section ps
@@ -123,9 +129,11 @@
         GROUP BY psf.post_section_id
         ) sub ON ps.id = sub.post_section_id
         ) sec_file ON p.id = sec_file.post_id
-        LEFT JOIN tbl_file f ON sec_file.first_file_id = f.id
+        LEFT JOIN tbl_file pf ON sec_file.first_file_id = pf.id
+
         WHERE l.member_id = #{memberId}
         AND d.diary_secret = 'public'
+        AND p.post_status = 'active'
         ORDER BY l.id DESC
         LIMIT #{criteria.size} OFFSET #{criteria.offset}
     </select>
@@ -141,9 +149,11 @@
     <select id="countDiariesLikedByMemberId" parameterType="long" resultType="int">
         SELECT COUNT(*)
         FROM tbl_like l
-        JOIN tbl_diary d ON l.post_id = d.post_id
+                 JOIN tbl_diary d ON l.post_id = d.post_id
+                 JOIN tbl_post p ON d.post_id = p.id
         WHERE l.member_id = #{memberId}
-        AND d.diary_secret = 'public'
+          AND d.diary_secret = 'public'
+          AND p.post_status = 'active'
     </select>
 
     <select id="findLikeId" resultType="long">
@@ -183,18 +193,22 @@
         JOIN tbl_post  p ON d.post_id = p.id
         WHERE r.member_id = #{memberId}
         AND d.diary_secret = 'public'
+        AND p.post_status = 'active'
         GROUP BY p.id, r.reply_content, r.created_datetime
         ORDER BY r.created_datetime DESC
         LIMIT #{criteria.size} OFFSET #{criteria.offset}
     </select>
 
 
+    <!-- 내가 댓글 단 일기 개수 -->
     <select id="countReplyDiariesByMemberId" resultType="int">
         SELECT COUNT(*)
         FROM tbl_reply r
-        JOIN tbl_diary d ON r.diary_id = d.post_id
+                 JOIN tbl_diary d ON r.diary_id = d.post_id
+                 JOIN tbl_post p ON d.post_id = p.id
         WHERE r.member_id = #{memberId}
-        AND d.diary_secret = 'public'
+          AND d.diary_secret = 'public'
+          AND p.post_status = 'active'
     </select>
 
 

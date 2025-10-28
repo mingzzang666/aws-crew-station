@@ -54,17 +54,17 @@ public class SmsService {
         String code = createCode();
         Message message = new Message();
         message.setTo(phoneNumber);
-        message.setFrom("01031128286");
+        message.setFrom("01071248936");
         message.setText("Crew Station 주문 번호: " + code);
-        try {
-            SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-            log.info("Sending sms message to phone number " + response);
-        } catch (Exception e) {
-            log.info("apikey {}", apiKey);
-            log.info("apikey 길이 {}", apiKey.length());
-            log.error("Failed to send sms messag", e);
-            throw new SmsSendFailException("SMS 전송 실패했습니다.");
-        }
+//        try {
+//            SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+//            log.info("Sending sms message to phone number " + response);
+//        } catch (Exception e) {
+//            log.info("apikey {}", apiKey);
+//            log.info("apikey 길이 {}", apiKey.length());
+//            log.error("Failed to send sms messag", e);
+//            throw new SmsSendFailException("SMS 전송 실패했습니다.");
+//        }
 //        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
 //        log.info("Sending sms message to phone number " + response);
         return code;

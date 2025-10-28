@@ -106,14 +106,27 @@ public class DiaryServiceImpl implements DiaryService {
         // 목록 조회
         List<LikedDiaryDTO> diaries = diaryDAO.findDiariesLikedByMemberId(memberId, criteria);
 
-        // S3 이미지 URL 변환
         diaries.forEach(diary -> {
-            if (diary.getMainImage() != null) {
+            // 다이어리 메인 이미지
+            if (diary.getMainImage() != null && !diary.getMainImage().isEmpty()) {
                 diary.setMainImage(s3Service.getPreSignedUrl(diary.getMainImage(), Duration.ofMinutes(5)));
             }
-//            if (diary.getMemberProfileImage() != null) {
-//                diary.setMemberProfileImage(s3Service.getPreSignedUrl(diary.getMemberProfileImage(), Duration.ofMinutes(5)));
-//            }
+
+            // 작성자 프로필 이미지
+            String path = diary.getMemberProfileImage();
+            String imageUrl;
+
+            if (path != null && !path.isEmpty()) {
+                if (path.startsWith("http")) {
+                    imageUrl = path;
+                } else {
+                    imageUrl = s3Service.getPreSignedUrl(path, Duration.ofMinutes(5));
+                }
+            } else {
+                imageUrl = "https://image.ohousecdn.com/i/bucketplace-v2-development/uploads/default_images/avatar.png?w=144&h=144&c=c";
+            }
+
+            diary.setMemberProfileImage(imageUrl);
         });
 
         // 전체 개수 (hasMore 계산용)
