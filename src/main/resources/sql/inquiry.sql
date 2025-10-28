@@ -9,4 +9,3 @@ create table tbl_inquiry
     constraint fk_inquiry_member foreign key (member_id)
         references tbl_member (id)
 );
-

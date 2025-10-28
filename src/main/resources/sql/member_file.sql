@@ -7,4 +7,3 @@ create table tbl_member_file
     constraint fk_member_file_file foreign key (file_id)
         references tbl_file (id)
 );
-

@@ -10,4 +10,3 @@ create table tbl_address
     constraint fk_address_member foreign key (member_id)
         references tbl_member (id)
 );
-
