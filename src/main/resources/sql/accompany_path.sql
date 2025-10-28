@@ -11,11 +11,3 @@ create table tbl_accompany_path
         references tbl_country (id)
 );
 
-
-create table test_day
-(
-    id int,
-    day timestamp(0) default now()
-);
-
-insert into test_day(id) values(1);
