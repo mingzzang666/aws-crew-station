@@ -9,3 +9,5 @@ create table tbl_notice
     constraint fk_notice_member foreign key (member_id)
         references tbl_member (id)
 );
+
+

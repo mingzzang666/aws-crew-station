@@ -71,7 +71,6 @@ from tbl_file tf
          join tbl_post_section_file tpsf on tf.id = tpsf.file_id
     );
 
-drop view view_file_post_section_file;
 
 
 create view view_post_purchase as
@@ -132,7 +131,6 @@ select id,
 from tbl_post tp
          join tbl_diary td on tp.id = td.post_id
     );
-drop view view_post_diary;
 
 
 create view view_report_post_report as

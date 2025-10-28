@@ -8,3 +8,8 @@ create table tbl_post_section_file
     constraint fk_post_section_file_file foreign key (file_id)
         references tbl_file (id)
 );
+
+
+
+ALTER TABLE tbl_post_section_file
+    ALTER COLUMN file_id DROP IDENTITY;

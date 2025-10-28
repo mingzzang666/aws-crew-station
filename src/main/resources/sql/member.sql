@@ -24,7 +24,6 @@ create table tbl_member
 
 alter table tbl_member add column member_description varchar(255);
 
-select * from tbl_member;
 
 alter table tbl_member
     add column  chemistry_score int default 70;
