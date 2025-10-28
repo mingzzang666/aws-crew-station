@@ -289,7 +289,7 @@ public class DiaryServiceImpl implements DiaryService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    @LogStatus
+//    @LogStatus
     public void update(PostDiaryDetailTagDTO request) {
 
         FileDTO fileDTO = new FileDTO();
@@ -317,12 +317,15 @@ public class DiaryServiceImpl implements DiaryService {
             cached = tagTransactionService.getCountries();
         }
         if(request.getCountries() !=null){
+            log.info("request ::::: {}",request);
             arCountry = request.getCountries();
             countryIds = Arrays.stream(arCountry)
                     .map(cached::get)
                     .collect(Collectors.toList());
+            log.info("countryIds:::::: {}",countryIds);
             request.setCountryIds(countryIds);
             diaryCountryVOs = toDiaryCountryVO(request);
+            log.info("diaryCountryVOs :::::::: {}", diaryCountryVOs);
             diaryCountryVOs.forEach(diaryCountryDAO::save);
         }
 
@@ -439,7 +442,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @LogStatus
+//    @LogStatus
     public void write(PostDiaryDetailTagDTO request) {
         FileDTO fileDTO = new FileDTO();
         FilePostSectionDTO sectionFileDTO = new FilePostSectionDTO();
@@ -460,10 +463,15 @@ public class DiaryServiceImpl implements DiaryService {
         if (cached == null) {
             cached = tagTransactionService.getCountries();
         }
+        log.info("request::::: {}", request);
         arCountry = request.getCountries();
+//        log.info("arCountry::::: {}", arCountry);
+
+        log.info("arCountry::::: {}", Arrays.stream(arCountry).toList());
         countryIds = Arrays.stream(arCountry)
                 .map(cached::get)
                 .collect(Collectors.toList());
+        log.info("countryIds::::: {}", countryIds.toString());
         request.setCountryIds(countryIds);
         postDAO.savePost(post);
         log.info("post: {}", post);
@@ -534,11 +542,11 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    @LogReturnStatus
+//    @LogReturnStatus
     @Transactional(rollbackFor = Exception.class)
     public DiaryDetailDTO getDiary(Long postId, CustomUserDetails customUserDetails) {
         DiaryDetailDTO cached = diaryRedisTemplate.opsForValue().get("diary::diary_" + postId);
-
+        log.info("cached :::::::::: {}", cached);
         if(cached != null) {
             List<SectionDTO> sections = sectionDAO.findSectionsByPostId(postId);
             sections.forEach(section -> {

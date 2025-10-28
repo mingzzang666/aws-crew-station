@@ -10,5 +10,3 @@ create table tbl_accompany_path
     constraint fk_accompany_path_country foreign key (country_id)
         references tbl_country (id)
 );
-
-
