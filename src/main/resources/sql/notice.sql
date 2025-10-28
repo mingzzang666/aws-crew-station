@@ -10,3 +10,4 @@ create table tbl_notice
         references tbl_member (id)
 );
 
+

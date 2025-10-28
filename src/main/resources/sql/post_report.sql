@@ -7,5 +7,3 @@ create table tbl_post_report
     constraint fk_post_report_report foreign key (report_id)
         references tbl_report (id)
 );
-
-

@@ -8,3 +8,4 @@ create table tbl_like
     constraint fk_like_member foreign key (member_id)
         references tbl_member (id)
 );
+
