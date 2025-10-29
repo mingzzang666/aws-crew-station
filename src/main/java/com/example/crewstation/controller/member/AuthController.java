@@ -148,6 +148,11 @@ AuthController implements AuthControllerDocs{
         deleteProviderCookie.setMaxAge(0);
 
         response.addCookie(deleteProviderCookie);
+        memberService.deleteCache("member");
+        memberService.deleteCache("diary");
+        memberService.deleteCache("country");
+        memberService.deleteCache("purchase");
+
     }
 
     //    리프레시 토큰으로 엑세스 토큰 발급

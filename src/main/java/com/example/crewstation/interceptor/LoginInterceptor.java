@@ -34,7 +34,17 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         if (username != null) {
             if(username.contains("@")){
-                response.sendRedirect("/");
+
+                String ua = request.getHeader("User-Agent");
+
+                // 모바일 여부 판단
+                boolean isMobile = ua != null && (ua.contains("iPhone") || ua.contains("Android"));
+
+                if (isMobile) {
+                    response.sendRedirect("/gifts");
+                } else {
+                    response.sendRedirect("/");
+                }
                 return false;
             }else{
                 Cookie deleteAccessCookie = new Cookie("accessToken", null);

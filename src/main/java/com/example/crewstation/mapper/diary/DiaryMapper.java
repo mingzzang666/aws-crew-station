@@ -79,4 +79,6 @@ public interface DiaryMapper {
     // 나의 다이어리 총 개수 조회
     public int countMyDiariesByMemberId(Long memberId);
 
+//  좋아요 개수 게시
+    public String selectLikeCountByPostId(Long postId);
 }

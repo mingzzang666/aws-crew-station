@@ -117,4 +117,8 @@ public class DiaryDAO {
         return diaryMapper.countMyDiariesByMemberId(memberId);
     }
 
+    //  좋아요 개수 게시
+    public String findLikeCountByPostId(Long postId){
+        return diaryMapper.selectLikeCountByPostId(postId);
+    }
 }

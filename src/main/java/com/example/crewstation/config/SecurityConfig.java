@@ -83,6 +83,7 @@ public class SecurityConfig {
                                 "/mobile/login",
                                 "/mobile/sns/join",
                                 "/member/forgot-password",
+                                "/mobile/forgot-password",
                                 "/api/member/**",
                                 "/member/reset-password-success",
                                 "/mobile/reset-password-success",

@@ -138,6 +138,7 @@
         LIMIT #{criteria.size} OFFSET #{criteria.offset}
     </select>
 
+
     <!-- 좋아요 취소 -->
     <delete id="deleteLike">
         DELETE FROM tbl_like
@@ -149,11 +150,11 @@
     <select id="countDiariesLikedByMemberId" parameterType="long" resultType="int">
         SELECT COUNT(*)
         FROM tbl_like l
-                 JOIN tbl_diary d ON l.post_id = d.post_id
-                 JOIN tbl_post p ON d.post_id = p.id
+        JOIN tbl_diary d ON l.post_id = d.post_id
+        JOIN tbl_post p ON d.post_id = p.id
         WHERE l.member_id = #{memberId}
-          AND d.diary_secret = 'public'
-          AND p.post_status = 'active'
+        AND d.diary_secret = 'public'
+        AND p.post_status = 'active'
     </select>
 
     <select id="findLikeId" resultType="long">
@@ -204,11 +205,11 @@
     <select id="countReplyDiariesByMemberId" resultType="int">
         SELECT COUNT(*)
         FROM tbl_reply r
-                 JOIN tbl_diary d ON r.diary_id = d.post_id
-                 JOIN tbl_post p ON d.post_id = p.id
+        JOIN tbl_diary d ON r.diary_id = d.post_id
+        JOIN tbl_post p ON d.post_id = p.id
         WHERE r.member_id = #{memberId}
-          AND d.diary_secret = 'public'
-          AND p.post_status = 'active'
+        AND d.diary_secret = 'public'
+        AND p.post_status = 'active'
     </select>
 
 
@@ -281,7 +282,11 @@
         values (#{postId}, #{diarySecret})
     </insert>
 
-
+    <select id="selectLikeCountByPostId">
+        select diary_like_count
+        from tbl_diary
+        where post_id = #{postId}
+    </select>
     <select id="selectByPostId">
         select tm.id  as member_id,
                tm.member_name,
@@ -292,7 +297,6 @@
                vpd.created_datetime,
                vpd.updated_datetime,
                vpd.diary_secret,
-               vpd.diary_like_count,
                vpd.diary_reply_count,
                vfmf.file_path as member_file_path,
                tc.crew_name,

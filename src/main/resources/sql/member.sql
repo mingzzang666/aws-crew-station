@@ -19,13 +19,3 @@ create table tbl_member
     created_datetime    timestamp       default now(),
     updated_datetime    timestamp       default now()
 );
-
-
-
-alter table tbl_member add column member_description varchar(255);
-
-
-alter table tbl_member
-    add column  chemistry_score int default 70;
-
-ALTER TABLE tbl_member RENAME COLUMN kakao_img_url TO social_img_url;

@@ -9,7 +9,5 @@ create table tbl_post_section_file
         references tbl_file (id)
 );
 
-
-
 ALTER TABLE tbl_post_section_file
     ALTER COLUMN file_id DROP IDENTITY;

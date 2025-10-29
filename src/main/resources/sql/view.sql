@@ -72,7 +72,6 @@ from tbl_file tf
     );
 
 
-
 create view view_post_purchase as
 (
 select id,
@@ -131,6 +130,7 @@ select id,
 from tbl_post tp
          join tbl_diary td on tp.id = td.post_id
     );
+drop view view_post_diary;
 
 
 create view view_report_post_report as
@@ -161,9 +161,5 @@ select id,
 from tbl_report tr
          join tbl_reply_report trr on tr.id = trr.report_id
     );
-
-
-
-
 
 

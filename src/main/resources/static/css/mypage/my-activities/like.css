@@ -16,8 +16,8 @@ body, html {
 }
 
 blockquote, body, code, dd, div, dl, dt, fieldset,
-form, h1, h2, h3, h4, h5, h6, input, legend, li,
-ol, p, pre, td, textarea, th, ul {
+ form, h1, h2, h3, h4, h5, h6, input, legend, li, 
+ ol, p, pre, td, textarea, th, ul {
     margin: 0;
     padding: 0;
 }
@@ -26,7 +26,7 @@ button {
     background-color: rgb(247, 249, 250);
 }
 
-[role=button], a, button, input[type=button],
+[role=button], a, button, input[type=button], 
 input[type=reset], input[type=submit] {
     cursor: pointer;
     touch-action: manipulation;
@@ -41,19 +41,19 @@ a {
 @import "https://assets.ohou.se/fonts/pretendard/v1.3.8/pretendardvariable-dynamic-subset.css";
 @font-face{
     font-family:OhouseIcon;src:url(https://assets.ohou.se/design-system/3298ed52addbc709.eot);
-    src:url(https://assets.ohou.se/design-system/3298ed52addbc709.eot#iefix)
+    src:url(https://assets.ohou.se/design-system/3298ed52addbc709.eot#iefix) 
     format("embedded-opentype"),
-    url(https://assets.ohou.se/design-system/d8923b386a66fd50.woff2)
+    url(https://assets.ohou.se/design-system/d8923b386a66fd50.woff2) 
     format("woff2"),
-    url(https://assets.ohou.se/design-system/9e79341d6a2fe0d2.woff)
+    url(https://assets.ohou.se/design-system/9e79341d6a2fe0d2.woff) 
     format("woff"),
-    url(https://assets.ohou.se/design-system/5355f736e6a7bc5b.ttf)
+    url(https://assets.ohou.se/design-system/5355f736e6a7bc5b.ttf) 
     format("truetype"),
-    url(https://assets.ohou.se/design-system/3ba7913eab100858.svg#OhouseIcon)
+    url(https://assets.ohou.se/design-system/3ba7913eab100858.svg#OhouseIcon) 
     format("svg");}
-html{
-    font-family:'Pretendard Variable',sans-serif;
-    letter-spacing:-0.3px;-webkit-font-smoothing:antialiased;}
+    html{
+        font-family:'Pretendard Variable',sans-serif;
+        letter-spacing:-0.3px;-webkit-font-smoothing:antialiased;}
 
 
 /* 네비 */
@@ -214,7 +214,7 @@ html{
 }
 
 .profile-name {
-
+    
     font-size: 20px;
     line-height: 28px;
     display: block;
@@ -315,7 +315,7 @@ div.diary-card-feed{
     box-sizing: border-box;
     margin-right: -10px;
     margin-left: -10px;
-
+    
 }
 
 div.card-feed-item-wrap{

@@ -8,3 +8,5 @@ create table tbl_banner_file
         references tbl_file (id)
 );
 
+insert into tbl_banner_file (file_id, banner_id)
+values (5,5);

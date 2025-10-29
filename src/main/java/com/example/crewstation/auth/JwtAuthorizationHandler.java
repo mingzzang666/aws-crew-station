@@ -27,7 +27,13 @@ public class JwtAuthorizationHandler implements AccessDeniedHandler {
             response.getWriter().flush();
         }else{
 //            일반 웹 요청인 경우
-            response.sendRedirect("/member/login");
+            if (request.getRequestURI().startsWith("/mobile/")) {
+                response.sendRedirect("/mobile/login");
+            } else {
+
+//            일반 웹 요청인 경우
+                response.sendRedirect("/member/login");
+            }
         }
     }
 }

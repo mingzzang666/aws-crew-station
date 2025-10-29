@@ -7,6 +7,3 @@ create table tbl_crew
     created_datetime  timestamp default now(),
     updated_datetime  timestamp default now()
 );
-
-alter table tbl_crew
-alter column crew_member_count set default 0;

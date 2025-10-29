@@ -5,3 +5,9 @@ create table tbl_banner
     created_datetime timestamp default now(),
     updated_datetime timestamp default now()
 );
+
+insert into tbl_banner (banner_order)
+values (5);
+
+select *
+from tbl_banner;

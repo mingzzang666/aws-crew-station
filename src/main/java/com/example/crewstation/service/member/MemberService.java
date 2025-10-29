@@ -133,6 +133,8 @@ public interface MemberService {
                 .build();
     }
 
+    public void deleteCache (String keyName);
+
     default MemberVO toVO(ModifyDTO modifyDTO) {
         return MemberVO.builder()
                 .id(modifyDTO.getMemberId())

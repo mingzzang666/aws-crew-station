@@ -189,7 +189,7 @@
                                                     <div>오늘의 여행일지</div>
                                                 </div> -->
                                                 <div class="diary-img-count" th:text="${'+' + diary.fileCount}">+</div>
-                                                <a class="card-content-link" href="/diaries/detail{postId}"></a>
+                                                <a class="card-content-link" href="/diaries/detail/{postId}"></a>
                                             </div>
                                         </div>
                                         <a class="card-content-link" href=""></a>
@@ -424,9 +424,6 @@
 <footer th:replace="~{fixed/web/footer :: footer}"></footer>
 
 </body>
-<script src="/js/fixed/web/footer/module/service.js"></script>
-<script src="/js/fixed/web/footer/module/layout.js"></script>
-<script src="/js/fixed/web/footer/event.js"></script>
 <script src="/js/fixed/web/header/module/service.js"></script>
 <script src="/js/fixed/web/header/event.js"></script>
 <script src="/js/main-page/main/module/service.js"></script>

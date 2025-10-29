@@ -1,5 +1,6 @@
 package com.example.crewstation.service.member;
 
+import aj.org.objectweb.asm.TypeReference;
 import com.example.crewstation.auth.CustomUserDetails;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.common.exception.MemberLoginFailException;
@@ -20,9 +21,11 @@ import com.example.crewstation.repository.member.MemberFileDAO;
 import com.example.crewstation.service.s3.S3Service;
 import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.Search;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -51,6 +55,7 @@ public class MemberServiceImpl implements MemberService {
     private final CrewDAO crewDAO;
     private final CountryDAO countryDAO;
     private final DiaryDAO diaryDAO;
+    private final RedisTemplate redisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -416,6 +421,16 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return dto;
+    }
+
+
+    @Override
+    public void deleteCache(String keyName){
+        String name = keyName+"*";
+        Set<String> keys = redisTemplate.keys(name);
+        for (String key : keys) {
+            redisTemplate.delete(key);
+        }
     }
 
 

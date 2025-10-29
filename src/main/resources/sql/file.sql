@@ -9,7 +9,3 @@ create table tbl_file
     updated_datetime timestamp default now()
 );
 
-
-alter table tbl_file alter column file_size set not null;
-
-

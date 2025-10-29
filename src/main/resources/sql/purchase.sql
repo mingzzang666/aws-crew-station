@@ -9,6 +9,3 @@
         constraint fk_purchase_post foreign key (post_id)
             references tbl_post (id)
     );
-
-
-
