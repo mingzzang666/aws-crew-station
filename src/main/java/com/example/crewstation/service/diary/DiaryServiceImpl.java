@@ -301,7 +301,7 @@ public class DiaryServiceImpl implements DiaryService {
 
 
     @Transactional(rollbackFor = Exception.class)
-//    @LogStatus
+    @LogStatus
     public void update(PostDiaryDetailTagDTO request) {
 
         FileDTO fileDTO = new FileDTO();
@@ -591,7 +591,6 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @LogReturnStatus
-    @Transactional(rollbackFor = Exception.class)
     public DiaryDetailDTO getDiary(Long postId, CustomUserDetails customUserDetails) {
         DiaryDetailDTO cached = diaryRedisTemplate.opsForValue().get("diary::diary_" + postId);
         log.info("cached :::::::::: {}", cached);

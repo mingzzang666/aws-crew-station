@@ -189,7 +189,7 @@
                                                     <div>오늘의 여행일지</div>
                                                 </div> -->
                                                 <div class="diary-img-count" th:text="${'+' + diary.fileCount}">+</div>
-                                                <a class="card-content-link" href="/diaries/detail/{postId}"></a>
+                                                <a class="card-content-link" th:href="@{/diaries/detail/{postId}(postId=${diary.postId})}"></a>
                                             </div>
                                         </div>
                                         <a class="card-content-link" href=""></a>
