@@ -325,19 +325,24 @@ public class PurchaseServiceImpl implements PurchaseService {
     //  나의 구매내역 상세 조회
     @Override
     public MyPurchaseDetailDTO getMemberOrderDetails(Long memberId, Long paymentStatusId) {
-        MyPurchaseDetailDTO detail = purchaseDAO.selectMemberOrderDetails(memberId, paymentStatusId);
+        MyPurchaseDetailDTO detail = (MyPurchaseDetailDTO) redisTemplate.opsForValue().get("member_order_" + memberId);
+        if(detail == null) {
+            detail = purchaseDAO.selectMemberOrderDetails(memberId, paymentStatusId);
 
-        if (detail == null) {
-            throw new RuntimeException("회원 구매내역을 찾을 수 없습니다. memberId=" + memberId + ", paymentStatusId=" + paymentStatusId);
+            if (detail == null) {
+                throw new RuntimeException("회원 구매내역을 찾을 수 없습니다. memberId=" + memberId + ", paymentStatusId=" + paymentStatusId);
+            }
+            redisTemplate.opsForValue().set("member_order_" + memberId, detail, Duration.ofMinutes(10));
         }
-
-        // S3 프리사인 URL 변환
-        if (detail.getMainImage() != null && !detail.getMainImage().isBlank()) {
-            String preSignedUrl = s3Service.getPreSignedUrl(detail.getMainImage(), Duration.ofMinutes(5));
-            detail.setMainImage(preSignedUrl);
-        }
-
+        getMemberOrderDetails(detail);
         return detail;
+    }
+
+    private void getMemberOrderDetails(MyPurchaseDetailDTO myPurchaseDetailDTO) {
+        if (myPurchaseDetailDTO.getMainImage() != null && !myPurchaseDetailDTO.getMainImage().isBlank()) {
+            String preSignedUrl = s3Service.getPreSignedUrl(myPurchaseDetailDTO.getMainImage(), Duration.ofMinutes(5));
+            myPurchaseDetailDTO.setMainImage(preSignedUrl);
+        }
     }
 
     //  결제 상태 업데이트 추가
