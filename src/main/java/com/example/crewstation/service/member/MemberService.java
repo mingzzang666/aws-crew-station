@@ -55,6 +55,9 @@ public interface MemberService {
 //   나의 판매내역 상세 조회
     public MySaleDetailDTO getSellerOrderDetails(Long sellerId, Long paymentStatusId);
 
+    //  나의 판매내역 전체 개수 조회 (페이징용)
+    public int getTotalSaleCountByMemberId(Long memberId, Search search);
+
 //    관리자 회원 통계 자료
     public MemberAdminStatics getStatics();
 

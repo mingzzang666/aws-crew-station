@@ -12,6 +12,7 @@ import com.example.crewstation.dto.purchase.PurchaseCriteriaDTO;
 import com.example.crewstation.dto.purchase.PurchaseDTO;
 import com.example.crewstation.dto.purchase.PurchaseDetailDTO;
 import com.example.crewstation.dto.purchase.PurchaseListCriteriaDTO;
+import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.ScrollCriteria;
 import com.example.crewstation.util.Search;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,7 +38,10 @@ public interface PurchaseService {
     public void softDelete(Long id);
 
 //  구매내역 조회
-    public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, ScrollCriteria scrollcriteria, Search search);
+    public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, Criteria criteria, Search search);
+
+    // 총 개수 조회 (페이징 계산용)
+    public int getTotalCountByMemberId(Long memberId, Search search);
 
 //  나의 구매내역 상세 조회
     public MyPurchaseDetailDTO getMemberOrderDetails(Long memberId, Long paymentStatusId);

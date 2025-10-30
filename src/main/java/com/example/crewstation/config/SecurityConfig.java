@@ -66,6 +66,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/login/oauth2/**",
                                 "/notice/detail/**",
                                 "/api/auth/guest-login",
                                 "/admin/login",

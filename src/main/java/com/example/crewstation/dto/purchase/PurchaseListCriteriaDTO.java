@@ -17,6 +17,6 @@ import java.util.List;
 @ToString
 public class PurchaseListCriteriaDTO {
     private List<PurchaseListDTO> purchaseListDTOs;
-    private ScrollCriteria Scrollcriteria;
+    private Criteria criteria;
     private Search search;
 }

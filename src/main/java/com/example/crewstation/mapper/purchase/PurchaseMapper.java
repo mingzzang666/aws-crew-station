@@ -39,8 +39,7 @@ public interface PurchaseMapper {
     public Optional<PurchaseDetailDTO> selectPurchaseDetailByPostId(Long postId);
 
     // 나의 구매내역 목록 조회
-    public List<PurchaseListDTO> selectPurchaseList(@Param("memberId") Long memberId, @Param("criteria") ScrollCriteria scrollcriteria, @Param("search") Search search);
-
+    public List<PurchaseListDTO> selectPurchaseList(@Param("memberId") Long memberId, @Param("criteria") Criteria criteria, @Param("search") Search search);
 
     // 전체 개수 조회 (페이징)
     public int selectTotalCount(@Param("memberId") Long memberId, @Param("search") Search search);

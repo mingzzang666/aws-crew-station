@@ -7,6 +7,7 @@ import com.example.crewstation.dto.member.MySaleDetailDTO;
 import com.example.crewstation.dto.member.MySaleListCriteriaDTO;
 import com.example.crewstation.dto.member.MySaleListDTO;
 import com.example.crewstation.dto.purchase.PurchaseListCriteriaDTO;
+import com.example.crewstation.dto.purchase.PurchaseListDTO;
 import com.example.crewstation.service.member.MemberService;
 import com.example.crewstation.service.purchase.PurchaseService;
 import com.example.crewstation.util.Criteria;
@@ -45,27 +46,33 @@ public class MypageController {
 
     // 마이페이지 -> 나의 구매내역 목록
     @GetMapping("/purchase-list")
-    public String getPurchaseList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+    public String getPurchaseList(@AuthenticationPrincipal CustomUserDetails user,
                                   @RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(defaultValue = "8") int size,
                                   @RequestParam(required = false) String keyword,
                                   Model model) {
 
-        Long memberId = customUserDetails.getId();
+        Long memberId = user.getId();
 
-        ScrollCriteria scrollCriteria = new ScrollCriteria(page, size);
         Search search = new Search();
         search.setKeyword(keyword);
 
-        PurchaseListCriteriaDTO result = purchaseService.getPurchaseListByMemberId(memberId, scrollCriteria, search);
+        int total = purchaseService.getTotalCountByMemberId(memberId, search);
+        if (total == 0) {
+            total = 1;
+        }
 
-        model.addAttribute("result", result);
+        Criteria criteria = new Criteria(page, total, size, 5);
+
+        PurchaseListCriteriaDTO result = purchaseService.getPurchaseListByMemberId(memberId, criteria, search);
+
         model.addAttribute("purchaseList", result.getPurchaseListDTOs());
-        model.addAttribute("criteria", result.getScrollcriteria());
-        model.addAttribute("search", result.getSearch());
+        model.addAttribute("criteria", criteria);
+        model.addAttribute("search", search);
 
-        log.info("memberId={}, keyword={}, page={}, size={}", memberId, keyword, page, size);
-        log.info("otal={}, hasMore={}", scrollCriteria.getTotal(), scrollCriteria.isHasMore());
+        log.info("memberId={}, page={}, total={}, startPage={}, endPage={}, realEnd={}",
+                memberId, criteria.getPage(), criteria.getTotal(),
+                criteria.getStartPage(), criteria.getEndPage(), criteria.getRealEnd());
 
         return "mypage/purchase-list";
     }
@@ -80,27 +87,31 @@ public class MypageController {
 
     // 마이페이지 -> 나의 판매내역 목록
     @GetMapping("/sale-list")
-    public String getSaleList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+    public String getSaleList(@AuthenticationPrincipal CustomUserDetails user,
                               @RequestParam(defaultValue = "1") int page,
-                              @RequestParam(defaultValue = "10") int size,
+                              @RequestParam(defaultValue = "8") int size,
                               @RequestParam(required = false) String keyword,
                               Model model) {
 
-        Long memberId = customUserDetails.getId();
+        Long memberId = user.getId();
 
-        Criteria criteria = new Criteria(page, size);
         Search search = new Search();
         search.setKeyword(keyword);
 
+        int total = memberService.getTotalSaleCountByMemberId(memberId, search);
+        if (total == 0) {
+            total = 0;
+        }
+
+        Criteria criteria = new Criteria(page, total, size, 5);
+
         MySaleListCriteriaDTO result = memberService.getSaleListByMemberId(memberId, criteria, search);
 
-        model.addAttribute("result", result);
         model.addAttribute("saleList", result.getMySaleListDTOs());
-        model.addAttribute("criteria", result.getCriteria());
-        model.addAttribute("search", result.getSearch());
+        model.addAttribute("criteria", criteria);
+        model.addAttribute("search", search);
 
-        log.info("memberId={}, keyword={}, page={}, size={}", memberId, keyword, page, size);
-        log.info("total={}, hasMore={}", criteria.getTotal(), criteria.isHasMore());
+        log.info("판매내역 페이지네이션 criteria={}", criteria);
 
         return "mypage/sale-list";
     }

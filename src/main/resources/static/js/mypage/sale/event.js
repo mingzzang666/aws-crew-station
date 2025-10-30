@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    // 검색 함수
     function goSearch() {
         const keyword = searchInput.value.trim();
         const baseUrl = "/mypage/sale-list";
@@ -14,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (keyword) params.append("keyword", keyword);
         params.append("page", 1);
-        params.append("size", 10);
+        params.append("size", 8);
 
         window.location.href = `${baseUrl}?${params.toString()}`;
     }
@@ -29,51 +30,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    document.querySelectorAll('.purchase-cancel').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    // 판매 요청 거절
+    document.querySelectorAll(".purchase-cancel").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
-            const paymentStatusId = this.dataset.paymentStatusId;
+            const paymentStatusId = btn.dataset.paymentStatusId;
             if (confirm("정말 이 판매 요청을 거절하시겠습니까?")) {
-                updateSaleStatus(paymentStatusId, 'REFUND');
+                changeSaleStatus(paymentStatusId, "REFUND");
             }
         });
     });
 
-    document.querySelectorAll('.accept').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    // 판매 요청 수락
+    document.querySelectorAll(".accept").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
-            const paymentStatusId = this.dataset.paymentStatusId;
+            const paymentStatusId = btn.dataset.paymentStatusId;
             if (confirm("이 판매 요청을 수락하시겠습니까?")) {
-                updateSaleStatus(paymentStatusId, 'PENDING');
+                changeSaleStatus(paymentStatusId, "PENDING");
             }
         });
     });
 
     // 상태 업데이트 함수
-    function updateSaleStatus(paymentStatusId, newStatus) {
+    function changeSaleStatus(paymentStatusId, newStatus) {
         if (!paymentStatusId) return;
 
         fetch(`/api/mypage/status/${paymentStatusId}?paymentPhase=${newStatus}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                paymentStatusId: paymentStatusId,
-                status: newStatus
-            })
+            method: "PUT"
         })
-            .then(res => {
-                if (!res.ok) throw new Error('상태 변경 실패');
+            .then((res) => {
+                if (!res.ok) throw new Error("상태 변경 실패");
                 return res.text();
             })
             .then(() => {
-                alert('성공적으로 반영되었습니다.');
+                alert("성공적으로 반영되었습니다.");
                 location.reload();
             })
-            .catch(err => {
+            .catch((err) => {
                 console.error(err);
-                alert('오류가 발생했습니다.');
+                alert("오류가 발생했습니다.");
             });
     }
 });

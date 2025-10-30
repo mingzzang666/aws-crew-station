@@ -794,3 +794,237 @@ ul {
     box-sizing: border-box;
     overflow: hidden; /* ✅ 내부 오버레이가 튀어나오지 않도록 */
 }
+
+:root{
+    --oh-color-primary: #35C5F0;   /* 오늘의집 블루 느낌 */
+    --oh-color-text: #222;
+    --oh-color-muted: #6b7280;
+    --oh-bg: #fff;
+    --oh-border: #e5e7eb;
+    --oh-shadow: 0 1px 2px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.04);
+    --oh-radius: 9999px;           /* pill */
+    --oh-gap: .4rem;
+    --oh-pad-y: .55rem;
+    --oh-pad-x: .9rem;
+    --oh-font: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Apple SD Gothic Neo, sans-serif;
+}
+
+.oh-pagination{
+    font-family: var(--oh-font);
+    display: flex;
+    justify-content: center;
+    padding: 16px 8px;
+}
+.oh-pagination__list{
+    display: flex;
+    align-items: center;
+    gap: var(--oh-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+.oh-pagination__item{ display: inline-flex; }
+
+.oh-pagination__btn{
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    padding: var(--oh-pad-y) var(--oh-pad-x);
+    border-radius: var(--oh-radius);
+    background: var(--oh-bg);
+    border: 1px solid var(--oh-border);
+    color: var(--oh-color-text);
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1;
+    box-shadow: var(--oh-shadow);
+    transition: transform .05s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Hover/Focus */
+.oh-pagination__btn:hover{
+    border-color: #d1d5db;
+}
+.oh-pagination__btn:focus-visible{
+    outline: 2px solid color-mix(in oklab, var(--oh-color-primary) 60%, white 40%);
+    outline-offset: 2px;
+}
+
+/* Active press feedback */
+.oh-pagination__btn:active{
+    transform: translateY(1px);
+    box-shadow: 0 0 0 rgba(0,0,0,0.0);
+}
+
+/* Current page */
+.oh-pagination__btn.is-current{
+    background: color-mix(in oklab, var(--oh-color-primary) 14%, white 86%);
+    border-color: color-mix(in oklab, var(--oh-color-primary) 40%, #d1d5db 60%);
+    color: var(--oh-color-primary);
+    font-weight: 700;
+}
+
+/* Prev/Next layout */
+.oh-pagination__btn.is-prev .oh-pagination__icon,
+.oh-pagination__btn.is-next .oh-pagination__icon{
+    font-size: 16px;
+    line-height: 1;
+}
+.oh-pagination__btn.is-prev{ padding-left: .75rem; padding-right: .95rem; }
+.oh-pagination__btn.is-next{ padding-left: .95rem; padding-right: .75rem; }
+.oh-pagination__btn.is-prev .oh-pagination__label{ margin-left: .25rem; }
+.oh-pagination__btn.is-next .oh-pagination__label{ margin-right: .25rem; }
+
+/* Disabled state */
+.oh-pagination__btn[aria-disabled="true"],
+.oh-pagination__btn.is-disabled{
+    pointer-events: none;
+    color: var(--oh-color-muted);
+    background: #f9fafb;
+    border-color: #eef0f3;
+    box-shadow: none;
+    opacity: .8;
+}
+
+/* Ellipsis */
+.oh-pagination__ellipsis{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: calc( var(--oh-pad-y) * 2 + 14px );
+    border-radius: var(--oh-radius);
+    color: var(--oh-color-muted);
+    padding: 0 .25rem;
+    border: 1px dashed #e5e7eb;
+    background: #fcfcfd;
+}
+
+/* Compact (mobile-first) – 너무 많은 숫자는 접고 Prev/Next만 보이게 */
+@media (max-width: 480px){
+    .oh-pagination__item:nth-child(n+3):not(:nth-last-child(-n+2)){
+        display: none; /* 1~2개 버튼만 남기고, 마지막 2개(…와 다음) 유지 */
+    }
+    .oh-pagination__ellipsis{ display: none; }
+}
+
+/* High-contrast / 다크모드 대응(선택) */
+@media (prefers-color-scheme: dark){
+    :root{
+        --oh-bg: #0f1115;
+        --oh-border: #2b2f36;
+        --oh-color-text: #e8eaed;
+        --oh-color-muted: #9aa0a6;
+        --oh-shadow: 0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.35);
+    }
+    .oh-pagination__btn.is-current{
+        background: color-mix(in oklab, var(--oh-color-primary) 18%, black 82%);
+        border-color: color-mix(in oklab, var(--oh-color-primary) 45%, #2b2f36 55%);
+        color: #eaf8ff;
+    }
+    .oh-pagination__ellipsis{
+        border-color: #333741;
+        background: #14171c;
+    }
+}
+
+/* ===== 페이지네이션 공통 ===== */
+.oh-pagination {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.oh-pagination__list {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* ===== 기본 페이지 버튼 ===== */
+.oh-pagination__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #d9d9d9;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.oh-pagination__btn:hover {
+    border-color: #647FBC;
+    color: #647FBC;
+    background-color: #f8f9ff;
+}
+
+/* ===== 현재 페이지 ===== */
+.oh-pagination__btn.is-current {
+    background-color: #647FBC;
+    border-color: #647FBC;
+    color: #fff;
+    font-weight: 600;
+    cursor: default;
+    box-shadow: 0 2px 6px rgba(100, 127, 188, 0.25);
+}
+
+/* ===== 이전 / 다음 버튼 ===== */
+.oh-pagination__btn.is-prev,
+.oh-pagination__btn.is-next {
+    font-size: 18px;
+    color: #647FBC;
+    border-color: #cfd5e7;
+}
+
+/* 아이콘만 중앙 정렬 (텍스트 제거 대비) */
+.oh-pagination__btn.is-prev span.oh-pagination__label,
+.oh-pagination__btn.is-next span.oh-pagination__label {
+    display: none;
+}
+
+.oh-pagination__btn.is-prev .oh-pagination__icon,
+.oh-pagination__btn.is-next .oh-pagination__icon {
+    display: inline-block;
+    line-height: 1;
+    transform: translateY(-1px);
+}
+
+.oh-pagination__btn.is-prev:hover,
+.oh-pagination__btn.is-next:hover {
+    background-color: #f1f4ff;
+    border-color: #647FBC;
+}
+
+/* ===== 비활성화 ===== */
+.oh-pagination__btn.is-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* ===== 반응형 대응 ===== */
+@media (max-width: 600px) {
+    .oh-pagination__btn {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .oh-pagination__list {
+        gap: 6px;
+    }
+}

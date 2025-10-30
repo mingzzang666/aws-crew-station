@@ -1,6 +1,7 @@
 package com.example.crewstation.service.member;
 
 import com.example.crewstation.auth.CustomUserDetails;
+import com.example.crewstation.common.enumeration.MemberProvider;
 import com.example.crewstation.dto.guest.GuestDTO;
 import com.example.crewstation.dto.member.MemberDTO;
 import com.example.crewstation.repository.guest.GuestDAO;
@@ -49,7 +50,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             }
         }else{
-            memberDTO = memberDAO.findBySnsEmail(username)
+            memberDTO = memberDAO.findBySnsEmail(username, MemberProvider.getStatusFromValue(provider))
                     .orElseThrow(() -> new UsernameNotFoundException("소유자를 찾을 수 없습니다."));
         }
 

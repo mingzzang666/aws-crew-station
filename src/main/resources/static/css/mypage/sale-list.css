@@ -897,3 +897,101 @@ ul {
     color: #fff;
     border-color: #647FBC;
 }
+
+/* ============================
+   📄 페이지네이션 (구매내역 동일)
+   ============================ */
+.oh-pagination {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.oh-pagination__list {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* ===== 기본 페이지 버튼 ===== */
+.oh-pagination__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #d9d9d9;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.oh-pagination__btn:hover {
+    border-color: #647FBC;
+    color: #647FBC;
+    background-color: #f8f9ff;
+}
+
+/* ===== 현재 페이지 ===== */
+.oh-pagination__btn.is-current {
+    background-color: #647FBC;
+    border-color: #647FBC;
+    color: #fff;
+    font-weight: 600;
+    cursor: default;
+    box-shadow: 0 2px 6px rgba(100, 127, 188, 0.25);
+}
+
+/* ===== 이전 / 다음 버튼 ===== */
+.oh-pagination__btn.is-prev,
+.oh-pagination__btn.is-next {
+    font-size: 18px;
+    color: #647FBC;
+    border-color: #cfd5e7;
+}
+
+/* 아이콘만 중앙 정렬 (텍스트 제거 대비) */
+.oh-pagination__btn.is-prev span.oh-pagination__label,
+.oh-pagination__btn.is-next span.oh-pagination__label {
+    display: none;
+}
+
+.oh-pagination__btn.is-prev .oh-pagination__icon,
+.oh-pagination__btn.is-next .oh-pagination__icon {
+    display: inline-block;
+    line-height: 1;
+    transform: translateY(-1px);
+}
+
+.oh-pagination__btn.is-prev:hover,
+.oh-pagination__btn.is-next:hover {
+    background-color: #f1f4ff;
+    border-color: #647FBC;
+}
+
+/* ===== 비활성화 ===== */
+.oh-pagination__btn.is-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* ===== 반응형 대응 ===== */
+@media (max-width: 600px) {
+    .oh-pagination__btn {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .oh-pagination__list {
+        gap: 6px;
+    }
+}

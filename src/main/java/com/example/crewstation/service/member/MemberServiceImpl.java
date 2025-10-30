@@ -2,6 +2,7 @@ package com.example.crewstation.service.member;
 
 import aj.org.objectweb.asm.TypeReference;
 import com.example.crewstation.auth.CustomUserDetails;
+import com.example.crewstation.common.enumeration.MemberProvider;
 import com.example.crewstation.common.enumeration.PaymentPhase;
 import com.example.crewstation.common.exception.MemberLoginFailException;
 import com.example.crewstation.common.exception.MemberNotFoundException;
@@ -138,7 +139,7 @@ public class MemberServiceImpl implements MemberService {
     @Cacheable(value = "member", key = "#memberEmail")
     public MemberDTO getMember(String memberEmail, String provider) {
         return (provider == null ? memberDAO.findByMemberEmail(memberEmail)
-                : memberDAO.findBySnsEmail(memberEmail)).orElseThrow(MemberNotFoundException::new);
+                : memberDAO.findBySnsEmail(memberEmail, MemberProvider.getStatusFromValue(provider))).orElseThrow(MemberNotFoundException::new);
     }
 
     @Override
@@ -389,6 +390,13 @@ public class MemberServiceImpl implements MemberService {
 
         return detail;
     }
+
+    //  전체 개수 조회
+    @Override
+    public int getTotalSaleCountByMemberId(Long memberId, Search search) {
+        return memberDAO.selectSaleTotalCount(memberId, search);
+    }
+
 
 
     @Override

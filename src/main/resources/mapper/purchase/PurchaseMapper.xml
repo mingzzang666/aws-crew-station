@@ -143,8 +143,7 @@
         AND vpp.post_status = 'active'
         <include refid="purchaseSearch"/>
         ORDER BY tps.created_datetime DESC
-        LIMIT #{criteria.size}
-        OFFSET #{criteria.offset}
+        LIMIT #{criteria.rowCount} OFFSET #{criteria.offset}
     </select>
 
 
@@ -198,9 +197,10 @@
     <!-- 전체 개수 조회 (페이징용) -->
     <select id="selectTotalCount" resultType="int">
         SELECT COUNT(*)
-        FROM view_post_purchase vpp
-        JOIN tbl_member tm ON tm.id = vpp.member_id
-        WHERE tm.id = #{memberId}
+        FROM tbl_payment_status tps
+        JOIN view_post_purchase vpp
+        ON tps.purchase_id = vpp.id
+        WHERE tps.member_id = #{memberId}
         AND vpp.post_status = 'active'
         <include refid="purchaseSearch"/>
     </select>

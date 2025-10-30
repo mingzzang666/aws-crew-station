@@ -115,8 +115,45 @@
                             </li>
                         </ul>
                     </a>
-                </div> <!-- end each -->
+                </div>
             </div>
+
+            <!-- 페이지네이션 영역 -->
+            <nav class="oh-pagination" aria-label="페이지 탐색"
+                 th:if="${criteria.realEnd > 1}">
+                <ul class="oh-pagination__list">
+                    <!-- 이전 -->
+                    <li class="oh-pagination__item">
+                        <a class="oh-pagination__btn is-prev"
+                           th:classappend="${!criteria.hasPreviousPage} ? ' is-disabled' : ''"
+                           th:attr="aria-disabled=${!criteria.hasPreviousPage}"
+                           th:href="@{|?page=${criteria.startPage - 1}&keyword=${search.keyword}|}">
+                            <span class="oh-pagination__icon">‹</span>
+                            <span class="oh-pagination__label">이전</span>
+                        </a>
+                    </li>
+
+                    <!-- 페이지 번호 -->
+                    <li th:each="i : ${#numbers.sequence(criteria.startPage, criteria.endPage)}"
+                        class="oh-pagination__item">
+                        <a class="oh-pagination__btn"
+                           th:classappend="${i} == ${criteria.page} ? ' is-current' : ''"
+                           th:href="@{|?page=${i}&keyword=${search.keyword}|}"
+                           th:text="${i}">1</a>
+                    </li>
+
+                    <!-- 다음 -->
+                    <li class="oh-pagination__item">
+                        <a class="oh-pagination__btn is-next"
+                           th:classappend="${!criteria.hasNextPage} ? ' is-disabled' : ''"
+                           th:attr="aria-disabled=${!criteria.hasNextPage}"
+                           th:href="@{|?page=${criteria.endPage + 1}&keyword=${search.keyword}|}">
+                            <span class="oh-pagination__label">다음</span>
+                            <span class="oh-pagination__icon">›</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </main>
 </div>

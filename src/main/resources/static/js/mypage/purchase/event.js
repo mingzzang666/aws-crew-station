@@ -14,18 +14,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (keyword) params.append("keyword", keyword);
         params.append("page", 1);
-        params.append("size", 10);
+        params.append("size", 8);
 
         window.location.href = `${baseUrl}?${params.toString()}`;
     }
 
-    // 버튼 클릭 시 검색
     searchBtn.addEventListener("click", goSearch);
 
-    // 엔터 키로 검색
     searchInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            goSearch();
-        }
+        if (e.key === "Enter") goSearch();
+    });
+
+    document.querySelectorAll(".oh-pagination__btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const page = new URL(e.currentTarget.href).searchParams.get("page");
+            const keyword = searchInput.value.trim();
+            const baseUrl = "/mypage/purchase-list";
+            const params = new URLSearchParams();
+            if (keyword) params.append("keyword", keyword);
+            params.append("page", page);
+            params.append("size", 8);
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        });
     });
 });

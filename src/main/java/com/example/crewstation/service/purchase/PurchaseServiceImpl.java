@@ -283,12 +283,12 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     // 나의 구매내역 목록 조회
     @Override
-    public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, ScrollCriteria scrollcriteria, Search search) {
+    public PurchaseListCriteriaDTO getPurchaseListByMemberId(Long memberId, Criteria criteria, Search search) {
 
-        List<PurchaseListDTO> list = purchaseDAO.selectPurchaseList(memberId, scrollcriteria, search);
+        List<PurchaseListDTO> list = purchaseDAO.selectPurchaseList(memberId, criteria, search);
 
         int total = purchaseDAO.selectTotalCount(memberId, search);
-        scrollcriteria.setTotal(total);
+        criteria.setTotal(total);
 
         // S3 presigned URL 변환
         list.forEach(dto -> {
@@ -307,11 +307,17 @@ public class PurchaseServiceImpl implements PurchaseService {
         // 결과 DTO 구성
         PurchaseListCriteriaDTO result = new PurchaseListCriteriaDTO();
         result.setPurchaseListDTOs(list);
-        result.setScrollcriteria(scrollcriteria);
+        result.setCriteria(criteria);
         result.setSearch(search);
 
         log.info("result.getPurchaseListDTOs() = {}", result.getPurchaseListDTOs());
         return result;
+    }
+
+    //  전체 개수 조회
+    @Override
+    public int getTotalCountByMemberId(Long memberId, Search search) {
+        return purchaseDAO.selectTotalCount(memberId, search);
     }
 
 

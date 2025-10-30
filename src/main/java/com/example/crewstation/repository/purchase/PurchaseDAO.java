@@ -55,8 +55,8 @@ public class PurchaseDAO {
     }
 
     //  구매 내역 목록 조회
-    public List<PurchaseListDTO> selectPurchaseList(Long memberId, ScrollCriteria scrollcriteria, Search search) {
-        return purchaseMapper.selectPurchaseList(memberId, scrollcriteria, search);
+    public List<PurchaseListDTO> selectPurchaseList(Long memberId, Criteria criteria, Search search) {
+        return purchaseMapper.selectPurchaseList(memberId, criteria, search);
     }
 
     //  전체 개수 조회
