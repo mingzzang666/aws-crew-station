@@ -66,7 +66,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (!isExist) {
             throw new PostNotActiveException("이미 삭제된 상품입니다.");
         }
-        
+
         if (paymentStatusDTO.isGuest()) {
 //            멤버랑 게스트에 값 넣어주기
             MemberDTO memberDTO = new MemberDTO();
@@ -108,7 +108,7 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentResponseDTO;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void completePayment(Long paymentStatusId, PaymentDTO paymentDTO) {
 

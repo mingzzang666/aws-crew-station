@@ -53,6 +53,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final PaymentStatusDAO paymentStatusDAO;
 
     private final PurchaseTransactionService purchaseTransactionService;
+    private final RedisTemplate<String, MyPurchaseDetailDTO> myPurchaseDetailRedisTemplate;
     private final RedisTemplate<String, PurchaseDTO> purchaseRedisTemplate;
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -97,7 +98,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 //        log.info("{}",purchaseDTO.getPrice());
 //        purchaseDTO.setPurchaseProductPrice(PriceUtils.formatMoney(purchaseDTO.getPrice()));
 //        purchaseDTO.setLimitDateTime(DateUtils.calcLimitDateTime(purchaseDTO.getUpdatedDatetime(), purchaseDTO.getPurchaseLimitTime()));
-////        purchaseDTO.setSections(sections);
+    ////        purchaseDTO.setSections(sections);
 //        return purchaseDTO;
 //    }
     @Override
@@ -105,7 +106,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     public PurchaseDTO getPurchase(Long id) {
         // 캐시 먼저 확인
         log.info(":::::::::::::::{}",purchaseRedisTemplate.opsForValue().get("purchase::purchases_" + id));
-            PurchaseDTO cached = purchaseRedisTemplate.opsForValue().get("purchase::purchases_" + id);
+        PurchaseDTO cached = purchaseRedisTemplate.opsForValue().get("purchase::purchases_" + id);
         if (cached != null) {
             // 트랜잭션 시작하면서 조회수만 증가
             List<SectionDTO> sections = sectionDAO.findSectionsByPostId(cached.getPostId());
@@ -325,7 +326,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     //  나의 구매내역 상세 조회
     @Override
     public MyPurchaseDetailDTO getMemberOrderDetails(Long memberId, Long paymentStatusId) {
-        MyPurchaseDetailDTO detail = (MyPurchaseDetailDTO) redisTemplate.opsForValue().get("member_order_" + memberId);
+        MyPurchaseDetailDTO detail = myPurchaseDetailRedisTemplate.opsForValue().get("member_order_" + memberId);
         if(detail == null) {
             detail = purchaseDAO.selectMemberOrderDetails(memberId, paymentStatusId);
 
@@ -345,9 +346,10 @@ public class PurchaseServiceImpl implements PurchaseService {
         }
     }
 
+
+
     //  결제 상태 업데이트 추가
     @Override
-    @Transactional
     public void updatePaymentStatus(Long paymentStatusId, PaymentPhase paymentPhase) {
         paymentStatusDAO.updatePaymentStatus(paymentStatusId, paymentPhase);
         log.info("결제 상태 업데이트 완료 -> paymentStatusId={}, phase={}", paymentStatusId, paymentPhase);

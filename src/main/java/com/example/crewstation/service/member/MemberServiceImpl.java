@@ -19,6 +19,7 @@ import com.example.crewstation.repository.file.FileDAO;
 import com.example.crewstation.repository.member.AddressDAO;
 import com.example.crewstation.repository.member.MemberDAO;
 import com.example.crewstation.repository.member.MemberFileDAO;
+import com.example.crewstation.repository.payment.status.PaymentStatusDAO;
 import com.example.crewstation.service.s3.S3Service;
 import com.example.crewstation.util.Criteria;
 import com.example.crewstation.util.Search;
@@ -52,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final PaymentStatusMapper paymentStatusMapper;
+    private final PaymentStatusDAO paymentStatusDAO;
     private final MemberDTO memberDTO;
     private final CrewDAO crewDAO;
     private final CountryDAO countryDAO;
@@ -320,7 +322,7 @@ public class MemberServiceImpl implements MemberService {
         memberDAO.updateChemistryScore(sellerId, rating);
 
         // 주문 상태 reviewed 로 변경
-        paymentStatusMapper.updatePaymentStatus(paymentStatusId, PaymentPhase.REVIEWED);
+        paymentStatusDAO.updatePaymentStatus(paymentStatusId, PaymentPhase.REVIEWED);
     }
 
     // 나의 판매내역 목록 조회
@@ -359,7 +361,7 @@ public class MemberServiceImpl implements MemberService {
         log.info("판매 상태 변경 요청: memberId={}, paymentStatusId={}, paymentPhase={}",
                 memberId, paymentStatusId, paymentPhase);
 
-        paymentStatusMapper.updatePaymentStatus(paymentStatusId, paymentPhase);
+        paymentStatusDAO.updatePaymentStatus(paymentStatusId, paymentPhase);
 
         log.info(" 판매 상태가 {} 로 변경되었습니다.", paymentPhase);
     }
